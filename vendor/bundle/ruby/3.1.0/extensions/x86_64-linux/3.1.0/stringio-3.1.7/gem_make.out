@@ -1,0 +1,16 @@
+current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.1.0/gems/stringio-3.1.7/ext/stringio
+/home/harley/.rvm/rubies/ruby-3.1.4/bin/ruby -I /home/harley/.rvm/rubies/ruby-3.1.4/lib/ruby/3.1.0 extconf.rb
+checking for rb_io_mode_t in ruby/io.h... no
+creating Makefile
+
+current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.1.0/gems/stringio-3.1.7/ext/stringio
+make DESTDIR\= sitearchdir\=./.gem.20250629-1435-rmkmbv sitelibdir\=./.gem.20250629-1435-rmkmbv clean
+
+current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.1.0/gems/stringio-3.1.7/ext/stringio
+make DESTDIR\= sitearchdir\=./.gem.20250629-1435-rmkmbv sitelibdir\=./.gem.20250629-1435-rmkmbv
+compiling stringio.c
+linking shared-object stringio.so
+
+current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.1.0/gems/stringio-3.1.7/ext/stringio
+make DESTDIR\= sitearchdir\=./.gem.20250629-1435-rmkmbv sitelibdir\=./.gem.20250629-1435-rmkmbv install
+/usr/bin/install -c -m 0755 stringio.so ./.gem.20250629-1435-rmkmbv

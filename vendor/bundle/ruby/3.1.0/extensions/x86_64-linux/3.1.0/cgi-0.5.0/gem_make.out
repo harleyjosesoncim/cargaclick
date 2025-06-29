@@ -1,0 +1,15 @@
+current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.1.0/gems/cgi-0.5.0/ext/cgi/escape
+/home/harley/.rvm/rubies/ruby-3.1.4/bin/ruby -I /home/harley/.rvm/rubies/ruby-3.1.4/lib/ruby/3.1.0 extconf.rb
+creating Makefile
+
+current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.1.0/gems/cgi-0.5.0/ext/cgi/escape
+make DESTDIR\= sitearchdir\=./.gem.20250629-1435-aqsqc0 sitelibdir\=./.gem.20250629-1435-aqsqc0 clean
+
+current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.1.0/gems/cgi-0.5.0/ext/cgi/escape
+make DESTDIR\= sitearchdir\=./.gem.20250629-1435-aqsqc0 sitelibdir\=./.gem.20250629-1435-aqsqc0
+compiling escape.c
+linking shared-object cgi/escape.so
+
+current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.1.0/gems/cgi-0.5.0/ext/cgi/escape
+make DESTDIR\= sitearchdir\=./.gem.20250629-1435-aqsqc0 sitelibdir\=./.gem.20250629-1435-aqsqc0 install
+/usr/bin/install -c -m 0755 escape.so ./.gem.20250629-1435-aqsqc0/cgi
