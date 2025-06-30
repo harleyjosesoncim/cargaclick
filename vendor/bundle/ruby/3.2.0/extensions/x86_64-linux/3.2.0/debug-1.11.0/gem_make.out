@@ -1,0 +1,19 @@
+current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/debug-1.11.0/ext/debug
+/home/harley/.rvm/rubies/ruby-3.2.4/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/debug-1.11.0/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20250629-7005-csqwhr sitelibdir\=./.gem.20250629-7005-csqwhr clean
+
+current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/debug-1.11.0/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20250629-7005-csqwhr sitelibdir\=./.gem.20250629-7005-csqwhr
+compiling debug.c
+compiling iseq_collector.c
+linking shared-object debug/debug.so
+
+current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/debug-1.11.0/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20250629-7005-csqwhr sitelibdir\=./.gem.20250629-7005-csqwhr install
+/usr/bin/install -c -m 0755 debug.so ./.gem.20250629-7005-csqwhr/debug
+
+current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/debug-1.11.0/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20250629-7005-csqwhr sitelibdir\=./.gem.20250629-7005-csqwhr clean
