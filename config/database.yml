@@ -1,17 +1,13 @@
-# config/database.yml
-
 default: &default
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  # A linha abaixo faz o Rails usar a DATABASE_URL se estiver definida.
+  url: <%= ENV["DATABASE_URL"] %>
 
 development:
   <<: *default
   database: cargaclick_development
-  # Opcional: configure username e password se precisar no ambiente local
-  # username: your_local_db_user
-  # password: your_local_db_password
-  # host: localhost
 
 test:
   <<: *default
@@ -19,5 +15,5 @@ test:
 
 production:
   <<: *default
-  # Em produção, use DATABASE_URL fornecida pelo Render/Fly.io/Heroku etc.
-  url: <%= ENV["DATABASE_URL"] %>
+  # Em produção, não precisa mais definir database/username/password manualmente,
+  # pois o Rails usará a DATABASE_URL completa definida no Render.
