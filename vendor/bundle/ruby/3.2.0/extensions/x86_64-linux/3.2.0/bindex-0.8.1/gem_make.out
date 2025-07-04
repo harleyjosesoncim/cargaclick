@@ -3,16 +3,16 @@ current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2
 creating Makefile
 
 current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/bindex-0.8.1/ext/skiptrace
-make DESTDIR\= sitearchdir\=./.gem.20250629-7005-z03rea sitelibdir\=./.gem.20250629-7005-z03rea clean
+make DESTDIR\= sitearchdir\=./.gem.20250703-3140-xc7r50 sitelibdir\=./.gem.20250703-3140-xc7r50 clean
 
 current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/bindex-0.8.1/ext/skiptrace
-make DESTDIR\= sitearchdir\=./.gem.20250629-7005-z03rea sitelibdir\=./.gem.20250629-7005-z03rea
+make DESTDIR\= sitearchdir\=./.gem.20250703-3140-xc7r50 sitelibdir\=./.gem.20250703-3140-xc7r50
 compiling cruby.c
 linking shared-object skiptrace/internal/cruby.so
 
 current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/bindex-0.8.1/ext/skiptrace
-make DESTDIR\= sitearchdir\=./.gem.20250629-7005-z03rea sitelibdir\=./.gem.20250629-7005-z03rea install
-/usr/bin/install -c -m 0755 cruby.so ./.gem.20250629-7005-z03rea/skiptrace/internal
+make DESTDIR\= sitearchdir\=./.gem.20250703-3140-xc7r50 sitelibdir\=./.gem.20250703-3140-xc7r50 install
+/usr/bin/install -c -m 0755 cruby.so ./.gem.20250703-3140-xc7r50/skiptrace/internal
 
 current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/bindex-0.8.1/ext/skiptrace
-make DESTDIR\= sitearchdir\=./.gem.20250629-7005-z03rea sitelibdir\=./.gem.20250629-7005-z03rea clean
+make DESTDIR\= sitearchdir\=./.gem.20250703-3140-xc7r50 sitelibdir\=./.gem.20250703-3140-xc7r50 clean

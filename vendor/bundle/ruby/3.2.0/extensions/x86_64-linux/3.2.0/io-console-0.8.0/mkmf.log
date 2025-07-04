@@ -96,7 +96,7 @@ checked program was:
 /* end */
 
 LD_LIBRARY_PATH=.:/home/harley/.rvm/rubies/ruby-3.2.4/lib "gcc -o conftest -I/home/harley/.rvm/rubies/ruby-3.2.4/include/ruby-3.2.0/x86_64-linux -I/home/harley/.rvm/rubies/ruby-3.2.4/include/ruby-3.2.0/ruby/backward -I/home/harley/.rvm/rubies/ruby-3.2.4/include/ruby-3.2.0 -I.    -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wdeprecated-declarations -Wdiv-by-zero -Wduplicated-cond -Wimplicit-function-declaration -Wimplicit-int -Wmisleading-indentation -Wpointer-arith -Wwrite-strings -Wold-style-definition -Wimplicit-fallthrough=0 -Wmissing-noreturn -Wno-cast-function-type -Wno-constant-logical-operand -Wno-long-long -Wno-missing-field-initializers -Wno-overlength-strings -Wno-packed-bitfield-compat -Wno-parentheses-equality -Wno-self-assign -Wno-tautological-compare -Wno-unused-parameter -Wno-unused-value -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wunused-variable -Wundef  -fPIC conftest.c  -L. -L/home/harley/.rvm/rubies/ruby-3.2.4/lib -Wl,-rpath,/home/harley/.rvm/rubies/ruby-3.2.4/lib -L. -fstack-protector-strong -rdynamic -Wl,-export-dynamic -Wl,--no-as-needed     -Wl,-rpath,/home/harley/.rvm/rubies/ruby-3.2.4/lib -L/home/harley/.rvm/rubies/ruby-3.2.4/lib -lruby  -lm -lpthread  -lc"
-/usr/bin/ld: /tmp/ccQEA7GR.o: in function `t':
+/usr/bin/ld: /tmp/ccKAxEcT.o: in function `t':
 /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/io-console-0.8.0/ext/io/console/conftest.c:15:(.text+0xb): undefined reference to `rb_io_path'
 collect2: error: ld returned 1 exit status
 checked program was:
@@ -256,7 +256,7 @@ checked program was:
 /* end */
 
 LD_LIBRARY_PATH=.:/home/harley/.rvm/rubies/ruby-3.2.4/lib "gcc -o conftest -I/home/harley/.rvm/rubies/ruby-3.2.4/include/ruby-3.2.0/x86_64-linux -I/home/harley/.rvm/rubies/ruby-3.2.4/include/ruby-3.2.0/ruby/backward -I/home/harley/.rvm/rubies/ruby-3.2.4/include/ruby-3.2.0 -I.    -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wdeprecated-declarations -Wdiv-by-zero -Wduplicated-cond -Wimplicit-function-declaration -Wimplicit-int -Wmisleading-indentation -Wpointer-arith -Wwrite-strings -Wold-style-definition -Wimplicit-fallthrough=0 -Wmissing-noreturn -Wno-cast-function-type -Wno-constant-logical-operand -Wno-long-long -Wno-missing-field-initializers -Wno-overlength-strings -Wno-packed-bitfield-compat -Wno-parentheses-equality -Wno-self-assign -Wno-tautological-compare -Wno-unused-parameter -Wno-unused-value -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wunused-variable -Wundef  -fPIC conftest.c  -L. -L/home/harley/.rvm/rubies/ruby-3.2.4/lib -Wl,-rpath,/home/harley/.rvm/rubies/ruby-3.2.4/lib -L. -fstack-protector-strong -rdynamic -Wl,-export-dynamic -Wl,--no-as-needed     -Wl,-rpath,/home/harley/.rvm/rubies/ruby-3.2.4/lib -L/home/harley/.rvm/rubies/ruby-3.2.4/lib -lruby  -lm -lpthread  -lc"
-/usr/bin/ld: /tmp/ccTxdka3.o: in function `t':
+/usr/bin/ld: /tmp/ccmexT40.o: in function `t':
 /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/io-console-0.8.0/ext/io/console/conftest.c:15:(.text+0xb): undefined reference to `rb_io_closed_p'
 collect2: error: ld returned 1 exit status
 checked program was:
@@ -311,7 +311,7 @@ checked program was:
 /* end */
 
 LD_LIBRARY_PATH=.:/home/harley/.rvm/rubies/ruby-3.2.4/lib "gcc -o conftest -I/home/harley/.rvm/rubies/ruby-3.2.4/include/ruby-3.2.0/x86_64-linux -I/home/harley/.rvm/rubies/ruby-3.2.4/include/ruby-3.2.0/ruby/backward -I/home/harley/.rvm/rubies/ruby-3.2.4/include/ruby-3.2.0 -I.    -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wdeprecated-declarations -Wdiv-by-zero -Wduplicated-cond -Wimplicit-function-declaration -Wimplicit-int -Wmisleading-indentation -Wpointer-arith -Wwrite-strings -Wold-style-definition -Wimplicit-fallthrough=0 -Wmissing-noreturn -Wno-cast-function-type -Wno-constant-logical-operand -Wno-long-long -Wno-missing-field-initializers -Wno-overlength-strings -Wno-packed-bitfield-compat -Wno-parentheses-equality -Wno-self-assign -Wno-tautological-compare -Wno-unused-parameter -Wno-unused-value -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wunused-variable -Wundef  -fPIC conftest.c  -L. -L/home/harley/.rvm/rubies/ruby-3.2.4/lib -Wl,-rpath,/home/harley/.rvm/rubies/ruby-3.2.4/lib -L. -fstack-protector-strong -rdynamic -Wl,-export-dynamic -Wl,--no-as-needed     -Wl,-rpath,/home/harley/.rvm/rubies/ruby-3.2.4/lib -L/home/harley/.rvm/rubies/ruby-3.2.4/lib -lruby  -lm -lpthread  -lc"
-/usr/bin/ld: /tmp/ccsFwpIw.o: in function `t':
+/usr/bin/ld: /tmp/ccIvw4Ly.o: in function `t':
 /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/io-console-0.8.0/ext/io/console/conftest.c:15:(.text+0xb): undefined reference to `rb_io_open_descriptor'
 collect2: error: ld returned 1 exit status
 checked program was:

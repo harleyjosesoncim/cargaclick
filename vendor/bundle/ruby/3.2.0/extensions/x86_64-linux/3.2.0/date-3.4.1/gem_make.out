@@ -6,10 +6,10 @@ checking for altzone in time.h with  -Werror... no
 creating Makefile
 
 current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/date-3.4.1/ext/date
-make DESTDIR\= sitearchdir\=./.gem.20250629-7005-ct2sot sitelibdir\=./.gem.20250629-7005-ct2sot clean
+make DESTDIR\= sitearchdir\=./.gem.20250703-3140-flp80e sitelibdir\=./.gem.20250703-3140-flp80e clean
 
 current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/date-3.4.1/ext/date
-make DESTDIR\= sitearchdir\=./.gem.20250629-7005-ct2sot sitelibdir\=./.gem.20250629-7005-ct2sot
+make DESTDIR\= sitearchdir\=./.gem.20250703-3140-flp80e sitelibdir\=./.gem.20250703-3140-flp80e
 compiling date_core.c
 compiling date_parse.c
 compiling date_strftime.c
@@ -17,8 +17,8 @@ compiling date_strptime.c
 linking shared-object date_core.so
 
 current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/date-3.4.1/ext/date
-make DESTDIR\= sitearchdir\=./.gem.20250629-7005-ct2sot sitelibdir\=./.gem.20250629-7005-ct2sot install
-/usr/bin/install -c -m 0755 date_core.so ./.gem.20250629-7005-ct2sot
+make DESTDIR\= sitearchdir\=./.gem.20250703-3140-flp80e sitelibdir\=./.gem.20250703-3140-flp80e install
+/usr/bin/install -c -m 0755 date_core.so ./.gem.20250703-3140-flp80e
 
 current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/date-3.4.1/ext/date
-make DESTDIR\= sitearchdir\=./.gem.20250629-7005-ct2sot sitelibdir\=./.gem.20250629-7005-ct2sot clean
+make DESTDIR\= sitearchdir\=./.gem.20250703-3140-flp80e sitelibdir\=./.gem.20250703-3140-flp80e clean

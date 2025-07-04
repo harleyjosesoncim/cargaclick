@@ -1,19 +1,15 @@
-source "https://rubygems.org"
-
-ruby "~> 3.2.0"
-
-gem "rails", "~> 7.1.3"
-
-gem "sprockets-rails"
-gem "pg", "~> 1.1"
-gem "puma", ">= 5.0"
-gem "jbuilder"
+# Ajuda com timezone em Windows
 gem "tzinfo-data", platforms: %i[windows jruby]
-gem "bootsnap", require: false
+
+# Gems necessárias em qualquer ambiente (inclusive produção)
+gem "sprockets", "~> 4.2"
+gem "sprockets-rails"
 
 group :development, :test do
   gem "debug", platforms: %i[mri windows]
-end
+  end
+
+gem "bootsnap", require: false
 
 group :development do
   gem "web-console"
@@ -22,5 +18,5 @@ end
 group :test do
   gem "capybara"
   gem "selenium-webdriver"
-end
-
+  end
+ gem 'webpacker', '5.4.4'

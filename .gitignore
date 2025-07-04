@@ -1,66 +1,11 @@
-# Bundler config.
-/.bundle
-
-# Ignore all environment files (except templates).
-/.env*
-!/.env*.erb
-
-# Ignore logfiles and tempfiles.
+/vendor/bundle
 /log/*
-/tmp/*
-!/log/.keep
-!/tmp/.keep
-
-# Ignore pidfiles, but keep the directory.
-/tmp/pids/*
-!/tmp/pids/
-!/tmp/pids/.keep
-
-# Ignore storage (uploaded files in development and SQLite databases).
-/storage/*
-!/storage/.keep
-/tmp/storage/*
-!/tmp/storage/
-!/tmp/storage/.keep
-
-# Ignore compiled assets.
-/public/assets
-
-# Ignore node modules if you use webpack or js bundlers.
-/node_modules
-
-# Ignore yarn integrity file.
-/yarn.lock
-
-# Ignore macOS & system files.
+*.log
+*.out
+*.zip
+*.gem
+node_modules
+tmp/*
 .DS_Store
-
-# Ignore Byebug command history.
-/.byebug_history
-
-# Ignore SQLite databases.
-/*.sqlite3
-/*.sqlite3-journal
-
-# Ignore secret key base, except allow versioning of master.key for deploys.
-/config/credentials/*.key
-# Allow master.key to be versioned
-!/config/master.key
-
-# Ignore credentials files except templates.
-/config/credentials/*.yml.enc
-!config/credentials.yml.enc
-
-# Ignore coverage reports.
-/coverage
-
-# Ignore rdoc.
-/doc
-
-# Ignore RuboCop cache.
-/.rubocop-https?--*
-
-# Ignore tmp build artifacts from Rails assets:precompile
-/public
-
-/config/master.key
+/public/assets
+byebug_history

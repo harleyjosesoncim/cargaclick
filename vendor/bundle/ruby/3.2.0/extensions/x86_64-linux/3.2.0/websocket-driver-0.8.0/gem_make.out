@@ -3,13 +3,10 @@ current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2
 creating Makefile
 
 current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/websocket-driver-0.8.0/ext/websocket-driver
-make DESTDIR\= sitearchdir\=./.gem.20250629-7005-yxp5n3 sitelibdir\=./.gem.20250629-7005-yxp5n3 clean
-make: Warning: File 'Makefile' has modification time 0.52 s in the future
-make: warning:  Clock skew detected.  Your build may be incomplete.
+make DESTDIR\= sitearchdir\=./.gem.20250703-3140-aq58vg sitelibdir\=./.gem.20250703-3140-aq58vg clean
 
 current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/websocket-driver-0.8.0/ext/websocket-driver
-make DESTDIR\= sitearchdir\=./.gem.20250629-7005-yxp5n3 sitelibdir\=./.gem.20250629-7005-yxp5n3
-make: Warning: File 'Makefile' has modification time 0.47 s in the future
+make DESTDIR\= sitearchdir\=./.gem.20250703-3140-aq58vg sitelibdir\=./.gem.20250703-3140-aq58vg
 compiling websocket_mask.c
 websocket_mask.c: In function ‘Init_websocket_mask’:
 websocket_mask.c:26:6: warning: old-style function definition [-Wold-style-definition]
@@ -20,13 +17,10 @@ cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been
 cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
 cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
 linking shared-object websocket_mask.so
-make: warning:  Clock skew detected.  Your build may be incomplete.
 
 current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/websocket-driver-0.8.0/ext/websocket-driver
-make DESTDIR\= sitearchdir\=./.gem.20250629-7005-yxp5n3 sitelibdir\=./.gem.20250629-7005-yxp5n3 install
-make: Warning: File 'websocket_mask.so' has modification time 0.73 s in the future
-/usr/bin/install -c -m 0755 websocket_mask.so ./.gem.20250629-7005-yxp5n3
-make: warning:  Clock skew detected.  Your build may be incomplete.
+make DESTDIR\= sitearchdir\=./.gem.20250703-3140-aq58vg sitelibdir\=./.gem.20250703-3140-aq58vg install
+/usr/bin/install -c -m 0755 websocket_mask.so ./.gem.20250703-3140-aq58vg
 
 current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/websocket-driver-0.8.0/ext/websocket-driver
-make DESTDIR\= sitearchdir\=./.gem.20250629-7005-yxp5n3 sitelibdir\=./.gem.20250629-7005-yxp5n3 clean
+make DESTDIR\= sitearchdir\=./.gem.20250703-3140-aq58vg sitelibdir\=./.gem.20250703-3140-aq58vg clean
