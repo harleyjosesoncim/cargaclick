@@ -1,0 +1,28 @@
+
+<h1 class="text-2xl font-bold mb-4">Pagamento do Frete</h1>
+
+<div class="bg-white rounded shadow p-6 max-w-xl mx-auto">
+  <h2 class="text-lg font-semibold mb-2">Dados do Transportador</h2>
+  <p><strong>Nome:</strong> <%= @transportador.nome %></p>
+  <p><strong>Valor do Frete:</strong> R$ <%= number_to_currency(@frete.valor, unit: '') %></p>
+
+  <hr class="my-4" />
+
+  <h2 class="text-lg font-semibold mb-2">Pagamento via Pix</h2>
+  <p class="text-sm text-gray-700">Copie a chave Pix abaixo e pague diretamente ao transportador:</p>
+  <div class="bg-gray-100 p-3 rounded mt-2 mb-4 font-mono text-sm">
+    <%= @transportador.pix_key %>
+  </div>
+
+  <h2 class="text-lg font-semibold mb-2">Ou use Mercado Pago</h2>
+  <a href="<%= @transportador.mercado_pago_link %>" target="_blank"
+     class="inline-block mt-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">
+    Pagar com Mercado Pago
+  </a>
+
+  <hr class="my-6" />
+
+  <div class="text-sm text-gray-600">
+    O sistema CargaClick calcula automaticamente a taxa de uso (8% ou 5% com fidelidade). O pagamento é feito direto entre cliente e transportador, como em plataformas OLX ou Marketplace.
+  </div>
+</div>

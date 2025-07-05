@@ -1,4 +1,11 @@
 Rails.application.routes.draw do
-  get "up" => "rails/health#show", as: :rails_health_check
-  root "clientes#index"
+  root 'home#index'
+
+  resources :clientes
+  resources :transportadores
+  resources :fretes
+  resources :pagamento, only: [:show]
+
+
+  # Pode adicionar rotas como login, dashboard, etc.
 end

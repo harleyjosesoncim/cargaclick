@@ -1,9 +1,14 @@
-production:
+default: &default
   adapter: postgresql
   encoding: unicode
-  pool: 5
-  host: dpg-d1k4002dbo4c73f0u1gg-a.oregon-postgres.render.com
-  port: 5432
-  database: cargaclickpostgres
-  username: cargaclick_user
-  password: <%= ENV['DATABASE_PASSWORD'] %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  url: <%= ENV["DATABASE_URL"] %>
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default

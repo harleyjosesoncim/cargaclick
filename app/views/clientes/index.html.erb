@@ -1,0 +1,23 @@
+<h1 class="text-2xl font-bold mb-4">Clientes</h1>
+<table class="w-full text-left border">
+  <thead class="bg-gray-200">
+    <tr>
+      <th class="p-2">Nome</th>
+      <th class="p-2">Email</th>
+      <th class="p-2 text-center">Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @clientes.each do |cliente| %>
+      <tr class="border-t">
+        <td class="p-2"><%= cliente.nome %></td>
+        <td class="p-2"><%= cliente.email %></td>
+        <td class="p-2 text-center">
+          <%= link_to 'Editar', edit_cliente_path(cliente), class: 'text-blue-500 hover:underline' %> |
+          <%= link_to 'Excluir', cliente_path(cliente), method: :delete, data: { confirm: 'Tem certeza?' }, class: 'text-red-500 hover:underline' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<a href="/clientes/new" class="mt-4 inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Novo Cliente</a>

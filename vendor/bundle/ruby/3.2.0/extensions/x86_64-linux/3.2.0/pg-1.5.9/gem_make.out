@@ -26,10 +26,10 @@ creating extconf.h
 creating Makefile
 
 current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/pg-1.5.9/ext
-make DESTDIR\= sitearchdir\=./.gem.20250703-3140-1dxner sitelibdir\=./.gem.20250703-3140-1dxner clean
+make DESTDIR\= sitearchdir\=./.gem.20250705-2829-gz7ivx sitelibdir\=./.gem.20250705-2829-gz7ivx clean
 
 current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/pg-1.5.9/ext
-make DESTDIR\= sitearchdir\=./.gem.20250703-3140-1dxner sitelibdir\=./.gem.20250703-3140-1dxner
+make DESTDIR\= sitearchdir\=./.gem.20250705-2829-gz7ivx sitelibdir\=./.gem.20250705-2829-gz7ivx
 compiling gvl_wrappers.c
 compiling pg.c
 compiling pg_binary_decoder.c
@@ -54,9 +54,9 @@ compiling pg_util.c
 linking shared-object pg_ext.so
 
 current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/pg-1.5.9/ext
-make DESTDIR\= sitearchdir\=./.gem.20250703-3140-1dxner sitelibdir\=./.gem.20250703-3140-1dxner install
-/usr/bin/install -c -m 0755 pg_ext.so ./.gem.20250703-3140-1dxner
+make DESTDIR\= sitearchdir\=./.gem.20250705-2829-gz7ivx sitelibdir\=./.gem.20250705-2829-gz7ivx install
+/usr/bin/install -c -m 0755 pg_ext.so ./.gem.20250705-2829-gz7ivx
 installing pg_ext libraries
 
 current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/pg-1.5.9/ext
-make DESTDIR\= sitearchdir\=./.gem.20250703-3140-1dxner sitelibdir\=./.gem.20250703-3140-1dxner clean
+make DESTDIR\= sitearchdir\=./.gem.20250705-2829-gz7ivx sitelibdir\=./.gem.20250705-2829-gz7ivx clean

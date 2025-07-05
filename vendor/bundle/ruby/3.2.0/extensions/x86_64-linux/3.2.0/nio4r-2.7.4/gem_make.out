@@ -13,10 +13,10 @@ checking for sys/resource.h... yes
 creating Makefile
 
 current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/nio4r-2.7.4/ext/nio4r
-make DESTDIR\= sitearchdir\=./.gem.20250703-3140-qmjuel sitelibdir\=./.gem.20250703-3140-qmjuel clean
+make DESTDIR\= sitearchdir\=./.gem.20250705-2829-y65ugg sitelibdir\=./.gem.20250705-2829-y65ugg clean
 
 current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/nio4r-2.7.4/ext/nio4r
-make DESTDIR\= sitearchdir\=./.gem.20250703-3140-qmjuel sitelibdir\=./.gem.20250703-3140-qmjuel
+make DESTDIR\= sitearchdir\=./.gem.20250705-2829-y65ugg sitelibdir\=./.gem.20250705-2829-y65ugg
 compiling bytebuffer.c
 bytebuffer.c: In function ‘Init_NIO_ByteBuffer’:
 bytebuffer.c:59:6: warning: old-style function definition [-Wold-style-definition]
@@ -275,10 +275,8 @@ cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ 
 linking shared-object nio4r_ext.so
 
 current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/nio4r-2.7.4/ext/nio4r
-make DESTDIR\= sitearchdir\=./.gem.20250703-3140-qmjuel sitelibdir\=./.gem.20250703-3140-qmjuel install
-make: Warning: File 'nio4r_ext.so' has modification time 0.53 s in the future
-/usr/bin/install -c -m 0755 nio4r_ext.so ./.gem.20250703-3140-qmjuel
-make: warning:  Clock skew detected.  Your build may be incomplete.
+make DESTDIR\= sitearchdir\=./.gem.20250705-2829-y65ugg sitelibdir\=./.gem.20250705-2829-y65ugg install
+/usr/bin/install -c -m 0755 nio4r_ext.so ./.gem.20250705-2829-y65ugg
 
 current directory: /mnt/c/Users/User/Documents/cargaclick/vendor/bundle/ruby/3.2.0/gems/nio4r-2.7.4/ext/nio4r
-make DESTDIR\= sitearchdir\=./.gem.20250703-3140-qmjuel sitelibdir\=./.gem.20250703-3140-qmjuel clean
+make DESTDIR\= sitearchdir\=./.gem.20250705-2829-y65ugg sitelibdir\=./.gem.20250705-2829-y65ugg clean

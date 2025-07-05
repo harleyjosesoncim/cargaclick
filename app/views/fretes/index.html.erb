@@ -1,0 +1,26 @@
+<h1 class="text-2xl font-bold mb-4">Solicitações de Frete</h1>
+<table class="w-full text-left border">
+  <thead class="bg-gray-200">
+    <tr>
+      <th class="p-2">Origem</th>
+      <th class="p-2">Destino</th>
+      <th class="p-2">Distância</th>
+      <th class="p-2">Valor (R$)</th>
+      <th class="p-2 text-center">Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @fretes.each do |frete| %>
+      <tr class="border-t">
+        <td class="p-2"><%= frete.origem %></td>
+        <td class="p-2"><%= frete.destino %></td>
+        <td class="p-2"><%= frete.distancia_km %> km</td>
+        <td class="p-2">R$ <%= number_to_currency(frete.valor, unit: '') %></td>
+        <td class="p-2 text-center">
+          <%= link_to 'Detalhes', frete_path(frete), class: 'text-blue-500 hover:underline' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<a href="/fretes/new" class="mt-4 inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Nova Solicitação</a>
