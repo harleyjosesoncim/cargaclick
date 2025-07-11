@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
-    <!-- Carrega os arquivos do builds (ESBuild/Tailwind) -->
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-<%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
   </head>
   <body class="bg-gray-100 min-h-screen font-sans antialiased">
     <main class="container mx-auto px-4 py-8">
