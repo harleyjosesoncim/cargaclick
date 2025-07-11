@@ -5,6 +5,7 @@ ruby "3.2.4" # Verifique se esta é a versão do seu Ruby
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.1.3" # Ou a versão exata do Rails que você está usando
+gem 'pg'
 
 gem 'puma', '~> 6.0'
 
