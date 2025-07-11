@@ -1,0 +1,2 @@
+class TransportadoresController < ApplicationController
+end
