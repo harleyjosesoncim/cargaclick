@@ -34,6 +34,4 @@ RUN SECRET_KEY_BASE_DUMMY=1 yarn build && \
     SECRET_KEY_BASE_DUMMY=1 yarn build:css
 
 EXPOSE ${PORT}
-CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "${PORT}"]
-
-
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
