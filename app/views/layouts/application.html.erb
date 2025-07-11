@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Cargaclick App</title>
+    <title>CargaClick App</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <%= stylesheet_link_tag "builds/application", "data-turbo-track": "reload" %>
-    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+    <!-- Carrega os arquivos do builds (ESBuild/Tailwind) -->
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+<%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
   </head>
-  <body>
-    <%= yield %>
+  <body class="bg-gray-100 min-h-screen font-sans antialiased">
+    <main class="container mx-auto px-4 py-8">
+      <%= yield %>
+    </main>
   </body>
 </html>
 
