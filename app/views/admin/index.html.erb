@@ -1,0 +1,32 @@
+
+<h1 class="text-2xl font-bold mb-6">Painel Administrativo</h1>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+  <div class="bg-white shadow p-4 rounded">
+    <h2 class="text-lg font-semibold mb-2">Clientes</h2>
+    <%= link_to "Ver todos", clientes_path, class: "text-blue-600 hover:underline" %>
+  </div>
+
+  <div class="bg-white shadow p-4 rounded">
+    <h2 class="text-lg font-semibold mb-2">Transportadores</h2>
+    <%= link_to "Ver todos", transportadores_path, class: "text-blue-600 hover:underline" %>
+  </div>
+
+  <div class="bg-white shadow p-4 rounded">
+    <h2 class="text-lg font-semibold mb-2">Fretes</h2>
+    <%= link_to "Ver todos", fretes_path, class: "text-blue-600 hover:underline" %>
+  </div>
+
+  <div class="bg-white shadow p-4 rounded">
+    <h2 class="text-lg font-semibold mb-2">Pagamentos</h2>
+    <%= link_to "Simulações", simulador_index_path, class: "text-blue-600 hover:underline" %>
+  </div>
+
+</div>
+
+<hr class="my-6">
+
+<div class="mt-4 text-sm text-gray-600">
+  ⚙️ Acesso completo a todos os dados do sistema. Pode editar, excluir e gerenciar tudo.
+</div>

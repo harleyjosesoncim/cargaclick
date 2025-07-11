@@ -1,0 +1,22 @@
+<h1 class="text-2xl font-bold mb-4">Nova Solicitação de Frete</h1>
+<%= form_with model: @frete, local: true do |f| %>
+  <div class="mb-4">
+    <%= f.label :origem, "Endereço de Origem", class: "block text-gray-700" %>
+    <%= f.text_field :origem, class: "w-full px-4 py-2 border rounded", placeholder: "CEP ou endereço completo" %>
+  </div>
+  <div class="mb-4">
+    <%= f.label :destino, "Endereço de Destino", class: "block text-gray-700" %>
+    <%= f.text_field :destino, class: "w-full px-4 py-2 border rounded", placeholder: "CEP ou endereço completo" %>
+  </div>
+  <div>
+    <%= f.submit "Calcular Frete", class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded" %>
+  </div>
+<% end %>
+
+<% if @distancia_km && @valor_total %>
+  <div class="mt-6 p-4 bg-gray-100 rounded">
+    <p><strong>Distância estimada:</strong> <%= @distancia_km %> km</p>
+    <p><strong>Valor do Frete:</strong> R$ <%= number_to_currency(@valor_total, unit: '') %></p>
+    <p class="text-sm text-gray-600 mt-2">(*) O cálculo considera a localização atual dos transportadores cadastrados.</p>
+  </div>
+<% end %>

@@ -1,0 +1,20 @@
+{
+  "name": "cargaclick",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Aplicativo CargaClick - Rails 7 com ESBuild e Tailwind",
+  "scripts": {
+    "build": "esbuild app/javascript/application.js --bundle --sourcemap --outdir=app/assets/builds",
+    "build:css": "tailwindcss -c ./config/tailwind.config.js -i ./app/assets/stylesheets/application.css -o ./app/assets/builds/application.css",
+    "dev": "yarn build --watch",
+    "dev:css": "yarn build:css --watch"
+  },
+  "dependencies": {
+    "esbuild": "^0.20.0",
+    "tailwindcss": "^3.4.3",
+    "@tailwindcss/forms": "0.5.10",
+    "@tailwindcss/typography": "0.5.16"
+  },
+  "devDependencies": {},
+  "license": "MIT"
+}

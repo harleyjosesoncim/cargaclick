@@ -1,0 +1,8 @@
+<h1 class="text-2xl font-bold mb-4">Detalhes do Frete</h1>
+<ul class="mb-4">
+  <li><strong>Origem:</strong> <%= @frete.origem %></li>
+  <li><strong>Destino:</strong> <%= @frete.destino %></li>
+  <li><strong>Distância:</strong> <%= @frete.distancia_km %> km</li>
+  <li><strong>Valor Calculado:</strong> R$ <%= number_to_currency(@frete.valor, unit: '') %></li>
+</ul>
+<%= link_to 'Voltar', fretes_path, class: 'text-blue-500 hover:underline' %>

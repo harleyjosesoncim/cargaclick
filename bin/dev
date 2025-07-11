@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# Script para rodar Rails server + Tailwind watcher juntos
+echo "Iniciando servidor de desenvolvimento com Tailwind..."
+./bin/rails tailwindcss:watch &
+./bin/rails server

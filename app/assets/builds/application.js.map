@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../javascript/application.js"],
+  "sourcesContent": ["// app/javascript/application.js  <-- Note os DOIS pontos e o espa\u00E7o no in\u00EDcio.\nconsole.log(\"Hello from CargoClick Rails 7 with ESBuild!\");\n// Voc\u00EA pode adicionar seu c\u00F3digo JavaScript principal aqui."],
+  "mappings": ";;AACA,UAAQ,IAAI,6CAA6C;",
+  "names": []
+}

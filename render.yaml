@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: cargaclick
+    env: docker
+    plan: free
+    repo: https://github.com/harleyjosesoncim/cargaclick
+    branch: main
+    autoDeploy: true
+

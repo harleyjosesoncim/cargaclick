@@ -1,0 +1,14 @@
+<h1 class="text-2xl font-bold mb-4">Novo Transportador</h1>
+<%= form_with model: @transportador, local: true do |f| %>
+  <div class="mb-4">
+    <%= f.label :nome, class: "block text-gray-700" %>
+    <%= f.text_field :nome, class: "w-full px-4 py-2 border rounded" %>
+  </div>
+  <div class="mb-4">
+    <%= f.label :tipo_veiculo, class: "block text-gray-700" %>
+    <%= f.text_field :tipo_veiculo, class: "w-full px-4 py-2 border rounded" %>
+  </div>
+  <div>
+    <%= f.submit "Salvar", class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded" %>
+  </div>
+<% end %>

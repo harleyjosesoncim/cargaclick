@@ -1,0 +1,84 @@
+<div class="min-h-screen bg-[#F8F8F8] flex flex-col items-center pt-8 pb-20">
+  <!-- Header -->
+  <header class="w-full max-w-lg flex flex-col items-center mb-6">
+    <img src="/logo-cargaclick.png" alt="CargaClick Logo" class="w-20 mb-2">
+    <h1 class="text-2xl font-extrabold text-[#87B5E1] mb-1">Cadastro de Cliente</h1>
+    <p class="text-gray-500 text-sm">Participe da comunidade CargaClick!</p>
+  </header>
+
+  <!-- Formulário de Cadastro -->
+  <form class="bg-white max-w-lg w-full rounded-2xl shadow-lg p-6 flex flex-col space-y-4">
+    <input type="text" placeholder="Nome completo" class="w-full border rounded-xl p-2" required>
+    <input type="text" placeholder="CPF" class="w-full border rounded-xl p-2" required>
+    <div class="flex flex-col md:flex-row md:space-x-4">
+      <input type="text" placeholder="Endereço" class="flex-1 border rounded-xl p-2 mb-2 md:mb-0" required>
+      <input type="text" placeholder="CEP" class="flex-1 border rounded-xl p-2" required>
+    </div>
+    <input type="text" placeholder="Tipo de carga" class="w-full border rounded-xl p-2" required>
+    <div class="flex flex-col md:flex-row md:space-x-4">
+      <input type="number" placeholder="Volume/Peso (kg)" class="flex-1 border rounded-xl p-2 mb-2 md:mb-0" required>
+      <input type="number" placeholder="Altura (cm)" class="flex-1 border rounded-xl p-2" required>
+      <input type="number" placeholder="Largura (cm)" class="flex-1 border rounded-xl p-2" required>
+      <input type="number" placeholder="Profundidade (cm)" class="flex-1 border rounded-xl p-2" required>
+    </div>
+    <div class="flex items-center space-x-2">
+      <input type="checkbox" id="fidelizacao" class="h-4 w-4 rounded border-gray-300">
+      <label for="fidelizacao" class="text-gray-700 text-sm">Quero participar do programa de fidelização e ganhar desconto!</label>
+    </div>
+    <input type="text" placeholder="Cartão de crédito (opcional para fidelização)" class="w-full border rounded-xl p-2">
+    <div>
+      <label class="block text-gray-600 text-sm mb-1">Modal preferido:</label>
+      <div class="flex gap-2 flex-wrap">
+        <button type="button" class="px-3 py-1 rounded-lg border border-blue-600 text-blue-700 hover:bg-blue-50">Carro</button>
+        <button type="button" class="px-3 py-1 rounded-lg border border-blue-600 text-blue-700 hover:bg-blue-50">Moto</button>
+        <button type="button" class="px-3 py-1 rounded-lg border border-blue-600 text-blue-700 hover:bg-blue-50">Bike</button>
+        <button type="button" class="px-3 py-1 rounded-lg border border-blue-600 text-blue-700 hover:bg-blue-50">A pé</button>
+        <button type="button" class="px-3 py-1 rounded-lg border border-blue-600 text-blue-700 hover:bg-blue-50">Qualquer</button>
+      </div>
+    </div>
+    <div class="flex items-center space-x-2 pt-2">
+      <input type="checkbox" id="termos" class="h-4 w-4 rounded border-gray-300" required>
+      <label for="termos" class="text-xs text-gray-600">Aceito os <a href="#" class="underline text-blue-700">Termos de Uso</a> e a <a href="#" class="underline text-blue-700">Política de Privacidade</a></label>
+    </div>
+    <button type="submit" class="w-full bg-[#87B5E1] hover:bg-[#A6E8B9] text-blue-900 font-bold py-2 rounded-xl mt-2 hover:bg-blue-800 shadow">Cadastrar</button>
+  </form>
+
+  <!-- Informativo institucional -->
+  <div class="max-w-lg w-full mt-4 bg-blue-50 border-l-4 border-blue-400 p-3 rounded-xl flex items-start space-x-2">
+    <span class="text-blue-400 text-xl">💡</span>
+    <span class="text-gray-700 text-sm">
+      <b>Dica CargaClick:</b> Negocie diretamente com o transportador e avalie a melhor opção para você. Nós só aproximamos quem precisa de frete de quem pode transportar, do seu jeito!
+    </span>
+  </div>
+
+  <!-- Chatzinho de ajuda -->
+  <button onclick="abrirChatAjuda()" class="fixed z-50 bottom-6 right-6 bg-[#87B5E1] hover:bg-[#A6E8B9] text-white rounded-full shadow-lg p-4 flex items-center transition" title="Precisa de ajuda?">
+    <span class="text-2xl">💬</span>
+  </button>
+  <div id="chatAjudaModal" class="fixed z-50 bottom-20 right-6 bg-white border rounded-xl shadow-xl w-80 max-w-full p-4 hidden">
+    <div class="flex items-center space-x-2 mb-2">
+      <span class="text-[#87B5E1] text-2xl">🤖</span>
+      <span class="font-bold text-[#87B5E1]">DigiAjuda</span>
+    </div>
+    <div class="text-gray-700 text-sm mb-4">
+      Dúvidas sobre cadastro?<br>
+      <ul class="list-disc pl-4 mt-2">
+        <li><a href="#" class="text-[#87B5E1] underline">Preciso do CPF?</a></li>
+        <li><a href="#" class="text-[#87B5E1] underline">Como ganho descontos?</a></li>
+        <li><a href="#" class="text-[#87B5E1] underline">O que é fidelização?</a></li>
+      </ul>
+      <div class="mt-2">
+        <a href="https://wa.me/SEUNUMEROAQUI" class="block text-green-600 underline font-semibold mt-2">Falar com humano</a>
+      </div>
+    </div>
+    <button onclick="fecharChatAjuda()" class="text-xs text-gray-400 hover:text-red-400">Fechar</button>
+  </div>
+</div>
+<script>
+function abrirChatAjuda() {
+  document.getElementById('chatAjudaModal').style.display = 'block';
+}
+function fecharChatAjuda() {
+  document.getElementById('chatAjudaModal').style.display = 'none';
+}
+</script>

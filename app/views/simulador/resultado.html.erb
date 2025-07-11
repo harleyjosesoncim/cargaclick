@@ -1,0 +1,24 @@
+
+<h2 class="text-xl font-bold mb-4">Resultado da Simulação</h2>
+<p><strong>Distância estimada:</strong> <%= @distancia_km %> km</p>
+
+<table class="w-full mt-4 border text-left">
+  <thead class="bg-gray-200">
+    <tr>
+      <th class="p-2">Transportador</th>
+      <th class="p-2">Valor Base</th>
+      <th class="p-2">Taxa do Sistema</th>
+      <th class="p-2">Total Final</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @ofertas.each do |oferta| %>
+      <tr class="border-t">
+        <td class="p-2"><%= oferta[:nome] %></td>
+        <td class="p-2">R$ <%= oferta[:valor_base] %></td>
+        <td class="p-2"><%= oferta[:taxa] %>%</td>
+        <td class="p-2 font-semibold text-green-700">R$ <%= oferta[:valor_total] %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
