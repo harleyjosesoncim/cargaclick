@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_13_052134) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_13_053331) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -22,14 +22,25 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_13_052134) do
     t.string "telefone"
     t.string "endereco"
     t.string "cep"
+    t.float "largura"
+    t.float "altura"
+    t.float "profundidade"
+    t.float "peso_aproximado"
   end
 
   create_table "transportadores", force: :cascade do |t|
     t.string "nome"
+    t.string "cpf"
     t.string "telefone"
-    t.string "cnpj"
-    t.decimal "volume"
-    t.decimal "peso"
+    t.string "endereco"
+    t.string "cep"
+    t.string "tipo_veiculo"
+    t.string "carga_maxima"
+    t.decimal "valor_km"
+    t.decimal "largura"
+    t.decimal "altura"
+    t.decimal "profundidade"
+    t.decimal "peso_aproximado"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
