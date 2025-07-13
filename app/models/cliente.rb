@@ -4,4 +4,8 @@ class Cliente < ApplicationRecord
   validates :nome, presence: true
   validates :email, presence: true, uniqueness: true # Garante que o email é único
   validates_format_of :email, with: URI::MailTo::EMAIL_REGEXP # Valida o formato do email
+  class Cliente < ApplicationRecord
+  validates :observacoes, length: { maximum: 50 }
+end
+
 end
