@@ -1,54 +1,84 @@
-<%= form_with model: @transportador, local: true do |form| %>
+<%= form_with(model: @transportador, url: transportadores_path, local: true) do |form| %>
+  <h2>Cadastro de Transportador</h2>
+
+  <!-- Campo Nome -->
   <div>
-    <%= form.label :nome %>
-    <%= form.text_field :nome %>
+    <%= form.label :nome, "Nome Completo" %><br>
+    <%= form.text_field :nome, required: true %>
   </div>
+
+  <!-- Campo CPF -->
   <div>
-    <%= form.label :cpf %>
-    <%= form.text_field :cpf %>
+    <%= form.label :cpf, "CPF" %><br>
+    <%= form.text_field :cpf, required: true %>
   </div>
+
+  <!-- Campo Telefone -->
   <div>
-    <%= form.label :telefone %>
+    <%= form.label :telefone, "Telefone" %><br>
     <%= form.text_field :telefone %>
   </div>
+
+  <!-- Campo Endereço -->
   <div>
-    <%= form.label :endereco %>
+    <%= form.label :endereco, "Endereço" %><br>
     <%= form.text_field :endereco %>
   </div>
+
+  <!-- Campo CEP -->
   <div>
-    <%= form.label :cep %>
+    <%= form.label :cep, "CEP" %><br>
     <%= form.text_field :cep %>
   </div>
-  <div>
-    <%= form.label :tipo_veiculo %>
-    <%= form.text_field :tipo_veiculo %>
-  </div>
-  <div>
-    <%= form.label :carga_maxima %>
-    <%= form.text_field :carga_maxima %>
-  </div>
-  <div>
-    <%= form.label :valor_km %>
-    <%= form.text_field :valor_km %>
-  </div>
-  <div>
-    <%= form.submit %>
-  </div>
-  <div>
-  <%= form.label :largura, 'Largura (cm)' %>
-  <%= form.text_field :largura %>
-</div>
-<div>
-  <%= form.label :altura, 'Altura (cm)' %>
-  <%= form.text_field :altura %>
-</div>
-<div>
-  <%= form.label :profundidade, 'Profundidade (cm)' %>
-  <%= form.text_field :profundidade %>
-</div>
-<div>
-  <%= form.label :peso_aproximado, 'Peso Aproximado (kg)' %>
-  <%= form.text_field :peso_aproximado %>
-</div>
 
+  <!-- Campo Tipo de Veículo -->
+  <div>
+    <%= form.label :tipo_veiculo, "Tipo de Veículo" %><br>
+    <%= form.text_field :tipo_veiculo, placeholder: "Ex: Caminhão, Van, Carreta..." %>
+  </div>
+
+  <!-- Campo Carga Máxima -->
+  <div>
+    <%= form.label :carga_maxima, "Carga Máxima (kg)" %><br>
+    <%= form.number_field :carga_maxima, min: 0 %>
+  </div>
+
+  <!-- Campo Valor por KM -->
+  <div>
+    <%= form.label :valor_km, "Valor por KM (R$)" %><br>
+    <%= form.text_field :valor_km, placeholder: "Ex: 3.50" %>
+  </div>
+
+  <!-- Dimensões do Veículo -->
+  <fieldset style="margin-top:1em;">
+    <legend>Dimensões do Veículo</legend>
+    <div>
+      <%= form.label :largura, "Largura (cm)" %><br>
+      <%= form.text_field :largura %>
+    </div>
+    <div>
+      <%= form.label :altura, "Altura (cm)" %><br>
+      <%= form.text_field :altura %>
+    </div>
+    <div>
+      <%= form.label :profundidade, "Profundidade (cm)" %><br>
+      <%= form.text_field :profundidade %>
+    </div>
+  </fieldset>
+
+  <!-- Peso Aproximado -->
+  <div>
+    <%= form.label :peso_aproximado, "Peso Aproximado da Carga (kg)" %><br>
+    <%= form.text_field :peso_aproximado %>
+  </div>
+
+  <!-- Outros campos futuros podem ser adicionados aqui -->
+
+  <hr>
+
+  <!-- Botão Submit -->
+  <div style="margin-top:1em;">
+    <%= form.submit "Cadastrar Transportador" %>
+  </div>
 <% end %>
+

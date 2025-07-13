@@ -1,0 +1,11 @@
+<%= form.label :largura %>
+<%= form.number_field :largura, step: 0.01 %>
+
+<%= form.label :altura %>
+<%= form.number_field :altura, step: 0.01 %>
+
+<%= form.label :profundidade %>
+<%= form.number_field :profundidade, step: 0.01 %>
+
+<%= form.label :peso_aproximado %>
+<%= form.number_field :peso_aproximado, step: 0.01 %>
