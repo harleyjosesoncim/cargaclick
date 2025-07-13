@@ -10,11 +10,10 @@
     "dev:css": "yarn build:css --watch"
   },
   "dependencies": {
-    "esbuild": "^0.20.0",
-    "tailwindcss": "^3.4.3",
     "@tailwindcss/forms": "0.5.10",
-    "@tailwindcss/typography": "0.5.16"
+    "@tailwindcss/typography": "0.5.16",
+    "esbuild": "^0.25.6",
+    "tailwindcss": "^3.4.3"
   },
-  "devDependencies": {},
   "license": "MIT"
 }

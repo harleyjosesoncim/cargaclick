@@ -59,7 +59,12 @@ Rails.application.configure do
   # Highlight code that enqueued background job in logs.
   config.active_job.verbose_enqueue_logs = true
 
-    # Raises error for missing translations.
+  # Suppress logger output for asset requests.
+  # config.assets.quiet = true
+
+  config.assets.debug = true
+
+  # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
 
   # Annotate rendered view with file names.
@@ -67,7 +72,6 @@ Rails.application.configure do
 
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
-  # config.active_support.cache_format_version = 6.1
 
   # Raise error when a before_action's only/except options reference missing actions
   config.action_controller.raise_on_missing_callback_actions = true

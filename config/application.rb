@@ -8,21 +8,23 @@ Bundler.require(*Rails.groups)
 
 module CargaClick
   class Application < Rails::Application
-    # Inicializa as configurações padrão para a versão do Rails usada:
-    config.load_defaults 6.1
+    # Initialize configuration defaults for originally generated Rails version.
+    config.load_defaults 7.0
 
-    # (Opcional) Defina o fuso horário padrão, se desejar:
-    # config.time_zone = "America/Sao_Paulo"
+    # Please, add to the `ignore` list any other `lib` subdirectories that do
+    # not contain `.rb` files, or that should not be reloaded or eager loaded.
+    # Common ones are `templates`, `generators`, or `middleware`, for example.
+    config.autoload_lib(ignore: %w(assets tasks))
 
-    # (Opcional) Caminhos adicionais para carregar arquivos (pode remover se não usar!)
-    # config.eager_load_paths << Rails.root.join("lib")
+    # Configuration for the application, engines, and railties goes here.
+    #
+    # These settings can be overridden in specific environments using the files
+    # in config/environments, which are processed later.
+    #
+    # config.time_zone = "Central Time (US & Canada)"
+    # config.eager_load_paths << Rails.root.join("extras")
 
-    # NÃO coloque config.api_only = true aqui! Isso quebra devise.
-
-    # Não gere arquivos de teste de sistema (system tests)
+    # Don't generate system test files.
     config.generators.system_tests = nil
-
-    # NÃO coloque config.autoload_lib - esse método não existe no Rails puro!
   end
 end
-
