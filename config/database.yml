@@ -6,6 +6,13 @@ default: &default
 
 development:
   <<: *default
+  username: postgres
+  password: postgres
+  host: localhost
+  port: 5432
+  database: carga_click_development
 
 production:
   <<: *default
+  url: postgresql://cargaclick_db_user:VCmo64zWUHEQCC8puJ3ZvKRRJFTNFN3@dpg-d1m9dcqli9vc73988kbg-a/cargaclick_db
+  

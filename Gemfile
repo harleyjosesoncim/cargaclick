@@ -8,6 +8,8 @@ gem "rails", "~> 7.1.3" # Ou a versão exata do Rails que você está usando
 gem 'pg'
 
 gem 'puma', '~> 6.0'
+gem 'bcrypt', '~> 3.1.7'
+
 
 # NOVAS GEMS PARA O PIPELINE DE ASSETS (ESBuild e TailwindCSS)
 gem "jsbundling-rails"
@@ -20,6 +22,7 @@ gem 'devise'
 gem 'httparty'
 gem 'dotenv-rails'
 gem 'bootsnap', '>= 1.16', require: false
+gem "sprockets-rails"
 
 # Gems de Pagamento (descomente quando for integrar, se for o caso)
 # gem 'mercadopago-sdk', '~> 2.4'
