@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_14_141714) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_14_164834) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -53,6 +53,19 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_14_141714) do
     t.float "valor_total"
     t.string "status"
     t.boolean "aceite_responsabilidade"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "cep_origem"
+    t.string "cep_destino"
+    t.decimal "peso", precision: 8, scale: 2
+    t.decimal "distancia", precision: 8, scale: 2
+    t.decimal "valor_estimado", precision: 10, scale: 2
+  end
+
+  create_table "propostas", force: :cascade do |t|
+    t.decimal "valor_proposto", precision: 10, scale: 2
+    t.text "observacao"
+    t.string "status", default: "pendente"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

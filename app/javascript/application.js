@@ -1,23 +1,29 @@
-// app/javascript/application.js  <-- Note os DOIS pontos e o espaço no início.
-console.log("Hello from CargoClick Rails 7 with ESBuild!");
-// Você pode adicionar seu código JavaScript principal aqui.
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+// app/javascript/application.js
 
+console.log("Hello from CargoClick Rails 7 with ESBuild!");
+
+// Importa apenas o JS do Leaflet (não o CSS, pois ele já está no <head> do HTML)
+import L from 'leaflet';
+
+// Quando o DOM carregar, configura o mapa de cadastro de transportador (se existir o elemento)
 document.addEventListener('DOMContentLoaded', () => {
   const cepInput = document.getElementById('cep_input');
   const enderecoInput = document.getElementById('endereco_input');
   const mapElement = document.getElementById('map');
 
   if (cepInput && enderecoInput && mapElement) {
-    const map = L.map('map').setView([-23.5505, -46.6333], 12); // SP default
+    // Inicia o mapa centrado em São Paulo
+    const map = L.map('map').setView([-23.5505, -46.6333], 12);
 
+    // Adiciona camada OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
+    // Adiciona marcador padrão
     let marker = L.marker([-23.5505, -46.6333]).addTo(map);
 
+    // Busca endereço no Nominatim ao sair do campo CEP
     cepInput.addEventListener('blur', function () {
       const cep = this.value.trim().replace(/\D/g, '');
 

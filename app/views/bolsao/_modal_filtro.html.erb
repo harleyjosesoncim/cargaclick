@@ -1,0 +1,47 @@
+<div id="modal-filtro" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+  <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md relative">
+    <button
+      class="absolute top-2 right-3 text-gray-500 hover:text-red-600 text-2xl"
+      onclick="document.getElementById('modal-filtro').classList.add('hidden')"
+      title="Fechar">&times;</button>
+    <h3 class="text-xl font-bold mb-4 text-blue-700">Filtrar Solicitações</h3>
+    <form method="get" action="<%= bolsao_path %>">
+      <div class="mb-3">
+        <label class="block text-sm mb-1 font-medium text-gray-700">CEP Origem</label>
+        <input type="text" name="cep_origem" class="w-full rounded border px-3 py-2">
+      </div>
+      <div class="mb-3">
+        <label class="block text-sm mb-1 font-medium text-gray-700">CEP Destino</label>
+        <input type="text" name="cep_destino" class="w-full rounded border px-3 py-2">
+      </div>
+      <div class="mb-3">
+        <label class="block text-sm mb-1 font-medium text-gray-700">Cliente</label>
+        <input type="text" name="cliente" class="w-full rounded border px-3 py-2">
+      </div>
+      <div class="flex gap-2 mb-3">
+        <div>
+          <label class="block text-sm mb-1 font-medium text-gray-700">Peso mín.</label>
+          <input type="number" step="0.01" name="peso_min" class="w-full rounded border px-3 py-2">
+        </div>
+        <div>
+          <label class="block text-sm mb-1 font-medium text-gray-700">Peso máx.</label>
+          <input type="number" step="0.01" name="peso_max" class="w-full rounded border px-3 py-2">
+        </div>
+      </div>
+      <div class="flex gap-2 mb-3">
+        <div>
+          <label class="block text-sm mb-1 font-medium text-gray-700">Valor mín.</label>
+          <input type="number" step="0.01" name="valor_min" class="w-full rounded border px-3 py-2">
+        </div>
+        <div>
+          <label class="block text-sm mb-1 font-medium text-gray-700">Valor máx.</label>
+          <input type="number" step="0.01" name="valor_max" class="w-full rounded border px-3 py-2">
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 mt-6">
+        <button type="button" onclick="document.getElementById('modal-filtro').classList.add('hidden')" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 font-semibold">Cancelar</button>
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded font-semibold hover:bg-blue-700">Filtrar</button>
+      </div>
+    </form>
+  </div>
+</div>

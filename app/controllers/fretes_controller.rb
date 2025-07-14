@@ -1,6 +1,7 @@
 class FretesController < ApplicationController
   def calcular
     @frete = Frete.new
+    @transportadores = Transportador.all
   end
 
   def create
@@ -22,7 +23,6 @@ class FretesController < ApplicationController
     taxa_por_kg = 0.05
     valor = (distancia * transportador.valor_km) + (peso * taxa_por_kg)
 
-    # Valor médio estimado de mercado
     valor_medio_mercado = estimativa_mercado(distancia, peso)
 
     render json: {

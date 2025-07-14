@@ -9,16 +9,21 @@
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   </head>
   <body class="bg-gray-100 min-h-screen font-sans antialiased">
     <main class="container mx-auto px-4 py-8">
     
-      <!-- ✅ MANTENHA APENAS ESTE MENU -->
+      <!-- ✅ MENU ÚNICO, AGORA CORRETO -->
       <nav class="bg-gray-100 px-6 py-4 mb-6 rounded-xl shadow flex gap-4 font-bold">
         <%= link_to 'Início', root_path, class: "hover:underline" %>
         <%= link_to 'Clientes', clientes_path, class: "hover:underline" %>
         <%= link_to 'Transportadores', transportadores_path, class: "hover:underline" %>
         <%= link_to 'Simular Frete', calcular_fretes_path, class: "hover:underline text-blue-700" %>
+        <%= link_to 'Bolsão', bolsao_path, class: "hover:underline text-orange-700" %>
       </nav>
 
       <%= yield %>

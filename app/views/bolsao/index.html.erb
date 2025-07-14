@@ -1,0 +1,58 @@
+<section class="max-w-6xl mx-auto mt-8">
+  <h2 class="text-2xl font-bold mb-6 text-blue-700 flex items-center gap-2">
+    <span>📦</span> Bolsão de Solicitações de Frete
+    <button
+      onclick="document.getElementById('modal-filtro').classList.remove('hidden')"
+      class="ml-auto px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition"
+    >
+      Filtrar
+    </button>
+  </h2>
+  <div class="overflow-x-auto rounded-2xl shadow bg-white">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead>
+        <tr class="bg-gray-100 text-gray-700 text-left">
+          <th class="px-4 py-3">Origem</th>
+          <th class="px-4 py-3">Destino</th>
+          <th class="px-4 py-3">Peso</th>
+          <th class="px-4 py-3">Distância</th>
+          <th class="px-4 py-3">Valor Estimado</th>
+          <th class="px-4 py-3">Cliente</th>
+          <th class="px-4 py-3">WhatsApp</th>
+          <th class="px-4 py-3">Ações</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        <% @fretes.each do |frete| %>
+          <tr>
+            <td class="px-4 py-2"><%= frete.cep_origem %></td>
+            <td class="px-4 py-2"><%= frete.cep_destino %></td>
+            <td class="px-4 py-2"><%= frete.peso %> kg</td>
+            <td class="px-4 py-2"><%= frete.distancia %> km</td>
+            <td class="px-4 py-2 font-semibold text-blue-600">R$ <%= frete.valor_estimado %></td>
+            <td class="px-4 py-2"><%= frete.cliente&.nome %></td>
+            <td class="px-4 py-2">
+              <% if frete.cliente&.whatsapp.present? %>
+                <a href="https://wa.me/55<%= frete.cliente.whatsapp.gsub(/\D/, '') %>" target="_blank" class="text-green-600 hover:underline">WhatsApp</a>
+              <% else %>
+                <span class="text-gray-400">N/A</span>
+              <% end %>
+            </td>
+            <td class="px-4 py-2 flex gap-2">
+              <%= link_to "Detalhes", frete_path(frete), class: "bg-gray-200 px-3 py-1 rounded hover:bg-gray-300 text-xs" %>
+              <%= link_to "Fazer Proposta", nova_proposta_path(frete_id: frete.id), class: "bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-xs" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <% if @fretes.empty? %>
+      <div class="p-8 text-center text-gray-500">
+        Nenhuma solicitação aberta no momento.
+      </div>
+    <% end %>
+  </div>
+
+  <!-- MODAL DE FILTRO -->
+  <%= render "modal_filtro" %>
+</section>
