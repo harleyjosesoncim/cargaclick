@@ -1,0 +1,2 @@
+class Cotacao < ApplicationRecord
+end

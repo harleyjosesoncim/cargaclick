@@ -1,0 +1,2 @@
+class Frete < ApplicationRecord
+end
