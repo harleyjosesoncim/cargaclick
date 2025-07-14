@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  cliente_id: 1
+  origem: MyString
+  destino: MyString
+  peso: 1.5
+  volume: 1.5
+  status: MyString
+
+two:
+  cliente_id: 1
+  origem: MyString
+  destino: MyString
+  peso: 1.5
+  volume: 1.5
+  status: MyString

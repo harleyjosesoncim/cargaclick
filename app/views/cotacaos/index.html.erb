@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Cotacaos</h1>
+
+<div id="cotacaos">
+  <% @cotacaos.each do |cotacao| %>
+    <%= render cotacao %>
+    <p>
+      <%= link_to "Show this cotacao", cotacao %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New cotacao", new_cotacao_path %>

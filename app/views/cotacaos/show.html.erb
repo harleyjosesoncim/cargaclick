@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @cotacao %>
+
+<div>
+  <%= link_to "Edit this cotacao", edit_cotacao_path(@cotacao) %> |
+  <%= link_to "Back to cotacaos", cotacaos_path %>
+
+  <%= button_to "Destroy this cotacao", @cotacao, method: :delete %>
+</div>

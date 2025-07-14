@@ -1,16 +1,36 @@
-<div class="flex flex-col items-center justify-center min-h-[60vh]">
-  <h1 class="text-4xl font-bold mb-4 text-blue-600 drop-shadow">Bem-vindo ao <span class="text-gray-800">CargaClick</span></h1>
-  <p class="mb-8 text-gray-700 text-lg">Sua plataforma de fretes rápida, simples e eficiente.</p>
+<div class="max-w-4xl mx-auto p-6">
+  <h1 class="text-3xl font-bold text-blue-800 mb-6">Bem-vindo ao CargaClick</h1>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-  <div class="flex flex-col md:flex-row gap-4 w-full max-w-md justify-center">
-    <a href="/clientes/new"
-       class="flex-1 text-center bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow hover:scale-105 duration-150">
-      Sou Cliente
-    </a>
-    <a href="/transportadores/new"
-       class="flex-1 text-center bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow hover:scale-105 duration-150">
-      Sou Transportador
-    </a>
+    <%= link_to clientes_path, class: "block bg-white shadow-lg rounded-xl p-6 hover:bg-blue-50 transition" do %>
+      <div class="flex items-center gap-4">
+        <span class="text-4xl">🧑‍💼</span>
+        <div>
+          <h2 class="text-xl font-bold text-blue-700">Clientes</h2>
+          <p class="text-gray-600">Gerenciar cadastro e solicitações</p>
+        </div>
+      </div>
+    <% end %>
+
+    <%= link_to transportadores_path, class: "block bg-white shadow-lg rounded-xl p-6 hover:bg-green-50 transition" do %>
+      <div class="flex items-center gap-4">
+        <span class="text-4xl">🚚</span>
+        <div>
+          <h2 class="text-xl font-bold text-green-700">Transportadores</h2>
+          <p class="text-gray-600">Gerenciar cadastro e propostas</p>
+        </div>
+      </div>
+    <% end %>
+
+    <%= link_to calcular_fretes_path, class: "block bg-white shadow-lg rounded-xl p-6 hover:bg-yellow-50 transition" do %>
+      <div class="flex items-center gap-4">
+        <span class="text-4xl">📦</span>
+        <div>
+          <h2 class="text-xl font-bold text-yellow-700">Calcular Frete</h2>
+          <p class="text-gray-600">Simule o valor de um frete</p>
+        </div>
+      </div>
+    <% end %>
+
   </div>
-  <div class="mt-10 text-gray-500 text-xs">Plataforma mediadora. Responsabilidade dos contratos é dos usuários.</div>
 </div>
