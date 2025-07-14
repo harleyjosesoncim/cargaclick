@@ -1,0 +1,30 @@
+<section class="max-w-lg mx-auto mt-10 bg-white shadow-2xl p-8 rounded-2xl">
+  <h2 class="text-2xl font-bold mb-4 text-blue-700">Nova Proposta</h2>
+  <div class="mb-6 p-4 bg-gray-100 rounded-lg text-sm">
+    <strong>Frete:</strong>
+    <div>Origem: <%= @frete.cep_origem %></div>
+    <div>Destino: <%= @frete.cep_destino %></div>
+    <div>Peso: <%= @frete.peso %> kg</div>
+    <div>Distância: <%= @frete.distancia %> km</div>
+    <div>Valor Estimado: <span class="font-bold text-blue-700">R$ <%= @frete.valor_estimado %></span></div>
+  </div>
+
+  <%= form_with url: propostas_path, method: :post, local: true do |f| %>
+    <%= f.hidden_field :frete_id, value: @frete.id %>
+    <div class="mb-4">
+      <%= f.label :transportador_id, "Seu ID de Transportador", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.number_field :transportador_id, class: "mt-1 w-full border border-gray-300 rounded px-3 py-2" %>
+    </div>
+    <div class="mb-4">
+      <%= f.label :valor_proposto, "Valor Proposto (R$)", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.number_field :valor_proposto, step: 0.01, class: "mt-1 w-full border border-gray-300 rounded px-3 py-2" %>
+    </div>
+    <div class="mb-4">
+      <%= f.label :observacao, "Observação (opcional)", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.text_area :observacao, rows: 3, class: "mt-1 w-full border border-gray-300 rounded px-3 py-2" %>
+    </div>
+    <div class="flex justify-end">
+      <%= f.submit "Enviar Proposta", class: "bg-blue-600 text-white px-6 py-2 rounded-xl shadow hover:bg-blue-700 transition" %>
+    </div>
+  <% end %>
+</section>
