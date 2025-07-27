@@ -1,58 +1,153 @@
-<section class="max-w-6xl mx-auto mt-8">
-  <h2 class="text-2xl font-bold mb-6 text-blue-700 flex items-center gap-2">
-    <span>📦</span> Bolsão de Solicitações de Frete
-    <button
-      onclick="document.getElementById('modal-filtro').classList.remove('hidden')"
-      class="ml-auto px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition"
-    >
-      Filtrar
-    </button>
-  </h2>
-  <div class="overflow-x-auto rounded-2xl shadow bg-white">
-    <table class="min-w-full divide-y divide-gray-200">
-      <thead>
-        <tr class="bg-gray-100 text-gray-700 text-left">
-          <th class="px-4 py-3">Origem</th>
-          <th class="px-4 py-3">Destino</th>
-          <th class="px-4 py-3">Peso</th>
-          <th class="px-4 py-3">Distância</th>
-          <th class="px-4 py-3">Valor Estimado</th>
-          <th class="px-4 py-3">Cliente</th>
-          <th class="px-4 py-3">WhatsApp</th>
-          <th class="px-4 py-3">Ações</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-gray-100">
-        <% @fretes.each do |frete| %>
-          <tr>
-            <td class="px-4 py-2"><%= frete.cep_origem %></td>
-            <td class="px-4 py-2"><%= frete.cep_destino %></td>
-            <td class="px-4 py-2"><%= frete.peso %> kg</td>
-            <td class="px-4 py-2"><%= frete.distancia %> km</td>
-            <td class="px-4 py-2 font-semibold text-blue-600">R$ <%= frete.valor_estimado %></td>
-            <td class="px-4 py-2"><%= frete.cliente&.nome %></td>
-            <td class="px-4 py-2">
-              <% if frete.cliente&.whatsapp.present? %>
-                <a href="https://wa.me/55<%= frete.cliente.whatsapp.gsub(/\D/, '') %>" target="_blank" class="text-green-600 hover:underline">WhatsApp</a>
-              <% else %>
-                <span class="text-gray-400">N/A</span>
-              <% end %>
-            </td>
-            <td class="px-4 py-2 flex gap-2">
-              <%= link_to "Detalhes", frete_path(frete), class: "bg-gray-200 px-3 py-1 rounded hover:bg-gray-300 text-xs" %>
-              <%= link_to "Fazer Proposta", nova_proposta_path(frete_id: frete.id), class: "bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-xs" %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Seu Título</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  </head>
+<body>
+
+  <section class="max-w-6xl mx-auto mt-12 px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between mb-8">
+        <h2 class="text-3xl font-extrabold text-blue-800 flex items-center gap-3">
+        <span>📦</span> Bolsão de Solicitações de Frete
+        </h2>
+        <button
+        onclick="openModal('modal-filtro')"
+        class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition ease-in-out duration-150"
+        >
+        <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd"></path></svg>
+        Filtrar
+        </button>
+    </div>
     <% if @fretes.empty? %>
-      <div class="p-8 text-center text-gray-500">
-        Nenhuma solicitação aberta no momento.
-      </div>
+    <div class="p-12 text-center text-gray-500 text-lg">
+        <p class="mb-4">Nenhuma solicitação de frete encontrada para os critérios atuais.</p>
+        <button onclick="openModal('modal-filtro')"
+                class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition ease-in-out duration-150">
+          Ajustar Filtros
+        </button>
+    </div>
     <% end %>
+  </section>
+
+
+  <div id="modal-filtro" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 transition-opacity duration-300 ease-in-out opacity-0 pointer-events-none" aria-modal="true" role="dialog" aria-labelledby="modal-title">
+    <div class="bg-white p-8 pt-12 rounded-2xl shadow-2xl w-full max-w-md relative transform scale-95 transition-transform duration-300 ease-in-out">
+      <button
+        class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-3xl font-light leading-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-full p-1"
+        onclick="closeModal('modal-filtro')"
+        title="Fechar"
+        aria-label="Fechar modal">
+        &times;
+      </button>
+
+      <h3 id="modal-title" class="text-2xl font-extrabold mb-6 text-blue-800 border-b-2 border-blue-100 pb-2">Filtrar Solicitações</h3>
+
+      <form method="get" action="<%= bolsao_path %>">
+        <div class="space-y-4 mb-6">
+          <div>
+            <label for="cep_origem" class="block text-sm font-medium text-gray-700 mb-1">CEP Origem</label>
+            <input type="text" id="cep_origem" name="cep_origem" value="<%= params[:cep_origem] %>" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" placeholder="Ex: 00000-000">
+          </div>
+          <div>
+            <label for="cep_destino" class="block text-sm font-medium text-gray-700 mb-1">CEP Destino</label>
+            <input type="text" id="cep_destino" name="cep_destino" value="<%= params[:cep_destino] %>" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" placeholder="Ex: 99999-999">
+          </div>
+          <div>
+            <label for="cliente" class="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
+            <input type="text" id="cliente" name="cliente" value="<%= params[:cliente] %>" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" placeholder="Nome do Cliente">
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="peso_min" class="block text-sm font-medium text-gray-700 mb-1">Peso Mín.</label>
+              <input type="number" step="0.01" id="peso_min" name="peso_min" value="<%= params[:peso_min] %>" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" placeholder="0.00">
+            </div>
+            <div>
+              <label for="peso_max" class="block text-sm font-medium text-gray-700 mb-1">Peso Máx.</label>
+              <input type="number" step="0.01" id="peso_max" name="peso_max" value="<%= params[:peso_max] %>" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" placeholder="9999.99">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="valor_min" class="block text-sm font-medium text-gray-700 mb-1">Valor Mín.</label>
+              <input type="number" step="0.01" id="valor_min" name="valor_min" value="<%= params[:valor_min] %>" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" placeholder="0.00">
+            </div>
+            <div>
+              <label for="valor_max" class="block text-sm font-medium text-gray-700 mb-1">Valor Máx.</label>
+              <input type="number" step="0.01" id="valor_max" name="valor_max" value="<%= params[:valor_max] %>" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" placeholder="9999.99">
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-3 mt-8">
+          <button type="button" onclick="closeModal('modal-filtro')" class="px-5 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-semibold transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">Cancelar</button>
+          <button type="submit" class="px-5 py-2.5 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Aplicar Filtros</button>
+        </div>
+      </form>
+    </div>
   </div>
 
-  <!-- MODAL DE FILTRO -->
-  <%= render "modal_filtro" %>
-</section>
+  <script>
+    // Função para abrir o modal
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        modal.classList.add('opacity-100');
+        const modalContent = modal.querySelector('.transform');
+        if (modalContent) {
+          modalContent.classList.remove('scale-95');
+          modalContent.classList.add('scale-100');
+        }
+        modal.setAttribute('aria-hidden', 'false');
+      }
+    }
+
+    // Função para fechar o modal
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.remove('opacity-100');
+        modal.classList.add('opacity-0');
+        const modalContent = modal.querySelector('.transform');
+        if (modalContent) {
+          modalContent.classList.remove('scale-100');
+          modalContent.classList.add('scale-95');
+        }
+        modal.setAttribute('aria-hidden', 'true');
+        setTimeout(() => {
+          modal.classList.add('pointer-events-none');
+        }, 300);
+      }
+    }
+
+    // Preenche os campos do formulário com os valores atuais dos parâmetros da URL
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      document.querySelectorAll('#modal-filtro input[name]').forEach(input => {
+        if (urlParams.has(input.name)) {
+          input.value = urlParams.get(input.name);
+        }
+      });
+
+      // Adiciona evento para fechar o modal ao clicar fora dele
+      const modal = document.getElementById('modal-filtro');
+      if (modal) {
+          modal.addEventListener('click', (event) => {
+              if (event.target === modal) {
+                  closeModal('modal-filtro');
+              }
+          });
+      }
+
+      // Adiciona evento para fechar o modal ao pressionar ESC
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && modal && !modal.classList.contains('opacity-0')) {
+          closeModal('modal-filtro');
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

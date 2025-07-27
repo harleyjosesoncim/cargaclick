@@ -1,18 +1,81 @@
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-3xl mx-auto bg-white rounded-3xl shadow-xl p-8 sm:p-10 border border-blue-200">
 
-  <div>
-    <%= form.label :cep, "CEP", class: "block font-semibold mb-1" %>
-    <%= form.text_field :cep, id: "cep_input", class: "w-full border rounded px-3 py-2", placeholder: "Ex: 01001-000" %>
+    <div class="flex items-center space-x-4 mb-8">
+      <div class="text-5xl">🚚</div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 leading-tight">
+        <%= @transportador.new_record? ? "Novo Transportador" : "Editar Transportador" %>
+      </h1>
+    </div>
+
+    <%# Certifique-se de que o partial 'shared/erros' existe e funciona corretamente %>
+    <%= render 'shared/erros', object: @transportador %>
+
+    <%= form_with(model: @transportador, local: true, class: "space-y-6") do |form| %>
+
+      <div>
+        <%= form.label :nome, "Nome Completo", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= form.text_field :nome, placeholder: "Ex: Maria Transportadora Silva", class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" %>
+      </div>
+
+      <div>
+        <%= form.label :cpf, "CPF", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= form.text_field :cpf,
+            placeholder: "Apenas números (Ex: 12345678900)",
+            pattern: "\\d{11}",
+            maxlength: 11,
+            title: "Digite exatamente 11 dígitos numéricos para o CPF.",
+            oninput: "this.value = this.value.replace(/[^0-9]/g, '')",
+            class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" %>
+      </div>
+
+      <div>
+        <%= form.label :telefone, "Telefone", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= form.telephone_field :telefone, placeholder: "Ex: (11) 99999-8888 ou 11999998888", class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" %>
+      </div>
+
+      <div>
+        <%= form.label :endereco, "Endereço Completo", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= form.text_field :endereco, placeholder: "Ex: Rua das Flores, 123, Apto 45", class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" %>
+      </div>
+
+      <div>
+        <%= form.label :cep, "CEP", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= form.text_field :cep, placeholder: "Ex: 18000-000", class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" %>
+      </div>
+
+      <div>
+        <%= form.label :cidade, "Cidade", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= form.text_field :cidade, placeholder: "Ex: São Paulo", class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" %>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Modal de Transporte <span class="text-gray-500 text-xs">(selecione todos que se aplicam)</span></label>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+          <% Modal.all.each do |modal| %>
+            <div class="flex items-center gap-2 bg-gray-50 p-3 rounded-lg border border-gray-200 hover:bg-blue-50 cursor-pointer">
+              <%#
+                Utilizando check_box_tag para enviar um array de modal_ids.
+                O terceiro argumento (@transportador.modals.include?(modal)) verifica se o modal
+                já está associado a este transportador para pré-selecionar o checkbox ao editar.
+              %>
+              <%= check_box_tag "transportador[modal_ids][]", modal.id, @transportador.modals.include?(modal), id: "modal_#{modal.id}" %>
+              <%= label_tag "modal_#{modal.id}", modal.nome %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <div>
+        <%= form.label :carga_maxima, "Carga Máxima (kg)", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= form.number_field :carga_maxima, placeholder: "Ex: 5000", class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" %>
+      </div>
+
+      <div class="flex flex-col sm:flex-row justify-end gap-3 pt-4">
+        <%= link_to 'Cancelar', transportadores_path, class: "w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 text-center" %>
+        <%= form.submit (@transportador.new_record? ? "Cadastrar Transportador" : "Atualizar Cadastro"), class: "w-full sm:w-auto px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 cursor-pointer" %>
+      </div>
+
+    <% end %>
   </div>
-
-  <div>
-    <%= form.label :endereco, "Endereço", class: "block font-semibold mb-1" %>
-    <%= form.text_field :endereco, id: "endereco_input", class: "w-full border rounded px-3 py-2" %>
-  </div>
-
-</div>
-
-<div class="mt-8">
-  <h3 class="text-lg font-bold mb-2">Localização aproximada</h3>
-  <div id="map" class="rounded shadow border" style="height: 400px;"></div>
 </div>

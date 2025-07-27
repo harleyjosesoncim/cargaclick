@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @modal %>
+
+<div>
+  <%= link_to "Edit this modal", edit_modal_path(@modal) %> |
+  <%= link_to "Back to modals", modals_path %>
+
+  <%= button_to "Destroy this modal", @modal, method: :delete %>
+</div>

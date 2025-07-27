@@ -1,22 +1,2 @@
-<%= form_with model: @transportador, local: true do |form| %>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div>
-      <%= form.label :cep, "CEP", class: "block font-semibold mb-1" %>
-      <%= form.text_field :cep, id: "cep_input", class: "w-full border rounded px-3 py-2", placeholder: "Ex: 01001-000" %>
-    </div>
-
-    <div>
-      <%= form.label :endereco, "Endereço", class: "block font-semibold mb-1" %>
-      <%= form.text_field :endereco, id: "endereco_input", class: "w-full border rounded px-3 py-2" %>
-    </div>
-  </div>
-
-  <div class="mt-8">
-    <h3 class="text-lg font-bold mb-2">Localização aproximada</h3>
-    <div id="map" class="rounded shadow border" style="height: 400px;"></div>
-  </div>
-
-  <div class="mt-6 flex justify-end">
-    <%= form.submit "Salvar", class: "px-6 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition" %>
-  </div>
-<% end %>
+<h2 class='text-xl font-bold mb-4'>Novo</h2>
+<%= render 'form' %>

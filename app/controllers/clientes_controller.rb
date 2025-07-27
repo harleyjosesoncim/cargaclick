@@ -1,42 +1,73 @@
 # app/controllers/clientes_controller.rb
 class ClientesController < ApplicationController
+  # O filtro before_action garante que o método set_cliente seja chamado
+  # antes das ações show, edit, update e destroy. Isso evita duplicação de código.
+  before_action :set_cliente, only: [:show, :edit, :update, :destroy]
+
+  # GET /clientes
+  # Exibe uma lista de todos os clientes.
+  def index
+    @clientes = Cliente.all # Busca todos os clientes do banco de dados.
+  end
+
+  # GET /clientes/:id
+  # Exibe os detalhes de um cliente específico.
+  def show
+    # @cliente já é definido pelo before_action :set_cliente
+  end
+
   # GET /clientes/new
-  # Ação para exibir o formulário de novo cliente.
-  # Esta ação inicializa um novo objeto Cliente para ser usado no formulário.
+  # Inicializa um novo objeto cliente para o formulário de criação.
   def new
-    @cliente = Cliente.new # <--- ESSENCIAL: Inicializa @cliente para evitar NoMethodError
+    @cliente = Cliente.new # Cria uma nova instância de Cliente, ainda não salva.
+  end
+
+  # GET /clientes/:id/edit
+  # Prepara o formulário para edição de um cliente existente.
+  def edit
+    # @cliente já é definido pelo before_action :set_cliente
   end
 
   # POST /clientes
-  # Ação para criar um novo cliente a partir dos dados submetidos pelo formulário.
+  # Cria um novo cliente com os parâmetros enviados.
   def create
-    @cliente = Cliente.new(cliente_params) # Cria um novo objeto Cliente com os parâmetros permitidos.
+    @cliente = Cliente.new(cliente_params) # Instancia com os parâmetros permitidos.
 
-    if @cliente.save # Tenta salvar o cliente no banco de dados.
-      # Se o salvamento for bem-sucedido, redireciona o usuário para a lista de clientes
-      # e exibe uma mensagem de sucesso.
-      redirect_to clientes_path, notice: 'Cliente cadastrado com sucesso!'
+    if @cliente.save # Tenta salvar o novo cliente no banco de dados.
+      redirect_to @cliente, notice: "Cliente criado com sucesso." # Redireciona para a página de exibição com uma mensagem de sucesso.
     else
-      # Se houver erros de validação (por exemplo, campos obrigatórios vazios),
-      # re-renderiza o formulário 'new' para que os erros possam ser exibidos ao usuário.
-      # O objeto @cliente já conterá as mensagens de erro neste ponto.
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_entity # Se a gravação falhar, renderiza novamente o formulário 'new' com erros.
     end
-  end # <--- FIM do método 'create'
+  end
 
-  # GET /clientes
-  # Ação para listar todos os clientes.
-  # Esta é uma ação comum para exibir uma tabela ou lista de todos os clientes existentes.
-  def index
-    @clientes = Cliente.all
+  # PATCH/PUT /clientes/:id
+  # Atualiza um cliente existente com os parâmetros enviados.
+  def update
+    if @cliente.update(cliente_params) # Tenta atualizar o cliente com os parâmetros permitidos.
+      redirect_to @cliente, notice: "Cliente atualizado com sucesso." # Redireciona para a página de exibição com uma mensagem de sucesso.
+    else
+      render :edit, status: :unprocessable_entity # Se a atualização falhar, renderiza novamente o formulário 'edit' com erros.
+    end
+  end
+
+  # DELETE /clientes/:id
+  # Exclui um cliente específico do banco de dados.
+  def destroy
+    @cliente.destroy # Exclui o cliente.
+    redirect_to clientes_url, notice: "Cliente excluído com sucesso." # Redireciona para a página de índice com uma mensagem de sucesso.
   end
 
   private
 
-  # Método privado para Strong Parameters.
-  # Isso garante que apenas os atributos permitidos (:nome, :email) possam ser
-  # atribuídos em massa ao objeto Cliente, prevenindo vulnerabilidades de segurança.
-  def cliente_params
-    params.require(:cliente).permit(:nome, :email)
+  # set_cliente é um método privado usado pelo filtro before_action.
+  # Ele encontra um Cliente pelo seu ID e o atribui a @cliente.
+  def set_cliente
+    @cliente = Cliente.find(params[:id]) # Encontra o cliente pelo ID a partir dos parâmetros da URL.
   end
-end # <--- FIM da classe 'ClientesController'
+
+  # cliente_params é um método privado que define quais parâmetros são permitidos
+  # para atribuição em massa ao modelo Cliente. Esta é uma medida de segurança.
+  def cliente_params
+    params.require(:cliente).permit(:nome, :cpf, :telefone, :endereco, :cep, :email) # Requer :cliente e permite atributos específicos.
+  end
+end

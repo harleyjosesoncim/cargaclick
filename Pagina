@@ -1,0 +1,45 @@
+<div class="max-w-4xl mx-auto p-6">
+  <!-- Título da página inicial -->
+  <h1 class="text-3xl font-bold text-blue-800 mb-6">Bem-vindo ao CargaClick</h1>
+
+  <!-- Grid responsivo com links principais do sistema -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    <!-- Card Clientes -->
+    <%= link_to clientes_path, class: "block bg-white shadow-lg rounded-xl p-6 hover:bg-blue-50 transition" do %>
+      <div class="flex items-center gap-4">
+        <!-- Imagem representativa para Clientes (formato JPG, clientes.jpg) -->
+        <%= image_tag 'familia/clientes.jpg', class: 'w-12 h-12' %>
+        <div>
+          <h2 class="text-xl font-bold text-blue-700">Clientes</h2>
+          <p class="text-gray-600">Gerenciar cadastro e solicitações</p>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Card Transportadores -->
+    <%= link_to transportadores_path, class: "block bg-white shadow-lg rounded-xl p-6 hover:bg-green-50 transition" do %>
+      <div class="flex items-center gap-4">
+        <!-- Imagem representativa para Transportadores (formato SVG, transportadores.svg) -->
+        <%= image_tag 'familia/transportadores.svg', class: 'w-12 h-12' %>
+        <div>
+          <h2 class="text-xl font-bold text-green-700">Transportadores</h2>
+          <p class="text-gray-600">Gerenciar cadastro e propostas</p>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Card Calcular Frete -->
+    <%= link_to calcular_fretes_path, class: "block bg-white shadow-lg rounded-xl p-6 hover:bg-yellow-50 transition" do %>
+      <div class="flex items-center gap-4">
+        <!-- Imagem representativa para Calcular Frete (formato SVG, fretes.svg) -->
+        <%= image_tag 'familia/fretes.svg', class: 'w-12 h-12' %>
+        <div>
+          <h2 class="text-xl font-bold text-yellow-700">Calcular Frete</h2>
+          <p class="text-gray-600">Simule o valor de um frete</p>
+        </div>
+      </div>
+    <% end %>
+
+  </div>
+</div>

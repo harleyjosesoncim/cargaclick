@@ -1,0 +1,23 @@
+<div class="grid md:grid-cols-2 gap-4 mt-6">
+  <% if current_cliente %>
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow hover:scale-105 transition-all duration-300">
+      <div class="flex items-center gap-2 mb-2">
+        <%= render 'shared/icons/chat' %>
+        <h3 class="text-lg font-bold text-blue-700">Chat com Transportador</h3>
+      </div>
+      <p class="text-gray-600 dark:text-gray-300 mb-4">Converse sobre este frete em tempo real.</p>
+      <%= link_to "Abrir Chat", chat_frete_path(frete), class: "inline-block bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded" %>
+    </div>
+  <% end %>
+
+  <% if current_transportador %>
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow hover:scale-105 transition-all duration-300">
+      <div class="flex items-center gap-2 mb-2">
+        <%= render 'shared/icons/gps' %>
+        <h3 class="text-lg font-bold text-green-700">Acompanhar Entrega</h3>
+      </div>
+      <p class="text-gray-600 dark:text-gray-300 mb-4">Veja a localização da carga e atualize sua posição.</p>
+      <%= link_to "Ver Mapa", rastreamento_frete_path(frete), class: "inline-block bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded" %>
+    </div>
+  <% end %>
+</div>

@@ -1,49 +1,44 @@
 class FretesController < ApplicationController
-  def calcular
+  before_action :set_frete, only: %i[show rastreamento entregar chat]
+
+  # GET /fretes/new
+  def new
     @frete = Frete.new
-    @transportadores = Transportador.all
   end
 
+  # POST /fretes
   def create
     @frete = Frete.new(frete_params)
+
     if @frete.save
-      flash[:notice] = "Frete criado com sucesso!"
-      redirect_to fretes_path
+      redirect_to @frete, notice: "Frete criado com sucesso!"
     else
-      flash.now[:alert] = "Erro ao criar frete."
-      render :calcular
+      render :new, status: :unprocessable_entity
     end
   end
 
-  def calcular_frete
-    transportador = Transportador.find(params[:transportador_id])
-    peso = params[:peso].to_f
-    distancia = params[:distancia].to_f
+  # GET /fretes/:id
+  def show; end
 
-    taxa_por_kg = 0.05
-    valor = (distancia * transportador.valor_km) + (peso * taxa_por_kg)
+  # GET /fretes/:id/rastreamento
+  def rastreamento; end
 
-    valor_medio_mercado = estimativa_mercado(distancia, peso)
-
-    render json: {
-      valor_estimado: valor.round(2),
-      valor_mercado: valor_medio_mercado.round(2)
-    }
+  # POST /fretes/:id/entregar
+  def entregar
+    @frete.update(status: :entregue)
+    redirect_to @frete, notice: "Frete marcado como entregue!"
   end
+
+  # GET /fretes/:id/chat
+  def chat; end
 
   private
 
-  def frete_params
-    params.require(:frete).permit(
-      :volume, :ponto_referencia, :horario_entrega, :previsao_chegada,
-      :previsao_km, :aceite_responsabilidade, :localizacao_lat, :localizacao_lng
-    )
+  def set_frete
+    @frete = Frete.find(params[:id])
   end
 
-  def estimativa_mercado(distancia, peso)
-    media_por_km = 2.70   # Base ANTT ou mercado
-    media_por_kg = 0.06   # Média prática de mercado
-
-    (distancia * media_por_km) + (peso * media_por_kg)
+  def frete_params
+    params.require(:frete).permit(:origem, :destino, :descricao, :peso, :largura, :altura, :profundidade)
   end
 end

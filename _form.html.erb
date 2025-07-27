@@ -1,0 +1,45 @@
+<%= form_with model: @transportador, local: true do |f| %>
+  <%= f.label :nome %>
+  <%= f.text_field :nome %>
+
+  <%= f.label :email %>
+  <%= f.email_field :email %>
+
+  <%= f.label :telefone %>
+  <%= f.text_field :telefone %>
+
+  <%= f.label :cpf %>
+  <%= f.text_field :cpf %>
+
+  <%= f.label :cep %>
+  <%= f.text_field :cep %>
+
+  <%= f.label :tipo_veiculo %>
+  <%= f.text_field :tipo_veiculo %>
+
+  <%= f.label :carga_maxima %>
+  <%= f.number_field :carga_maxima %>
+
+  <%= f.label :valor_km %>
+  <%= f.number_field :valor_km, step: 0.01 %>
+
+  <%= f.label :largura %>
+  <%= f.number_field :largura, step: 0.01 %>
+
+  <%= f.label :altura %>
+  <%= f.number_field :altura, step: 0.01 %>
+
+  <%= f.label :profundidade %>
+  <%= f.number_field :profundidade, step: 0.01 %>
+
+  <%= f.label :peso_aproximado %>
+  <%= f.number_field :peso_aproximado, step: 0.01 %>
+
+  <%= f.label :latitude %>
+  <%= f.text_field :latitude %>
+
+  <%= f.label :longitude %>
+  <%= f.text_field :longitude %>
+
+  <%= f.submit %>
+<% end %>
