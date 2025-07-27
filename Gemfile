@@ -32,6 +32,8 @@ gem "sprockets-rails"
 group :development, :test do
   # Adicione suas gems de dev/test aqui
   # gem "debug", platforms: %i[ mri mingw x64_mingw ]
+  gem 'pry'
+  gem 'pry-nav'
 end
 
 # Para rodar testes de sistema com Capybara/Selenium
@@ -40,3 +42,6 @@ end
 #   gem "selenium-webdriver"
 # end
 # ----FIM---- ATÉ AQUI
+
+gem "rails_admin", "~> 3.3"
+gem "sassc-rails"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_14_164834) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_27_220358) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -29,6 +29,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_14_164834) do
     t.string "observacoes", limit: 50
     t.integer "alba_numero"
     t.string "whatsapp"
+    t.string "cpf"
+  end
+
+  create_table "configuracaos", force: :cascade do |t|
+    t.float "comissao_padrao", default: 6.0
+    t.float "comissao_assinante", default: 3.0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "cotacoes", force: :cascade do |t|
@@ -60,6 +68,30 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_14_164834) do
     t.decimal "peso", precision: 8, scale: 2
     t.decimal "distancia", precision: 8, scale: 2
     t.decimal "valor_estimado", precision: 10, scale: 2
+    t.float "latitude"
+    t.float "longitude"
+    t.string "cep_atual"
+    t.float "latitude_atual_transportador"
+    t.float "longitude_atual_transportador"
+    t.boolean "entregue"
+    t.string "origem"
+    t.string "destino"
+    t.text "descricao"
+  end
+
+  create_table "modal_transportadores", force: :cascade do |t|
+    t.bigint "transportador_id", null: false
+    t.bigint "modal_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["modal_id"], name: "index_modal_transportadores_on_modal_id"
+    t.index ["transportador_id"], name: "index_modal_transportadores_on_transportador_id"
+  end
+
+  create_table "modals", force: :cascade do |t|
+    t.string "nome"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "propostas", force: :cascade do |t|
@@ -85,6 +117,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_14_164834) do
     t.decimal "peso_aproximado"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "fidelidade_pontos"
+    t.string "cidade"
   end
 
+  add_foreign_key "modal_transportadores", "modals"
+  add_foreign_key "modal_transportadores", "transportadores"
 end

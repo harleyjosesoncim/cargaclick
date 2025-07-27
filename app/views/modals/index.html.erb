@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Modals</h1>
+
+<div id="modals">
+  <% @modals.each do |modal| %>
+    <%= render modal %>
+    <p>
+      <%= link_to "Show this modal", modal %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New modal", new_modal_path %>

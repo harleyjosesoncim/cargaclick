@@ -1,33 +1,28 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Cargaclick App</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>CargaClick</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <%= stylesheet_link_tag 'application', media: 'all' %>
   </head>
-  <body class="bg-gray-100 min-h-screen font-sans antialiased">
-    <main class="container mx-auto px-4 py-8">
-    
-      <!-- ✅ MENU ÚNICO, AGORA CORRETO -->
-      <nav class="bg-gray-100 px-6 py-4 mb-6 rounded-xl shadow flex gap-4 font-bold">
-        <%= link_to 'Início', root_path, class: "hover:underline" %>
-        <%= link_to 'Clientes', clientes_path, class: "hover:underline" %>
-        <%= link_to 'Transportadores', transportadores_path, class: "hover:underline" %>
-        <%= link_to 'Simular Frete', calcular_fretes_path, class: "hover:underline text-blue-700" %>
-        <%= link_to 'Bolsão', bolsao_path, class: "hover:underline text-orange-700" %>
-      </nav>
+    <script src="/assets/dark_mode_toggle.js"></script>
+<button id="dark-toggle" class="fixed top-4 right-4 bg-gray-200 dark:bg-gray-800 text-black dark:text-white p-2 rounded z-50">
+  🌓
+</button>
+ 
+  <body class="bg-gray-100">
+    <nav class="bg-white shadow p-4 flex justify-between items-center">
+      <h1 class="text-xl font-bold text-orange-600">CargaClick</h1>
+      <div class="space-x-4">
+        <%= link_to "🏠 Início", root_path, class: "text-blue-600 hover:underline" %>
+        <%= link_to "⭐ Fidelidade", fidelidade_transportador_path(1), class: "text-yellow-600 hover:underline" %>
+        <%= link_to "🏆 Ranking", ranking_path, class: "text-purple-600 hover:underline" %>
+      </div>
+    </nav>
 
+    <main class="p-6">
       <%= yield %>
-
     </main>
   </body>
 </html>

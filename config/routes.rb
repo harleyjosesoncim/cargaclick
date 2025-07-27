@@ -1,32 +1,57 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
-  # Página inicial
+  resources :modals
+  # Página inicial da aplicação
   root 'home#index'
 
-  # Clientes
-  resources :clientes
-
-  # Transportadores
-  resources :transportadores
-
-  # Fretes
+  # Rotas para Fretes
   resources :fretes do
-    collection do
-      get 'calcular' # Para a simulação de frete
-    end
+    # Rotas de membro para Fretes
     member do
-      get 'rastreamento', to: 'fretes#rastreamento'
+      # Rota para rastrear um frete específico
+      get :rastreamento
+      # Rota para marcar um frete como entregue (requer método POST)
+      post :entregar
+      # ✅ Rota para acessar o chat de um frete específico
+      get :chat
+    end
+
+    # Rotas de coleção para Fretes
+    collection do
+      # Rota para listar os fretes do usuário logado (ou associados)
+      get :meus
     end
   end
 
-  # Bolsão de Solicitações
-  get '/bolsao', to: 'bolsao#index', as: 'bolsao'
+  # Rotas para Clientes
+  resources :clientes do
+    # Rotas aninhadas para Fidelidade de Clientes
+    member do
+      get 'fidelidade', to: 'fidelidade#cliente', as: 'fidelidade'
+    end
+  end
 
-  # Propostas (rotas REST corretas)
-  get '/propostas/nova', to: 'propostas#nova', as: 'nova_proposta'
-  post '/propostas', to: 'propostas#create', as: 'propostas'
+  # Rotas para Transportadores
+  resources :transportadores do
+    # Rotas aninhadas para Fidelidade de Transportadores
+    member do
+      get 'fidelidade', to: 'fidelidade#transportador', as: 'fidelidade'
+    end
+  end
 
-  # Se quiser um mapa geral (todas cargas, visão admin), crie um controller separado:
-  # get '/mapa', to: 'rastreamento#mapa'
+  # Rota para o Bolsão de solicitações
+  get 'bolsao', to: 'bolsao#index', as: 'bolsao'
 
-  # Outras rotas
+  # Rota para o Ranking geral
+  get 'ranking', to: 'ranking#index', as: 'ranking'
+
+  # Rotas para o Painel Administrativo
+  namespace :admin do
+    # Rota para a página inicial do admin
+    get '/', to: 'dashboard#index', as: 'index'
+    # Rota para atualizar configurações ou dados do admin
+    patch 'update', to: 'dashboard#update', as: 'update'
+    # Adicione outras rotas de admin aqui conforme necessário
+  end
 end

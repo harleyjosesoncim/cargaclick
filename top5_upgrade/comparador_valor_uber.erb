@@ -1,0 +1,3 @@
+<p>Valor estimado no Uber Flash: R$ <%= (distancia_km * 2.2).round(2) %></p>
+<p>Valor no CargaClick: R$ <%= @frete.valor_total %></p>
+<p>Você economizou: <strong>R$ <%= ((distancia_km * 2.2) - @frete.valor_total).round(2) %></strong></p>

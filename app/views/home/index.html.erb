@@ -1,36 +1,35 @@
-<div class="max-w-4xl mx-auto p-6">
-  <h1 class="text-3xl font-bold text-blue-800 mb-6">Bem-vindo ao CargaClick</h1>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="min-h-screen bg-gradient-to-b from-blue-50 to-white py-10 px-4 text-center">
+  <h1 class="text-4xl font-extrabold text-orange-600 flex justify-center items-center gap-2 mb-6">
+    CargaClick <span class="animate-bounce"><%= @modal_sorteado[:emoji] %></span>
+  </h1>
 
-    <%= link_to clientes_path, class: "block bg-white shadow-lg rounded-xl p-6 hover:bg-blue-50 transition" do %>
-      <div class="flex items-center gap-4">
-        <span class="text-4xl">🧑‍💼</span>
-        <div>
-          <h2 class="text-xl font-bold text-blue-700">Clientes</h2>
-          <p class="text-gray-600">Gerenciar cadastro e solicitações</p>
-        </div>
+  <p class="text-sm text-gray-500 italic mb-8">
+    Frete disponível via: <%= @modal_sorteado[:nome] %> 😄
+  </p>
+
+  <div class="max-w-4xl mx-auto space-y-10">
+    <!-- CLIENTE -->
+    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition">
+      <h2 class="text-2xl font-semibold text-blue-700 mb-4">Sou um Cliente</h2>
+      <div class="flex flex-col md:flex-row justify-center gap-4">
+        <%= link_to '🚀 Solicitar Frete', new_frete_path, class: 'bg-orange-100 text-orange-700 px-6 py-3 rounded-full font-semibold shadow hover:bg-orange-200' %>
+        <%= link_to '🧑‍💼 Clientes', clientes_path, class: 'bg-blue-100 text-blue-700 px-6 py-3 rounded-full font-semibold shadow hover:bg-blue-200' %>
       </div>
-    <% end %>
+    </div>
 
-    <%= link_to transportadores_path, class: "block bg-white shadow-lg rounded-xl p-6 hover:bg-green-50 transition" do %>
-      <div class="flex items-center gap-4">
-        <span class="text-4xl">🚚</span>
-        <div>
-          <h2 class="text-xl font-bold text-green-700">Transportadores</h2>
-          <p class="text-gray-600">Gerenciar cadastro e propostas</p>
-        </div>
+    <!-- TRANSPORTADOR -->
+    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition">
+      <h2 class="text-2xl font-semibold text-green-700 mb-4">Sou um Transportador</h2>
+      <div class="flex flex-col md:flex-row justify-center gap-4">
+        <%= link_to '🚚 Transportadores', transportadores_path, class: 'bg-green-100 text-green-700 px-6 py-3 rounded-full font-semibold shadow hover:bg-green-200' %>
+        <%= link_to '🧾 Bolsão de Solicitações', bolsao_path, class: 'bg-purple-100 text-purple-700 px-6 py-3 rounded-full font-semibold shadow hover:bg-purple-200' %>
       </div>
-    <% end %>
+    </div>
 
-    <%= link_to calcular_fretes_path, class: "block bg-white shadow-lg rounded-xl p-6 hover:bg-yellow-50 transition" do %>
-      <div class="flex items-center gap-4">
-        <span class="text-4xl">📦</span>
-        <div>
-          <h2 class="text-xl font-bold text-yellow-700">Calcular Frete</h2>
-          <p class="text-gray-600">Simule o valor de um frete</p>
-        </div>
-      </div>
-    <% end %>
-
+    <!-- EASTER EGG -->
+    <div class="text-sm text-gray-400 italic pt-6">
+      <span class="hidden md:inline">🐣 Dica: clique 5 vezes no ícone do frete para descobrir uma surpresa.</span>
+    </div>
   </div>
 </div>
+

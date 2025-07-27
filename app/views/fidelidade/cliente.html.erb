@@ -1,0 +1,24 @@
+<div class="min-h-screen bg-gray-100 py-10 px-4">
+  <div class="max-w-xl mx-auto bg-white p-8 rounded-2xl shadow-lg">
+    <div class="flex items-center gap-4 mb-6">
+      <div class="text-3xl">🧑‍💼</div>
+      <h1 class="text-2xl font-bold text-blue-800">⭐ Fidelidade do Cliente</h1>
+    </div>
+
+    <div class="text-lg text-gray-700 space-y-2">
+      <p>
+        <span class="font-semibold">Nome:</span>
+        <span class="text-gray-600"><%= @cliente.nome.titleize %></span>
+      </p>
+      <p>
+        <span class="font-semibold">Pontos acumulados:</span>
+        <span class="text-green-600 font-bold"><%= @pontos %> ClickPoints</span>
+      </p>
+    </div>
+
+    <div class="mt-6 text-sm text-gray-500 italic">
+      * Use seus pontos para descontos e vantagens exclusivas.
+    </div>
+  </div>
+</div>
+

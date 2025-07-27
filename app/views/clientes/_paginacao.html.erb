@@ -1,0 +1,5 @@
+<% if @clientes.respond_to?(:total_pages) %>
+  <div class="mt-4">
+    <%= paginate @clientes %>
+  </div>
+<% end %>

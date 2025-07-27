@@ -1,0 +1,61 @@
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+  <div class="max-w-2xl mx-auto bg-white rounded-3xl shadow-xl p-8 sm:p-10 border border-blue-200">
+    
+    <!-- Cabeçalho com caminhão -->
+    <div class="flex items-center justify-center space-x-5 mb-8 border-b pb-4 border-blue-100">
+      <div class="text-6xl animate-bounce-slow">🚛</div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 leading-tight">
+        Sua Pontuação de Performance
+      </h1>
+    </div>
+
+    <!-- Saudações -->
+    <div class="text-center mb-8">
+      <p class="text-xl text-gray-700 mb-2">
+        Olá, <span class="font-semibold text-blue-700"><%= @transportador.nome.titleize %></span>!
+      </p>
+      <p class="text-lg text-gray-600">Confira seu progresso e benefícios:</p>
+    </div>
+
+    <!-- Bloco de Pontuação -->
+    <div class="bg-blue-50 p-6 rounded-2xl shadow-inner border border-blue-100 mb-8 flex flex-col items-center justify-center">
+      <p class="text-sm font-medium text-blue-700 mb-2 uppercase tracking-wide">Pontos Atuais</p>
+      <div class="flex items-end gap-2">
+        <span class="text-5xl font-extrabold text-green-600 leading-none"><%= @transportador.pontuacao rescue (@transportador.fidelidade_pontos || 0) %></span>
+        <span class="text-2xl font-bold text-green-700">ClickPoints</span>
+      </div>
+      <p class="text-xs text-gray-500 mt-2">Sua recompensa por cada entrega bem-sucedida!</p>
+    </div>
+
+    <!-- Mensagem motivacional -->
+    <div class="mt-8 text-center text-base text-gray-600 italic leading-relaxed">
+      <p>
+        <span class="font-medium">✨ Lembre-se:</span> Quanto mais entregas você realizar e finalizar com sucesso,
+        mais <span class="text-blue-700 font-bold">ClickPoints</span> você acumula e mais <span class="text-green-700 font-bold">benefícios e vantagens exclusivas</span> desbloqueia!
+      </p>
+      <p class="mt-3 text-sm text-gray-500">
+        Mantenha-se ativo e aproveite as recompensas da CargaClick!
+      </p>
+    </div>
+
+    <!-- Botão de retorno -->
+    <div class="mt-10 flex justify-center">
+      <%= link_to "Voltar para o Bolsão", bolsao_path, class: "px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" %>
+    </div>
+  </div>
+</div>
+
+<!-- Estilo da animação do emoji -->
+<style>
+@keyframes bounce-slow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+.animate-bounce-slow {
+  animation: bounce-slow 2s infinite ease-in-out;
+}
+</style>

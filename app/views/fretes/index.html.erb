@@ -1,26 +1,41 @@
-<h1 class="text-2xl font-bold mb-4">Solicitações de Frete</h1>
-<table class="w-full text-left border">
-  <thead class="bg-gray-200">
-    <tr>
-      <th class="p-2">Origem</th>
-      <th class="p-2">Destino</th>
-      <th class="p-2">Distância</th>
-      <th class="p-2">Valor (R$)</th>
-      <th class="p-2 text-center">Ações</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @fretes.each do |frete| %>
-      <tr class="border-t">
-        <td class="p-2"><%= frete.origem %></td>
-        <td class="p-2"><%= frete.destino %></td>
-        <td class="p-2"><%= frete.distancia_km %> km</td>
-        <td class="p-2">R$ <%= number_to_currency(frete.valor, unit: '') %></td>
-        <td class="p-2 text-center">
-          <%= link_to 'Detalhes', frete_path(frete), class: 'text-blue-500 hover:underline' %>
-        </td>
-      </tr>
+<div class="max-w-4xl mx-auto mt-10">
+  <div class="bg-white rounded-2xl shadow-xl p-8">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl font-bold text-blue-700 flex items-center gap-2">
+        🚚 Lista de Transportadores
+      </h2>
+      <%= link_to "+ Novo", new_transportador_path, class: "bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow flex items-center gap-2" %>
+    </div>
+
+    <% if @transportadores.any? %>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <% @transportadores.each do |t| %>
+          <div class="border rounded-xl shadow-md p-4 bg-gray-50 flex flex-col gap-2 hover:shadow-xl transition">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-3xl">🚛</span>
+              <span class="font-semibold text-lg text-blue-800"><%= t.nome %></span>
+            </div>
+            <%# Adicione mais campos se quiser mostrar, por exemplo: %>
+            <% if t.respond_to?(:cpf) %>
+              <div class="text-gray-600 text-sm">CPF: <%= t.cpf %></div>
+            <% end %>
+            <% if t.respond_to?(:tipo_veiculo) %>
+              <div class="text-gray-600 text-sm">Veículo: <%= t.tipo_veiculo %></div>
+            <% end %>
+
+            <div class="flex gap-4 mt-2">
+              <%= link_to 'Ver', transportador_path(t), class: "text-blue-600 hover:underline font-semibold" %>
+              <%= link_to 'Editar', edit_transportador_path(t), class: "text-yellow-600 hover:underline font-semibold" %>
+              <%= link_to 'Excluir', transportador_path(t), method: :delete, data: { confirm: 'Tem certeza?' }, class: "text-red-600 hover:underline font-semibold" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-gray-500 text-center py-12">
+        Nenhum transportador cadastrado ainda.
+      </div>
     <% end %>
-  </tbody>
-</table>
-<a href="/fretes/new" class="mt-4 inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Nova Solicitação</a>
+  </div>
+</div>
+
