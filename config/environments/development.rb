@@ -4,4 +4,8 @@ Rails.application.configure do
   config.eager_load = false
   config.consider_all_requests_local = true
   # ... outras configs que estavam nele
+  # Mostra exatamente quem chama `Rails.application.secrets`
+config.active_support.deprecation = :raise
+config.active_support.report_deprecations = true
+
 end
