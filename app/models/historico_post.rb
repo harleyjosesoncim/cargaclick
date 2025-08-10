@@ -1,0 +1,2 @@
+class HistoricoPost < ApplicationRecord
+end

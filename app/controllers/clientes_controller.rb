@@ -39,7 +39,18 @@ class ClientesController < ApplicationController
       render :new, status: :unprocessable_entity # Se a gravação falhar, renderiza novamente o formulário 'new' com erros.
     end
   end
+  def cliente_params
+  params.require(:cliente).permit(:nome, :cpf, :cnpj, :telefone, :endereco, :cep, :email)
+end
 
+def gerar_proposta_ai(cliente)
+  prompt = "Crie uma proposta comercial profissional para a empresa #{cliente.empresa}, convidando-a a utilizar a plataforma CargaClick para contratar serviços de frete de forma econômica e rápida. Destaque as vantagens competitivas."
+  resposta = OpenaiService.new(prompt).call
+
+  HistoricoProposta.create!(conteudo: resposta)
+end
+
+  # GET /clientes/:id/gerar_proposta
   # PATCH/PUT /clientes/:id
   # Atualiza um cliente existente com os parâmetros enviados.
   def update

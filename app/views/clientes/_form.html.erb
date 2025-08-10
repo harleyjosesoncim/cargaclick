@@ -3,26 +3,42 @@
 <%= form_with(model: @cliente, local: true) do |form| %>
   <div class="space-y-6">
 
+    <!-- Nome -->
     <div>
       <%= form.label :nome, "Nome completo", class: "block font-medium text-gray-700" %>
       <%= form.text_field :nome, placeholder: "Ex: João da Silva", class: "w-full border rounded px-3 py-2" %>
     </div>
 
-    <div>
-      <%= form.label :cpf, "CPF", class: "block font-medium text-gray-700" %>
-      <%= form.text_field :cpf,
-            placeholder: "Apenas números",
-            pattern: "\\d{11}",
-            maxlength: 11,
-            title: "Digite exatamente 11 dígitos numéricos",
-            class: "w-full border rounded px-3 py-2" %>
+    <!-- CPF e CNPJ lado a lado -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <%= form.label :cpf, "CPF", class: "block font-medium text-gray-700" %>
+        <%= form.text_field :cpf,
+              placeholder: "Apenas números",
+              pattern: "\\d{11}",
+              maxlength: 11,
+              title: "Digite exatamente 11 dígitos numéricos",
+              class: "w-full border rounded px-3 py-2" %>
+      </div>
+
+      <div>
+        <%= form.label :cnpj, "CNPJ", class: "block font-medium text-gray-700" %>
+        <%= form.text_field :cnpj,
+              placeholder: "Apenas números",
+              pattern: "\\d{14}",
+              maxlength: 14,
+              title: "Digite exatamente 14 dígitos numéricos",
+              class: "w-full border rounded px-3 py-2" %>
+      </div>
     </div>
 
+    <!-- Telefone -->
     <div>
       <%= form.label :telefone, "Telefone", class: "block font-medium text-gray-700" %>
       <%= form.telephone_field :telefone, placeholder: "Ex: 11988887777", class: "w-full border rounded px-3 py-2" %>
     </div>
 
+    <!-- Estado e Cidade -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
         <%= form.label :estado, "Estado", class: "block font-medium text-gray-700" %>
@@ -35,24 +51,29 @@
       </div>
     </div>
 
+    <!-- Endereço -->
     <div>
       <%= form.label :endereco, "Endereço completo", class: "block font-medium text-gray-700" %>
       <%= form.text_field :endereco, placeholder: "Rua, número, complemento", class: "w-full border rounded px-3 py-2" %>
     </div>
 
+    <!-- CEP -->
     <div>
       <%= form.label :cep, "CEP", class: "block font-medium text-gray-700" %>
       <%= form.text_field :cep, placeholder: "Ex: 18000-000", class: "w-full border rounded px-3 py-2" %>
     </div>
 
+    <!-- Email -->
     <div>
       <%= form.label :email, "EMAIL", class: "block font-medium text-gray-700" %>
       <%= form.text_field :email, placeholder: "aaaa@aaa.com.br", class: "w-full border rounded px-3 py-2" %>
     </div>
 
+    <!-- Botão de envio -->
     <div class="text-right">
       <%= form.submit "Salvar Cliente", class: "w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl shadow transition" %>
     </div>
-    
+
   </div>
 <% end %>
+

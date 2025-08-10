@@ -1,0 +1,40 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* Custom styles (se quiser adicionar depois) */
+body {
+  @apply bg-gray-100 font-sans antialiased;
+}
+
+.container {
+  @apply mx-auto px-4 py-8;
+}
+
+.btn {
+  @apply inline-block bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600;
+}
+
+.card {
+  @apply bg-white shadow-md rounded-lg p-6;
+}
+
+.table {
+  @apply w-full text-left border-collapse;
+}
+
+.table th {
+  @apply border-b-2 p-2 bg-gray-100;
+}
+
+.table td {
+  @apply border-b p-2;
+}
+
+.input {
+  @apply border rounded px-3 py-2 w-full;
+}
+
+.link {
+  @apply text-blue-500 hover:underline;
+}

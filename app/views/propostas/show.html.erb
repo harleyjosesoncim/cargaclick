@@ -1,0 +1,20 @@
+<h1 class="text-3xl font-bold mb-6">📄 Detalhes da Proposta</h1>
+
+<div class="bg-white shadow rounded-lg p-6">
+  <p><strong>Frete:</strong> <%= @proposta.frete.descricao %></p>
+  <p><strong>Origem:</strong> <%= @proposta.frete.origem %></p>
+  <p><strong>Destino:</strong> <%= @proposta.frete.destino %></p>
+  <p><strong>Transportador:</strong> <%= @proposta.transportador.nome %></p>
+  <p><strong>Valor Proposto:</strong> R$ <%= number_to_currency(@proposta.valor_proposto, unit: "R$") %></p>
+  <p><strong>Observações:</strong> <%= @proposta.observacao.presence || 'Sem observações' %></p>
+</div>
+
+<!-- Botão para Gerar Proposta Inteligente -->
+<div class="mt-8">
+  <%= link_to '🧠 Gerar Proposta Inteligente', gerar_proposta_inteligente_proposta_path(@proposta), class: 'inline-block bg-blue-600 text-white font-semibold py-2 px-4 rounded hover:bg-blue-700 transition' %>
+</div>
+
+<!-- Link para voltar -->
+<div class="mt-4">
+  <%= link_to '← Voltar para Lista de Propostas', propostas_path, class: 'text-gray-600 hover:underline' %>
+</div>

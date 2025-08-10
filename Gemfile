@@ -20,9 +20,11 @@ gem 'turbolinks', '~> 5' # Mantenha se você ainda usa Turbolinks
 # Gems de Autenticação e Utilidades
 gem 'devise'
 gem 'httparty'
-gem 'dotenv-rails'
 gem 'bootsnap', '>= 1.16', require: false
 gem "sprockets-rails"
+gem 'ruby-openai'
+gem 'dotenv-rails', groups: [:development, :test]
+
 
 # Gems de Pagamento (descomente quando for integrar, se for o caso)
 # gem 'mercadopago-sdk', '~> 2.4'

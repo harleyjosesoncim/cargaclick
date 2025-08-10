@@ -1,0 +1,30 @@
+<nav class="bg-gradient-to-r from-blue-600 to-blue-800 shadow-lg mb-8 px-6 py-4 rounded-b-lg">
+  <div class="container mx-auto flex justify-between items-center">
+    <%= link_to root_path, class: "text-white text-2xl font-extrabold tracking-wider hover:text-blue-200 transition duration-300" do %>
+      CargaClick
+    <% end %>
+
+    <ul class="flex space-x-8 font-semibold text-lg">
+      <li>
+        <%= link_to 'Início', root_path, 
+                    class: "text-white hover:text-blue-200 transition duration-300 #{active_link_class(root_path)}",
+                    aria: { current: current_page?(root_path) ? 'page' : nil } %>
+      </li>
+      <li>
+        <%= link_to 'Clientes', clientes_path,
+                    class: "text-white hover:text-blue-200 transition duration-300 #{active_link_class(clientes_path)}",
+                    aria: { current: current_page?(clientes_path) ? 'page' : nil } %>
+      </li>
+      <li>
+        <%= link_to 'Transportadores', transportadores_path,
+                    class: "text-white hover:text-blue-200 transition duration-300 #{active_link_class(transportadores_path)}",
+                    aria: { current: current_page?(transportadores_path) ? 'page' : nil } %>
+      </li>
+      <li>
+        <%= link_to 'Simular Frete', calcular_fretes_path,
+                    class: "text-white hover:text-blue-200 transition duration-300 #{active_link_class(calcular_fretes_path)}",
+                    aria: { current: current_page?(calcular_fretes_path) ? 'page' : nil } %>
+      </li>
+    </ul>
+  </div>
+</nav>

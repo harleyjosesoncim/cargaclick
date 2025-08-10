@@ -1,28 +1,21 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>CargaClick</title>
+    <title>Cargaclick App</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <%= stylesheet_link_tag 'application', media: 'all' %>
-  </head>
-    <script src="/assets/dark_mode_toggle.js"></script>
-<button id="dark-toggle" class="fixed top-4 right-4 bg-gray-200 dark:bg-gray-800 text-black dark:text-white p-2 rounded z-50">
-  🌓
-</button>
- 
-  <body class="bg-gray-100">
-    <nav class="bg-white shadow p-4 flex justify-between items-center">
-      <h1 class="text-xl font-bold text-orange-600">CargaClick</h1>
-      <div class="space-x-4">
-        <%= link_to "🏠 Início", root_path, class: "text-blue-600 hover:underline" %>
-        <%= link_to "⭐ Fidelidade", fidelidade_transportador_path(1), class: "text-yellow-600 hover:underline" %>
-        <%= link_to "🏆 Ranking", ranking_path, class: "text-purple-600 hover:underline" %>
-      </div>
-    </nav>
+    <% if current_cliente&.email == 'admin@cargaclick.com' %>
+  <%= link_to 'Dashboard Admin', admin_dashboard_path, class: "ml-4 text-blue-700 font-bold" %>
+<% end %>
 
-    <main class="p-6">
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+  </head>
+  <body class="bg-gray-100 min-h-screen font-sans antialiased">
+    <main class="container mx-auto px-4 py-8">
       <%= yield %>
     </main>
   </body>
 </html>
+

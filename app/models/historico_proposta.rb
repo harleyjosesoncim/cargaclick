@@ -1,0 +1,2 @@
+class HistoricoProposta < ApplicationRecord
+end

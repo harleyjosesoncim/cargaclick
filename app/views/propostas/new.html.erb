@@ -1,0 +1,29 @@
+# app/views/propostas/new.html.erb
+<h1>Nova Proposta</h1>
+
+<%= form_with model: @proposta, local: true do |form| %>
+  <div>
+    <%= form.label :frete_id %>
+    <%= form.number_field :frete_id %>
+  </div>
+
+  <div>
+    <%= form.label :transportador_id %>
+    <%= form.number_field :transportador_id %>
+  </div>
+
+  <div>
+    <%= form.label :valor_proposto %>
+    <%= form.text_field :valor_proposto %>
+  </div>
+
+  <div>
+    <%= form.label :observacao %>
+    <%= form.text_area :observacao %>
+  </div>
+
+  <div>
+    <%= form.submit 'Enviar Proposta' %>
+  </div>
+<% end %>
+

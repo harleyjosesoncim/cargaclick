@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_27_220358) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_05_192549) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -30,6 +30,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_27_220358) do
     t.integer "alba_numero"
     t.string "whatsapp"
     t.string "cpf"
+    t.string "cnpj"
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.index ["email"], name: "index_clientes_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_clientes_on_reset_password_token", unique: true
   end
 
   create_table "configuracaos", force: :cascade do |t|
@@ -59,7 +66,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_27_220358) do
     t.string "previsao_chegada"
     t.float "previsao_km"
     t.float "valor_total"
-    t.string "status"
     t.boolean "aceite_responsabilidade"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -77,6 +83,28 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_27_220358) do
     t.string "origem"
     t.string "destino"
     t.text "descricao"
+    t.integer "largura"
+    t.integer "altura"
+    t.integer "profundidade"
+    t.integer "status", default: 0
+  end
+
+  create_table "historico_emails", force: :cascade do |t|
+    t.text "conteudo"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "historico_posts", force: :cascade do |t|
+    t.text "conteudo"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "historico_proposta", force: :cascade do |t|
+    t.text "conteudo"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "modal_transportadores", force: :cascade do |t|
@@ -92,6 +120,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_27_220358) do
     t.string "nome"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "proposta", force: :cascade do |t|
+    t.bigint "frete_id", null: false
+    t.bigint "transportador_id", null: false
+    t.decimal "valor_proposto"
+    t.text "observacao"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["frete_id"], name: "index_proposta_on_frete_id"
+    t.index ["transportador_id"], name: "index_proposta_on_transportador_id"
   end
 
   create_table "propostas", force: :cascade do |t|
@@ -123,4 +162,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_27_220358) do
 
   add_foreign_key "modal_transportadores", "modals"
   add_foreign_key "modal_transportadores", "transportadores"
+  add_foreign_key "proposta", "fretes"
+  add_foreign_key "proposta", "transportadores"
 end

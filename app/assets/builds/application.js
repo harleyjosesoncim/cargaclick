@@ -33,7 +33,7 @@
       })(exports, function(exports2) {
         "use strict";
         var version = "1.9.4";
-        function extend(dest) {
+        function extend2(dest) {
           var i, j, len, src;
           for (j = 1, len = arguments.length; j < len; j++) {
             src = arguments[j];
@@ -139,7 +139,7 @@
         var isArray = Array.isArray || function(obj) {
           return Object.prototype.toString.call(obj) === "[object Array]";
         };
-        function indexOf(array, el) {
+        function indexOf2(array, el) {
           for (var i = 0; i < array.length; i++) {
             if (array[i] === el) {
               return i;
@@ -175,7 +175,7 @@
         }
         var Util = {
           __proto__: null,
-          extend,
+          extend: extend2,
           create: create$2,
           bind,
           get lastId() {
@@ -192,7 +192,7 @@
           getParamString,
           template,
           isArray,
-          indexOf,
+          indexOf: indexOf2,
           emptyImageUrl,
           requestFn,
           cancelFn,
@@ -219,18 +219,18 @@
             }
           }
           if (props.statics) {
-            extend(NewClass, props.statics);
+            extend2(NewClass, props.statics);
           }
           if (props.includes) {
             checkDeprecatedMixinEvents(props.includes);
-            extend.apply(null, [proto].concat(props.includes));
+            extend2.apply(null, [proto].concat(props.includes));
           }
-          extend(proto, props);
+          extend2(proto, props);
           delete proto.statics;
           delete proto.includes;
           if (proto.options) {
             proto.options = parentProto.options ? create$2(parentProto.options) : {};
-            extend(proto.options, props.options);
+            extend2(proto.options, props.options);
           }
           proto._initHooks = [];
           proto.callInitHooks = function() {
@@ -249,7 +249,7 @@
         };
         Class.include = function(props) {
           var parentOptions = this.prototype.options;
-          extend(this.prototype, props);
+          extend2(this.prototype, props);
           if (props.options) {
             this.prototype.options = parentOptions;
             this.mergeOptions(props.options);
@@ -257,7 +257,7 @@
           return this;
         };
         Class.mergeOptions = function(options) {
-          extend(this.prototype.options, options);
+          extend2(this.prototype.options, options);
           return this;
         };
         Class.addInitHook = function(fn) {
@@ -392,7 +392,7 @@
             if (!this.listens(type, propagate)) {
               return this;
             }
-            var event = extend({}, data, {
+            var event = extend2({}, data, {
               type,
               target: this,
               sourceTarget: data && data.sourceTarget || this
@@ -497,7 +497,7 @@
           },
           _propagateEvent: function(e) {
             for (var id in this._eventParents) {
-              this._eventParents[id].fire(e.type, extend({
+              this._eventParents[id].fire(e.type, extend2({
                 layer: e.target,
                 propagatedFrom: e.target
               }, e), true);
@@ -1120,7 +1120,7 @@
             return new LatLngBounds(newSw, newNe);
           }
         };
-        var Earth = extend({}, CRS, {
+        var Earth = extend2({}, CRS, {
           wrapLng: [-180, 180],
           // Mean Earth Radius, as recommended for use by
           // the International Union of Geodesy and Geophysics,
@@ -1196,7 +1196,7 @@
         function toTransformation(a, b, c, d) {
           return new Transformation(a, b, c, d);
         }
-        var EPSG3857 = extend({}, Earth, {
+        var EPSG3857 = extend2({}, Earth, {
           code: "EPSG:3857",
           projection: SphericalMercator,
           transformation: function() {
@@ -1204,7 +1204,7 @@
             return toTransformation(scale2, 0.5, -scale2, 0.5);
           }()
         });
-        var EPSG900913 = extend({}, EPSG3857, {
+        var EPSG900913 = extend2({}, EPSG3857, {
           code: "EPSG:900913"
         });
         function svgCreate(name) {
@@ -1435,8 +1435,8 @@
             })) {
               return;
             }
-            var now = Date.now();
-            if (now - last <= delay) {
+            var now2 = Date.now();
+            if (now2 - last <= delay) {
               detail++;
               if (detail === 2) {
                 handler(makeDblclick(e));
@@ -1444,7 +1444,7 @@
             } else {
               detail = 1;
             }
-            last = now;
+            last = now2;
           }
           obj.addEventListener("click", simDblclick);
           return {
@@ -1724,7 +1724,7 @@
             types = splitWords(types);
             if (arguments.length === 2) {
               batchRemove(obj, function(type2) {
-                return indexOf(types, type2) !== -1;
+                return indexOf2(types, type2) !== -1;
               });
             } else {
               for (var i = 0, len = types.length; i < len; i++) {
@@ -2083,8 +2083,8 @@
             this._stop();
             if (this._loaded && !options.reset && options !== true) {
               if (options.animate !== void 0) {
-                options.zoom = extend({ animate: options.animate }, options.zoom);
-                options.pan = extend({ animate: options.animate, duration: options.duration }, options.pan);
+                options.zoom = extend2({ animate: options.animate }, options.zoom);
+                options.pan = extend2({ animate: options.animate, duration: options.duration }, options.pan);
               }
               var moved = this._zoom !== zoom2 ? this._tryAnimatedZoom && this._tryAnimatedZoom(center, zoom2, options.zoom) : this._tryAnimatedPan(center, options.pan);
               if (moved) {
@@ -2348,7 +2348,7 @@
             if (!this._loaded) {
               return this;
             }
-            options = extend({
+            options = extend2({
               animate: false,
               pan: true
             }, options === true ? { animate: true } : options);
@@ -2398,7 +2398,7 @@
           // modern browsers ([Chrome 50 and newer](https://sites.google.com/a/chromium.org/dev/Home/chromium-security/deprecating-powerful-features-on-insecure-origins))
           // See `Locate options` for more details.
           locate: function(options) {
-            options = this._locateOptions = extend({
+            options = this._locateOptions = extend2({
               timeout: 1e4,
               watch: false
               // setView: false
@@ -2948,7 +2948,7 @@
           _mouseEvents: ["click", "dblclick", "mouseover", "mouseout", "contextmenu"],
           _fireDOMEvent: function(e, type, canvasTargets) {
             if (e.type === "click") {
-              var synth = extend({}, e);
+              var synth = extend2({}, e);
               synth.type = "preclick";
               this._fireDOMEvent(synth, synth.type, canvasTargets);
             }
@@ -2980,7 +2980,7 @@
             }
             for (i = 0; i < targets.length; i++) {
               targets[i].fire(type, data, true);
-              if (data.originalEvent._stopped || targets[i].options.bubblingMouseEvents === false && indexOf(this._mouseEvents, type) !== -1) {
+              if (data.originalEvent._stopped || targets[i].options.bubblingMouseEvents === false && indexOf2(this._mouseEvents, type) !== -1) {
                 return;
               }
             }
@@ -4370,7 +4370,7 @@
           Mercator,
           SphericalMercator
         };
-        var EPSG3395 = extend({}, Earth, {
+        var EPSG3395 = extend2({}, Earth, {
           code: "EPSG:3395",
           projection: Mercator,
           transformation: function() {
@@ -4378,12 +4378,12 @@
             return toTransformation(scale2, 0.5, -scale2, 0.5);
           }()
         });
-        var EPSG4326 = extend({}, Earth, {
+        var EPSG4326 = extend2({}, Earth, {
           code: "EPSG:4326",
           projection: LonLat,
           transformation: toTransformation(1 / 180, 1, -1 / 180, 0.5)
         });
-        var Simple = extend({}, CRS, {
+        var Simple = extend2({}, CRS, {
           projection: LonLat,
           transformation: toTransformation(1, 0, -1, 0),
           scale: function(zoom2) {
@@ -5434,7 +5434,7 @@
         var Circle = CircleMarker.extend({
           initialize: function(latlng, options, legacyOptions) {
             if (typeof options === "number") {
-              options = extend({}, legacyOptions, { radius: options });
+              options = extend2({}, legacyOptions, { radius: options });
             }
             setOptions(this, options);
             this._latlng = toLatLng(latlng);
@@ -5854,7 +5854,7 @@
             if (layer === void 0) {
               return this.eachLayer(this.resetStyle, this);
             }
-            layer.options = extend({}, layer.defaultOptions);
+            layer.options = extend2({}, layer.defaultOptions);
             this._setLayerStyle(layer, this.options.style);
             return this;
           },
@@ -5950,7 +5950,7 @@
           return coords;
         }
         function getFeature(layer, newGeometry) {
-          return layer.feature ? extend({}, layer.feature, { geometry: newGeometry }) : asFeature(newGeometry);
+          return layer.feature ? extend2({}, layer.feature, { geometry: newGeometry }) : asFeature(newGeometry);
         }
         function asFeature(geojson) {
           if (geojson.type === "Feature" || geojson.type === "FeatureCollection") {
@@ -7443,13 +7443,13 @@
               return;
             }
             setOpacity(this._container, this.options.opacity);
-            var now = +/* @__PURE__ */ new Date(), nextFrame = false, willPrune = false;
+            var now2 = +/* @__PURE__ */ new Date(), nextFrame = false, willPrune = false;
             for (var key in this._tiles) {
               var tile = this._tiles[key];
               if (!tile.current || !tile.loaded) {
                 continue;
               }
-              var fade = Math.min(1, (now - tile.loaded) / 200);
+              var fade = Math.min(1, (now2 - tile.loaded) / 200);
               setOpacity(tile.el, fade);
               if (fade < 1) {
                 nextFrame = true;
@@ -8007,7 +8007,7 @@
               }
               data["-y"] = invertedY;
             }
-            return template(this._url, extend(data, this.options));
+            return template(this._url, extend2(data, this.options));
           },
           _tileOnLoad: function(done, tile) {
             if (Browser.ielt9) {
@@ -8112,7 +8112,7 @@
           },
           initialize: function(url, options) {
             this._url = url;
-            var wmsParams = extend({}, this.defaultWmsParams);
+            var wmsParams = extend2({}, this.defaultWmsParams);
             for (var i in options) {
               if (!(i in this.options)) {
                 wmsParams[i] = options[i];
@@ -8139,7 +8139,7 @@
           // @method setParams(params: Object, noRedraw?: Boolean): this
           // Merges an object with the new parameters and re-requests tiles on the current screen (unless `noRedraw` was set to true).
           setParams: function(params, noRedraw) {
-            extend(this.wmsParams, params);
+            extend2(this.wmsParams, params);
             if (!noRedraw) {
               this.redraw();
             }
@@ -9539,7 +9539,7 @@
         exports2.circleMarker = circleMarker;
         exports2.control = control;
         exports2.divIcon = divIcon;
-        exports2.extend = extend;
+        exports2.extend = extend2;
         exports2.featureGroup = featureGroup;
         exports2.geoJSON = geoJSON;
         exports2.geoJson = geoJson;
@@ -9577,6 +9577,498 @@
 
   // app/javascript/application.js
   var import_leaflet = __toESM(require_leaflet_src());
+
+  // node_modules/@rails/actioncable/app/assets/javascripts/actioncable.esm.js
+  var adapters = {
+    logger: typeof console !== "undefined" ? console : void 0,
+    WebSocket: typeof WebSocket !== "undefined" ? WebSocket : void 0
+  };
+  var logger = {
+    log(...messages) {
+      if (this.enabled) {
+        messages.push(Date.now());
+        adapters.logger.log("[ActionCable]", ...messages);
+      }
+    }
+  };
+  var now = () => (/* @__PURE__ */ new Date()).getTime();
+  var secondsSince = (time) => (now() - time) / 1e3;
+  var ConnectionMonitor = class {
+    constructor(connection) {
+      this.visibilityDidChange = this.visibilityDidChange.bind(this);
+      this.connection = connection;
+      this.reconnectAttempts = 0;
+    }
+    start() {
+      if (!this.isRunning()) {
+        this.startedAt = now();
+        delete this.stoppedAt;
+        this.startPolling();
+        addEventListener("visibilitychange", this.visibilityDidChange);
+        logger.log(`ConnectionMonitor started. stale threshold = ${this.constructor.staleThreshold} s`);
+      }
+    }
+    stop() {
+      if (this.isRunning()) {
+        this.stoppedAt = now();
+        this.stopPolling();
+        removeEventListener("visibilitychange", this.visibilityDidChange);
+        logger.log("ConnectionMonitor stopped");
+      }
+    }
+    isRunning() {
+      return this.startedAt && !this.stoppedAt;
+    }
+    recordMessage() {
+      this.pingedAt = now();
+    }
+    recordConnect() {
+      this.reconnectAttempts = 0;
+      delete this.disconnectedAt;
+      logger.log("ConnectionMonitor recorded connect");
+    }
+    recordDisconnect() {
+      this.disconnectedAt = now();
+      logger.log("ConnectionMonitor recorded disconnect");
+    }
+    startPolling() {
+      this.stopPolling();
+      this.poll();
+    }
+    stopPolling() {
+      clearTimeout(this.pollTimeout);
+    }
+    poll() {
+      this.pollTimeout = setTimeout(() => {
+        this.reconnectIfStale();
+        this.poll();
+      }, this.getPollInterval());
+    }
+    getPollInterval() {
+      const { staleThreshold, reconnectionBackoffRate } = this.constructor;
+      const backoff = Math.pow(1 + reconnectionBackoffRate, Math.min(this.reconnectAttempts, 10));
+      const jitterMax = this.reconnectAttempts === 0 ? 1 : reconnectionBackoffRate;
+      const jitter = jitterMax * Math.random();
+      return staleThreshold * 1e3 * backoff * (1 + jitter);
+    }
+    reconnectIfStale() {
+      if (this.connectionIsStale()) {
+        logger.log(`ConnectionMonitor detected stale connection. reconnectAttempts = ${this.reconnectAttempts}, time stale = ${secondsSince(this.refreshedAt)} s, stale threshold = ${this.constructor.staleThreshold} s`);
+        this.reconnectAttempts++;
+        if (this.disconnectedRecently()) {
+          logger.log(`ConnectionMonitor skipping reopening recent disconnect. time disconnected = ${secondsSince(this.disconnectedAt)} s`);
+        } else {
+          logger.log("ConnectionMonitor reopening");
+          this.connection.reopen();
+        }
+      }
+    }
+    get refreshedAt() {
+      return this.pingedAt ? this.pingedAt : this.startedAt;
+    }
+    connectionIsStale() {
+      return secondsSince(this.refreshedAt) > this.constructor.staleThreshold;
+    }
+    disconnectedRecently() {
+      return this.disconnectedAt && secondsSince(this.disconnectedAt) < this.constructor.staleThreshold;
+    }
+    visibilityDidChange() {
+      if (document.visibilityState === "visible") {
+        setTimeout(() => {
+          if (this.connectionIsStale() || !this.connection.isOpen()) {
+            logger.log(`ConnectionMonitor reopening stale connection on visibilitychange. visibilityState = ${document.visibilityState}`);
+            this.connection.reopen();
+          }
+        }, 200);
+      }
+    }
+  };
+  ConnectionMonitor.staleThreshold = 6;
+  ConnectionMonitor.reconnectionBackoffRate = 0.15;
+  var INTERNAL = {
+    message_types: {
+      welcome: "welcome",
+      disconnect: "disconnect",
+      ping: "ping",
+      confirmation: "confirm_subscription",
+      rejection: "reject_subscription"
+    },
+    disconnect_reasons: {
+      unauthorized: "unauthorized",
+      invalid_request: "invalid_request",
+      server_restart: "server_restart",
+      remote: "remote"
+    },
+    default_mount_path: "/cable",
+    protocols: ["actioncable-v1-json", "actioncable-unsupported"]
+  };
+  var { message_types, protocols } = INTERNAL;
+  var supportedProtocols = protocols.slice(0, protocols.length - 1);
+  var indexOf = [].indexOf;
+  var Connection = class {
+    constructor(consumer) {
+      this.open = this.open.bind(this);
+      this.consumer = consumer;
+      this.subscriptions = this.consumer.subscriptions;
+      this.monitor = new ConnectionMonitor(this);
+      this.disconnected = true;
+    }
+    send(data) {
+      if (this.isOpen()) {
+        this.webSocket.send(JSON.stringify(data));
+        return true;
+      } else {
+        return false;
+      }
+    }
+    open() {
+      if (this.isActive()) {
+        logger.log(`Attempted to open WebSocket, but existing socket is ${this.getState()}`);
+        return false;
+      } else {
+        const socketProtocols = [...protocols, ...this.consumer.subprotocols || []];
+        logger.log(`Opening WebSocket, current state is ${this.getState()}, subprotocols: ${socketProtocols}`);
+        if (this.webSocket) {
+          this.uninstallEventHandlers();
+        }
+        this.webSocket = new adapters.WebSocket(this.consumer.url, socketProtocols);
+        this.installEventHandlers();
+        this.monitor.start();
+        return true;
+      }
+    }
+    close({ allowReconnect } = {
+      allowReconnect: true
+    }) {
+      if (!allowReconnect) {
+        this.monitor.stop();
+      }
+      if (this.isOpen()) {
+        return this.webSocket.close();
+      }
+    }
+    reopen() {
+      logger.log(`Reopening WebSocket, current state is ${this.getState()}`);
+      if (this.isActive()) {
+        try {
+          return this.close();
+        } catch (error) {
+          logger.log("Failed to reopen WebSocket", error);
+        } finally {
+          logger.log(`Reopening WebSocket in ${this.constructor.reopenDelay}ms`);
+          setTimeout(this.open, this.constructor.reopenDelay);
+        }
+      } else {
+        return this.open();
+      }
+    }
+    getProtocol() {
+      if (this.webSocket) {
+        return this.webSocket.protocol;
+      }
+    }
+    isOpen() {
+      return this.isState("open");
+    }
+    isActive() {
+      return this.isState("open", "connecting");
+    }
+    triedToReconnect() {
+      return this.monitor.reconnectAttempts > 0;
+    }
+    isProtocolSupported() {
+      return indexOf.call(supportedProtocols, this.getProtocol()) >= 0;
+    }
+    isState(...states) {
+      return indexOf.call(states, this.getState()) >= 0;
+    }
+    getState() {
+      if (this.webSocket) {
+        for (let state in adapters.WebSocket) {
+          if (adapters.WebSocket[state] === this.webSocket.readyState) {
+            return state.toLowerCase();
+          }
+        }
+      }
+      return null;
+    }
+    installEventHandlers() {
+      for (let eventName in this.events) {
+        const handler = this.events[eventName].bind(this);
+        this.webSocket[`on${eventName}`] = handler;
+      }
+    }
+    uninstallEventHandlers() {
+      for (let eventName in this.events) {
+        this.webSocket[`on${eventName}`] = function() {
+        };
+      }
+    }
+  };
+  Connection.reopenDelay = 500;
+  Connection.prototype.events = {
+    message(event) {
+      if (!this.isProtocolSupported()) {
+        return;
+      }
+      const { identifier, message, reason, reconnect, type } = JSON.parse(event.data);
+      this.monitor.recordMessage();
+      switch (type) {
+        case message_types.welcome:
+          if (this.triedToReconnect()) {
+            this.reconnectAttempted = true;
+          }
+          this.monitor.recordConnect();
+          return this.subscriptions.reload();
+        case message_types.disconnect:
+          logger.log(`Disconnecting. Reason: ${reason}`);
+          return this.close({
+            allowReconnect: reconnect
+          });
+        case message_types.ping:
+          return null;
+        case message_types.confirmation:
+          this.subscriptions.confirmSubscription(identifier);
+          if (this.reconnectAttempted) {
+            this.reconnectAttempted = false;
+            return this.subscriptions.notify(identifier, "connected", {
+              reconnected: true
+            });
+          } else {
+            return this.subscriptions.notify(identifier, "connected", {
+              reconnected: false
+            });
+          }
+        case message_types.rejection:
+          return this.subscriptions.reject(identifier);
+        default:
+          return this.subscriptions.notify(identifier, "received", message);
+      }
+    },
+    open() {
+      logger.log(`WebSocket onopen event, using '${this.getProtocol()}' subprotocol`);
+      this.disconnected = false;
+      if (!this.isProtocolSupported()) {
+        logger.log("Protocol is unsupported. Stopping monitor and disconnecting.");
+        return this.close({
+          allowReconnect: false
+        });
+      }
+    },
+    close(event) {
+      logger.log("WebSocket onclose event");
+      if (this.disconnected) {
+        return;
+      }
+      this.disconnected = true;
+      this.monitor.recordDisconnect();
+      return this.subscriptions.notifyAll("disconnected", {
+        willAttemptReconnect: this.monitor.isRunning()
+      });
+    },
+    error() {
+      logger.log("WebSocket onerror event");
+    }
+  };
+  var extend = function(object, properties) {
+    if (properties != null) {
+      for (let key in properties) {
+        const value = properties[key];
+        object[key] = value;
+      }
+    }
+    return object;
+  };
+  var Subscription = class {
+    constructor(consumer, params = {}, mixin) {
+      this.consumer = consumer;
+      this.identifier = JSON.stringify(params);
+      extend(this, mixin);
+    }
+    perform(action, data = {}) {
+      data.action = action;
+      return this.send(data);
+    }
+    send(data) {
+      return this.consumer.send({
+        command: "message",
+        identifier: this.identifier,
+        data: JSON.stringify(data)
+      });
+    }
+    unsubscribe() {
+      return this.consumer.subscriptions.remove(this);
+    }
+  };
+  var SubscriptionGuarantor = class {
+    constructor(subscriptions) {
+      this.subscriptions = subscriptions;
+      this.pendingSubscriptions = [];
+    }
+    guarantee(subscription) {
+      if (this.pendingSubscriptions.indexOf(subscription) == -1) {
+        logger.log(`SubscriptionGuarantor guaranteeing ${subscription.identifier}`);
+        this.pendingSubscriptions.push(subscription);
+      } else {
+        logger.log(`SubscriptionGuarantor already guaranteeing ${subscription.identifier}`);
+      }
+      this.startGuaranteeing();
+    }
+    forget(subscription) {
+      logger.log(`SubscriptionGuarantor forgetting ${subscription.identifier}`);
+      this.pendingSubscriptions = this.pendingSubscriptions.filter((s) => s !== subscription);
+    }
+    startGuaranteeing() {
+      this.stopGuaranteeing();
+      this.retrySubscribing();
+    }
+    stopGuaranteeing() {
+      clearTimeout(this.retryTimeout);
+    }
+    retrySubscribing() {
+      this.retryTimeout = setTimeout(() => {
+        if (this.subscriptions && typeof this.subscriptions.subscribe === "function") {
+          this.pendingSubscriptions.map((subscription) => {
+            logger.log(`SubscriptionGuarantor resubscribing ${subscription.identifier}`);
+            this.subscriptions.subscribe(subscription);
+          });
+        }
+      }, 500);
+    }
+  };
+  var Subscriptions = class {
+    constructor(consumer) {
+      this.consumer = consumer;
+      this.guarantor = new SubscriptionGuarantor(this);
+      this.subscriptions = [];
+    }
+    create(channelName, mixin) {
+      const channel = channelName;
+      const params = typeof channel === "object" ? channel : {
+        channel
+      };
+      const subscription = new Subscription(this.consumer, params, mixin);
+      return this.add(subscription);
+    }
+    add(subscription) {
+      this.subscriptions.push(subscription);
+      this.consumer.ensureActiveConnection();
+      this.notify(subscription, "initialized");
+      this.subscribe(subscription);
+      return subscription;
+    }
+    remove(subscription) {
+      this.forget(subscription);
+      if (!this.findAll(subscription.identifier).length) {
+        this.sendCommand(subscription, "unsubscribe");
+      }
+      return subscription;
+    }
+    reject(identifier) {
+      return this.findAll(identifier).map((subscription) => {
+        this.forget(subscription);
+        this.notify(subscription, "rejected");
+        return subscription;
+      });
+    }
+    forget(subscription) {
+      this.guarantor.forget(subscription);
+      this.subscriptions = this.subscriptions.filter((s) => s !== subscription);
+      return subscription;
+    }
+    findAll(identifier) {
+      return this.subscriptions.filter((s) => s.identifier === identifier);
+    }
+    reload() {
+      return this.subscriptions.map((subscription) => this.subscribe(subscription));
+    }
+    notifyAll(callbackName, ...args) {
+      return this.subscriptions.map((subscription) => this.notify(subscription, callbackName, ...args));
+    }
+    notify(subscription, callbackName, ...args) {
+      let subscriptions;
+      if (typeof subscription === "string") {
+        subscriptions = this.findAll(subscription);
+      } else {
+        subscriptions = [subscription];
+      }
+      return subscriptions.map((subscription2) => typeof subscription2[callbackName] === "function" ? subscription2[callbackName](...args) : void 0);
+    }
+    subscribe(subscription) {
+      if (this.sendCommand(subscription, "subscribe")) {
+        this.guarantor.guarantee(subscription);
+      }
+    }
+    confirmSubscription(identifier) {
+      logger.log(`Subscription confirmed ${identifier}`);
+      this.findAll(identifier).map((subscription) => this.guarantor.forget(subscription));
+    }
+    sendCommand(subscription, command) {
+      const { identifier } = subscription;
+      return this.consumer.send({
+        command,
+        identifier
+      });
+    }
+  };
+  var Consumer = class {
+    constructor(url) {
+      this._url = url;
+      this.subscriptions = new Subscriptions(this);
+      this.connection = new Connection(this);
+      this.subprotocols = [];
+    }
+    get url() {
+      return createWebSocketURL(this._url);
+    }
+    send(data) {
+      return this.connection.send(data);
+    }
+    connect() {
+      return this.connection.open();
+    }
+    disconnect() {
+      return this.connection.close({
+        allowReconnect: false
+      });
+    }
+    ensureActiveConnection() {
+      if (!this.connection.isActive()) {
+        return this.connection.open();
+      }
+    }
+    addSubProtocol(subprotocol) {
+      this.subprotocols = [...this.subprotocols, subprotocol];
+    }
+  };
+  function createWebSocketURL(url) {
+    if (typeof url === "function") {
+      url = url();
+    }
+    if (url && !/^wss?:/i.test(url)) {
+      const a = document.createElement("a");
+      a.href = url;
+      a.href = a.href;
+      a.protocol = a.protocol.replace("http", "ws");
+      return a.href;
+    } else {
+      return url;
+    }
+  }
+  function createConsumer(url = getConfig("url") || INTERNAL.default_mount_path) {
+    return new Consumer(url);
+  }
+  function getConfig(name) {
+    const element = document.head.querySelector(`meta[name='action-cable-${name}']`);
+    if (element) {
+      return element.getAttribute("content");
+    }
+  }
+
+  // app/javascript/channels/consumer.js
+  var consumer_default = createConsumer();
+
+  // app/javascript/application.js
   console.log("Hello from CargoClick Rails 7 with ESBuild!");
   document.addEventListener("DOMContentLoaded", () => {
     const cepInput = document.getElementById("cep_input");

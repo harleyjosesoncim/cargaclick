@@ -1,41 +1,31 @@
-<div class="max-w-4xl mx-auto mt-10">
-  <div class="bg-white rounded-2xl shadow-xl p-8">
-    <div class="flex items-center justify-between mb-6">
-      <h2 class="text-2xl font-bold text-blue-700 flex items-center gap-2">
-        🚚 Lista de Transportadores
-      </h2>
-      <%= link_to "+ Novo", new_transportador_path, class: "bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow flex items-center gap-2" %>
-    </div>
+<div class="flex flex-wrap gap-3 pt-2">
 
-    <% if @transportadores.any? %>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <% @transportadores.each do |t| %>
-          <div class="border rounded-xl shadow-md p-4 bg-gray-50 flex flex-col gap-2 hover:shadow-xl transition">
-            <div class="flex items-center gap-2 mb-2">
-              <span class="text-3xl">🚛</span>
-              <span class="font-semibold text-lg text-blue-800"><%= t.nome %></span>
-            </div>
-            <%# Adicione mais campos se quiser mostrar, por exemplo: %>
-            <% if t.respond_to?(:cpf) %>
-              <div class="text-gray-600 text-sm">CPF: <%= t.cpf %></div>
-            <% end %>
-            <% if t.respond_to?(:tipo_veiculo) %>
-              <div class="text-gray-600 text-sm">Veículo: <%= t.tipo_veiculo %></div>
-            <% end %>
+  <!-- Ver detalhes -->
+  <%= link_to 'Ver', frete_path(frete),
+        class: "text-blue-600 hover:underline font-semibold text-sm" %>
 
-            <div class="flex gap-4 mt-2">
-              <%= link_to 'Ver', transportador_path(t), class: "text-blue-600 hover:underline font-semibold" %>
-              <%= link_to 'Editar', edit_transportador_path(t), class: "text-yellow-600 hover:underline font-semibold" %>
-              <%= link_to 'Excluir', transportador_path(t), method: :delete, data: { confirm: 'Tem certeza?' }, class: "text-red-600 hover:underline font-semibold" %>
-            </div>
-          </div>
-        <% end %>
-      </div>
-    <% else %>
-      <div class="text-gray-500 text-center py-12">
-        Nenhum transportador cadastrado ainda.
-      </div>
-    <% end %>
-  </div>
+  <!-- Editar frete -->
+  <%= link_to 'Editar', edit_frete_path(frete),
+        class: "text-yellow-600 hover:underline font-semibold text-sm" %>
+
+  <!-- Rastrear frete -->
+  <%= link_to 'Rastrear', rastreamento_frete_path(frete),
+        class: "text-indigo-600 hover:underline font-semibold text-sm" %>
+
+  <!-- Marcar como entregue (somente se não estiver entregue ainda) -->
+  <% if frete.pendente? || frete.em_andamento? %>
+    <%= button_to 'Marcar como Entregue',
+          entregar_frete_path(frete),
+          method: :post,
+          data: { confirm: 'Tem certeza que deseja marcar este frete como entregue?' },
+          class: "bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded text-sm shadow transition" %>
+  <% end %>
+
+  <!-- Excluir frete -->
+  <%= link_to 'Excluir', frete_path(frete),
+        method: :delete,
+        data: { confirm: 'Tem certeza que deseja excluir este frete?' },
+        class: "text-red-600 hover:underline font-semibold text-sm" %>
+
 </div>
 

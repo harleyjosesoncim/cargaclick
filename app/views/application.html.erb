@@ -1,8 +1,18 @@
-<nav class="bg-white shadow mb-4 px-6 py-3">
-  <ul class="flex space-x-6 font-semibold">
-    <li><%= link_to 'Início', root_path %></li>
-    <li><%= link_to 'Clientes', clientes_path %></li>
-    <li><%= link_to 'Transportadores', transportadores_path %></li>
-    <li><%= link_to 'Simular Frete', calcular_fretes_path %></li>
-  </ul>
-</nav>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CargaClick App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+  </head>
+
+  <body class="bg-gray-100 min-h-screen font-sans antialiased">
+    <main class="container mx-auto px-4 py-8">
+      <%= yield %>
+    </main>
+  </body>
+</html>

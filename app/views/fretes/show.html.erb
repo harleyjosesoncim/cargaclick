@@ -1,1 +1,65 @@
-<%= render 'shared/frete_cards', frete: @frete %>
+<div class="max-w-3xl mx-auto mt-10 bg-white p-8 rounded-3xl shadow-md border border-blue-200">
+
+  <div class="flex items-center space-x-3 mb-6">
+    <div class="text-4xl text-blue-600">📦</div>
+    <h1 class="text-3xl font-bold text-gray-800">Detalhes do Frete</h1>
+  </div>
+
+  <div class="space-y-4 text-gray-700 text-lg">
+    <p><strong>🧭 Origem:</strong> <%= @frete.origem %></p>
+    <p><strong>🎯 Destino:</strong> <%= @frete.destino %></p>
+
+    <% if @frete.descricao.present? %>
+      <p><strong>📝 Descrição:</strong> <%= @frete.descricao %></p>
+    <% end %>
+
+    <p><strong>⚖️ Peso:</strong> <%= @frete.peso %> kg</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <p><strong>📏 Largura:</strong> <%= @frete.largura || '-' %> cm</p>
+      <p><strong>📐 Altura:</strong> <%= @frete.altura || '-' %> cm</p>
+      <p><strong>📦 Profundidade:</strong> <%= @frete.profundidade || '-' %> cm</p>
+    </div>
+
+    <hr class="my-6 border-gray-300">
+
+    <p><strong>👤 Cliente:</strong> <%= @frete.cliente.nome %> (<%= @frete.cliente.email %>)</p>
+
+    <p><strong>📅 Criado em:</strong> <%= l(@frete.created_at, format: :long) %></p>
+  </div>
+
+ <div class="mt-6">
+  <button id="gerar-proposta-btn" data-frete-id="<%= @frete.id %>" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+    Gerar Proposta Comercial
+  </button>
+</div>
+
+<div id="proposta-resultado" class="mt-4 text-lg text-gray-800"></div>
+
+<script>
+  document.getElementById('gerar-proposta-btn').addEventListener('click', function() {
+    const freteId = this.getAttribute('data-frete-id');
+
+    fetch(`/fretes/${freteId}/gerar_proposta`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('proposta-resultado').innerText = data.proposta;
+    })
+    .catch(error => {
+      console.error('Erro:', error);
+      alert('Erro ao gerar proposta. Tente novamente.');
+    });
+  });
+</script>
+
+  <div class="mt-8 flex justify-end gap-4">
+    <%= link_to 'Voltar', fretes_path, class: "bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-6 py-2 rounded-lg" %>
+    <%= link_to 'Editar', edit_frete_path(@frete), class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg" %>
+  </div>
+</div>

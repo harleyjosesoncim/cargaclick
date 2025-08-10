@@ -1,24 +1,26 @@
+<div class="max-w-4xl mx-auto px-4 py-10">
+  <h2 class="text-3xl font-bold text-center text-green-600 mb-6">Resultado da Simulação 🚚</h2>
+  <p class="text-center text-gray-600 mb-8 text-lg">
+    Distância estimada: <span class="font-semibold text-gray-800"><%= @distancia_km %> km</span>
+  </p>
 
-<h2 class="text-xl font-bold mb-4">Resultado da Simulação</h2>
-<p><strong>Distância estimada:</strong> <%= @distancia_km %> km</p>
-
-<table class="w-full mt-4 border text-left">
-  <thead class="bg-gray-200">
-    <tr>
-      <th class="p-2">Transportador</th>
-      <th class="p-2">Valor Base</th>
-      <th class="p-2">Taxa do Sistema</th>
-      <th class="p-2">Total Final</th>
-    </tr>
-  </thead>
-  <tbody>
+  <div class="grid grid-cols-1 gap-6">
     <% @ofertas.each do |oferta| %>
-      <tr class="border-t">
-        <td class="p-2"><%= oferta[:nome] %></td>
-        <td class="p-2">R$ <%= oferta[:valor_base] %></td>
-        <td class="p-2"><%= oferta[:taxa] %>%</td>
-        <td class="p-2 font-semibold text-green-700">R$ <%= oferta[:valor_total] %></td>
-      </tr>
+      <div class="bg-white rounded-2xl shadow-md p-6 flex flex-col md:flex-row justify-between items-center hover:shadow-lg transition">
+        <div class="flex flex-col md:flex-row items-center gap-4">
+          <div class="text-4xl">🚛</div>
+          <div>
+            <p class="text-xl font-bold text-gray-800"><%= oferta[:nome] %></p>
+            <p class="text-gray-500 text-sm">Valor Base: R$ <%= oferta[:valor_base] %></p>
+            <p class="text-gray-500 text-sm">Taxa do Sistema: <%= oferta[:taxa] %>%</p>
+          </div>
+        </div>
+        <div class="text-center mt-4 md:mt-0">
+          <p class="text-2xl font-extrabold text-green-600 mb-2">R$ <%= oferta[:valor_total] %></p>
+          <%= link_to 'Contratar', new_frete_path(transportador: oferta[:nome]), 
+                class: 'bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-2 rounded-xl transition' %>
+        </div>
+      </div>
     <% end %>
-  </tbody>
-</table>
+  </div>
+</div>

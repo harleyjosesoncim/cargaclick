@@ -1,0 +1,35 @@
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+  <div class="bg-white rounded-3xl shadow-2xl p-10 w-full max-w-xl border border-blue-200">
+
+    <h1 class="text-3xl font-bold text-center text-blue-700 mb-6">🚛 Junte-se ao CargaClick!</h1>
+    <p class="text-center text-gray-600 mb-8">Cadastre-se como transportador parceiro e receba solicitações de frete direto na sua plataforma.</p>
+
+    <%= form_with model: @transportador, url: cadastro_transportador_path, method: :post, local: true, class: "space-y-6" do |f| %>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Nome Completo</label>
+        <%= f.text_field :nome, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">CPF</label>
+        <%= f.text_field :cpf, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Veículo</label>
+        <%= f.text_field :tipo_veiculo, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
+        <%= f.email_field :email, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+      </div>
+
+      <div>
+        <%= f.submit "Cadastrar e Receber Fretes", class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl shadow" %>
+      </div>
+    <% end %>
+
+    <p class="text-center text-xs text-gray-400 mt-6">Ao se cadastrar, você aceita os Termos de Serviço do CargaClick.</p>
+  </div>
+</div>

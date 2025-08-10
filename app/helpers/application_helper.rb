@@ -1,10 +1,10 @@
 module ApplicationHelper
-  def current_cliente
-    # Simula cliente logado (ajuste conforme seu Devise)
-    session[:tipo_usuario] == 'cliente'
+  def active_link_class(path)
+    current_page?(path) ? "underline decoration-2 decoration-blue-200 text-blue-100" : ""
   end
 
-  def current_transportador
-    session[:tipo_usuario] == 'transportador'
+  # Opcional: Helper para verificar a página atual de forma mais simples se a rota não for exata
+  def current_page?(path)
+    request.path == path
   end
 end

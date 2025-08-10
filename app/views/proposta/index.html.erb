@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Proposta</h1>
+
+<div id="proposta">
+  <% @proposta.each do |propostum| %>
+    <%= render propostum %>
+    <p>
+      <%= link_to "Show this proposta", propostum %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New proposta", new_propostum_path %>

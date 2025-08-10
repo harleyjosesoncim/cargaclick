@@ -1,0 +1,22 @@
+def gerar_proposta
+  frete = Frete.find(params[:id])
+
+  prompt = <<~PROMPT
+    Você é um assistente comercial de uma plataforma de fretes chamada CargaClick. Gere uma proposta comercial profissional e amigável para um cliente que deseja transportar uma carga com as seguintes informações:
+    - Origem: #{frete.origem}
+    - Destino: #{frete.destino}
+    - Peso: #{frete.peso} kg
+    - Tipo de carga: #{frete.descricao}
+
+    Destaque:
+    - O valor estimado do frete (coloque um valor fictício realista, por exemplo, entre R$ 200,00 e R$ 1.500,00 dependendo da distância e peso)
+    - O prazo estimado de entrega (exemplo: 1 a 3 dias úteis)
+    - Um texto de agradecimento pelo interesse na plataforma CargaClick.
+
+    A proposta deve ser objetiva, em um tom profissional, e ter no máximo 5 linhas.
+  PROMPT
+
+  proposta = OpenaiService.new(prompt).call
+
+  render json: { proposta: proposta }
+end

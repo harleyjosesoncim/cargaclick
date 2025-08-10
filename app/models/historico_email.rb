@@ -1,0 +1,2 @@
+class HistoricoEmail < ApplicationRecord
+end
