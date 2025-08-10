@@ -42,15 +42,17 @@ RUN yarn build && yarn build:css
 # chave "dummy" só para o build (em runtime o Render injeta a real)
 ARG SECRET_KEY_BASE=dummy_precompile_key
 ENV SECRET_KEY_BASE=${SECRET_KEY_BASE}
+ENV RAILS_LOG_TO_STDOUT=true
+
 
 # Gera o manifesto e copia para public/assets
-RUN bundle exec rails assets:precompile.
+RUN bundle exec rails assets:precompile
 # Sanity check dos assets
 RUN ls -la public/assets && \
     (find public/assets -maxdepth 1 -type f -name 'application-*.css' -print -quit | grep -q .) && \
     (find public/assets -maxdepth 1 -type f -name 'application-*.js'  -print -quit | grep -q .) && \
     (cat public/assets/.sprockets-manifest-*.json | grep -q '"application.css"')
-
+    
 # -------------------------------------------------------------------
 
 EXPOSE ${PORT}
