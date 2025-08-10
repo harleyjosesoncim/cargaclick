@@ -1,4 +1,4 @@
-# Dockerfile para Rails 7 + ESBuild + Tailwind (com precompile de assets)
+# Dockerfile para Rails 7 + ESBuild + Tailwind (sem precompile em build)
 FROM ruby:3.2.4
 
 # Variáveis de ambiente
@@ -7,6 +7,7 @@ ENV RAILS_ENV=production \
     NODE_ENV=production \
     BUNDLE_WITHOUT="development:test" \
     RAILS_SERVE_STATIC_FILES=true \
+    RAILS_LOG_TO_STDOUT=true \
     PORT=10000
 
 WORKDIR /app
@@ -20,14 +21,15 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
       nodejs yarn postgresql-client libpq-dev build-essential libvips && \
     rm -rf /var/lib/apt/lists/*
 
-# Dependências Ruby/JS (melhor cache)
+# Dependências Ruby (melhor cache)
 COPY Gemfile Gemfile.lock ./
 RUN bundle install --jobs $(nproc)
 
+# Dependências JS (melhor cache)
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile --check-files
 
-# Copia apenas o necessário para buildar assets (melhor cache)
+# Copia apenas o necessário para buildar os assets (melhor cache)
 COPY app/assets/ app/assets/
 COPY app/javascript/ app/javascript/
 COPY config/tailwind.config.js config/tailwind.config.js
@@ -35,25 +37,12 @@ COPY config/tailwind.config.js config/tailwind.config.js
 # Copia o restante do app
 COPY . .
 
-# Builda JS/CSS (esbuild + tailwind)
+# Build do JS/CSS (esbuild + tailwind) -> gera app/assets/builds/*
 RUN yarn build && yarn build:css
 
-# ---- Precompile de assets do Rails (manifesto e public/assets) ----
-# chave "dummy" só para o build (em runtime o Render injeta a real)
-ARG SECRET_KEY_BASE=dummy_precompile_key
-ENV SECRET_KEY_BASE=${SECRET_KEY_BASE}
-ENV RAILS_LOG_TO_STDOUT=true
-
-
-# Gera o manifesto e copia para public/assets
-RUN bundle exec rails assets:precompile
-# Sanity check dos assets
-RUN ls -la public/assets && \
-    (find public/assets -maxdepth 1 -type f -name 'application-*.css' -print -quit | grep -q .) && \
-    (find public/assets -maxdepth 1 -type f -name 'application-*.js'  -print -quit | grep -q .) && \
-    (cat public/assets/.sprockets-manifest-*.json | grep -q '"application.css"')
-    
-# -------------------------------------------------------------------
+# Observação: sem `rails assets:precompile` aqui.
+# Os assets fingerprintados de `public/assets` já estão versionados
+# e serão servidos em produção por `RAILS_SERVE_STATIC_FILES=true`.
 
 EXPOSE ${PORT}
 CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
