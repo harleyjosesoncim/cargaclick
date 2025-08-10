@@ -1,0 +1,17 @@
+<div>
+  <%= form.label :telefone %>
+  <%= form.text_field :telefone %>
+</div>
+<div>
+  <%= form.label :endereco %>
+  <%= form.text_field :endereco %>
+</div>
+<div>
+  <%= form.label :cep %>
+  <%= form.text_field :cep %>
+  def cliente_params
+    params.require(:cliente).permit(:nome, :email, :telefone, :endereco, :cep)
+    pp/views/transportadores/new.html.erb
+  end
+
+</div>

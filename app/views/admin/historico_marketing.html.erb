@@ -1,3 +1,14 @@
 <button onclick="copiarTexto(this)" class="mt-2 px-3 py-1 bg-gray-200 hover:bg-gray-300 text-sm rounded">
   Copiar Conteúdo
 </button>
+<script>
+  function copiarTexto(botao) {
+    const texto = botao.previousElementSibling.innerText;
+    navigator.clipboard.writeText(texto).then(() => {
+      botao.innerText = "Copiado!";
+      setTimeout(() => {
+        botao.innerText = "Copiar Conteúdo";
+      }, 1500);
+    });
+  }
+</script>
