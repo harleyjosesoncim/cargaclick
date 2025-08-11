@@ -1,6 +1,16 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+
+  # Canonical redirect: apex -> www
+  constraints(host: "cargaclick.com.br") do
+    get "/" => redirect("https://www.cargaclick.com.br/")
+    match "(*path)", to: redirect { |p, req|
+      qs = req.query_string.to_s
+      "https://www.cargaclick.com.br/#{p[:path]}#{qs.empty? ? "" : "?#{qs}"}"
+    }, via: :all
+  end
+
   # Health check
   get "up" => "rails/health#show", as: :rails_health_check
   # Redireciona www -> sem www (precisa vir antes do restante)
