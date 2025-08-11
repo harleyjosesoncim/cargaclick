@@ -47,3 +47,7 @@ end
 
 gem "rails_admin", "~> 3.3"
 gem "sassc-rails"
+
+# Error monitoring
+gem "sentry-ruby"
+gem "sentry-rails"
