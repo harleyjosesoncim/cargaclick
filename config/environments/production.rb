@@ -18,6 +18,7 @@ Rails.application.configure do
     }
   end
   config.assets.compile = false
+  config.assets.css_compressor = nil
   # config.assets.css_compressor = :sass
 
   # Uploads (em PaaS o disco é efêmero; use S3 em prod real)
