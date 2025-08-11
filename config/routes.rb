@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  # Health check
+  get "up" => "rails/health#show", as: :rails_health_check
   # Redireciona www -> sem www (precisa vir antes do restante)
   constraints(host: "www.cargaclick.com.br") do
     match "/", to: redirect("https://cargaclick.com.br"), via: :all
@@ -82,4 +84,3 @@ Rails.application.routes.draw do
 end
 
 # Health check
-get "up" => "rails/health#show", as: :rails_health_check
