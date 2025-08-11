@@ -1,6 +1,4 @@
-cd ~/projects/Cargaclick
 
-cat > config/routes.rb <<'RUBY'
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
@@ -78,4 +76,4 @@ Rails.application.routes.draw do
   post "gerar_email_marketing",    to: "marketing#gerar_email_marketing"
   post "gerar_proposta_comercial", to: "marketing#gerar_proposta_comercial"
 end
-RUBY
+
