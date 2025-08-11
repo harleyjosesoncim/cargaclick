@@ -284,6 +284,12 @@ GEM
       sprockets-rails
       tilt
     securerandom (0.4.1)
+    sentry-rails (5.26.0)
+      railties (>= 5.0)
+      sentry-ruby (~> 5.26.0)
+    sentry-ruby (5.26.0)
+      bigdecimal
+      concurrent-ruby (~> 1.0, >= 1.0.2)
     sprockets (4.2.2)
       concurrent-ruby (~> 1.0)
       logger
@@ -339,6 +345,8 @@ DEPENDENCIES
   rails_admin (~> 3.3)
   ruby-openai
   sassc-rails
+  sentry-rails
+  sentry-ruby
   sprockets-rails
   turbolinks (~> 5)
 

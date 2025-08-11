@@ -80,3 +80,6 @@ Rails.application.routes.draw do
   post 'gerar_email_marketing',    to: 'marketing#gerar_email_marketing'
   post 'gerar_proposta_comercial', to: 'marketing#gerar_proposta_comercial'
 end
+
+# Health check
+get "up" => "rails/health#show", as: :rails_health_check
