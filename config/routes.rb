@@ -1,96 +1,74 @@
+cd ~/projects/Cargaclick
+
+# sobrescreve config/routes.rb com a versão final
+cat > config/routes.rb <<'RUBY'
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  # Health check
+  get "up", to: "rails/health#show", as: :rails_health_check
 
-  # Canonical redirect: apex -> www
+  # Canonical: cargaclick.com.br -> www.cargaclick.com.br
   constraints(host: "cargaclick.com.br") do
     get "/" => redirect("https://www.cargaclick.com.br/")
-    match "(*path)", to: redirect { |p, req|
+    match "(*path)", to: redirect { |params, req|
       qs = req.query_string.to_s
-      "https://www.cargaclick.com.br/#{p[:path]}#{qs.empty? ? "" : "?#{qs}"}"
-    }, via: :all
-  end
-
-  # Health check
-  get "up" => "rails/health#show", as: :rails_health_check
-  # Redireciona www -> sem www (precisa vir antes do restante)
-  constraints(host: "www.cargaclick.com.br") do
-    match "/", to: redirect("https://cargaclick.com.br"), via: :all
-    match "/*path", to: redirect { |params, _req|
-      "https://cargaclick.com.br/#{params[:path]}"
+      "https://www.cargaclick.com.br/#{params[:path]}#{qs.empty? ? "" : "?#{qs}"}"
     }, via: :all
   end
 
   # Página inicial
-  root 'home#index'
+  root "home#index"
 
   # Devise
   devise_for :clientes, controllers: {
-    registrations: 'clientes/registrations',
-    sessions: 'clientes/sessions',
-    passwords: 'clientes/passwords'
+    registrations: "clientes/registrations",
+    sessions: "clientes/sessions",
+    passwords: "clientes/passwords"
   }
   devise_for :transportadores, controllers: {
-    registrations: 'transportadores/registrations',
-    sessions: 'transportadores/sessions',
-    passwords: 'transportadores/passwords'
+    registrations: "transportadores/registrations",
+    sessions: "transportadores/sessions",
+    passwords: "transportadores/passwords"
   }
 
   # Propostas
   resources :propostas do
-    member do
-      get :gerar_proposta_inteligente
-    end
+    member { get :gerar_proposta_inteligente }
   end
 
-  # Modals (se existir controller)
+  # Modals
   resources :modals
 
   # Fretes
   resources :fretes do
     member do
-      get :rastreamento
+      get  :rastreamento
       post :entregar
-      get :chat
+      get  :chat
     end
-    collection do
-      get :meus
-    end
+    collection { get :meus }
   end
 
   # Clientes
   resources :clientes do
-    member do
-      get 'fidelidade', to: 'fidelidade#cliente', as: 'fidelidade'
-    end
+    member { get "fidelidade", to: "fidelidade#cliente", as: "fidelidade" }
   end
 
   # Transportadores
   resources :transportadores do
-    member do
-      get 'fidelidade', to: 'fidelidade#transportador', as: 'fidelidade'
-    end
+    member { get "fidelidade", to: "fidelidade#transportador", as: "fidelidade" }
   end
 
-  # Admin (rota direta + namespace)
-  get 'admin/dashboard', to: 'admin/dashboard#index'
-
+  # Admin
+  get "admin/dashboard", to: "admin/dashboard#index"
   namespace :admin do
-    get '/', to: 'dashboard#index', as: 'index'
-    patch 'update', to: 'dashboard#update', as: 'update'
+    get   "/",      to: "dashboard#index",  as: "index"
+    patch "update", to: "dashboard#update", as: "update"
   end
 
   # Bolsão & Ranking
-  get 'bolsao',  to: 'bolsao#index',  as: 'bolsao'
-  get 'ranking', to: 'ranking#index', as: 'ranking'
+  get "bolsao",  to: "bolsao#index",  as: "bolsao"
+  get "ranking", to: "ranking#index", as: "ranking"
 
-  # Ações extra
-  post 'fretes/:id/gerar_proposta', to: 'fretes#gerar_proposta', as: 'gerar_proposta_frete'
-
-  # Marketing
-  post 'gerar_post_instagram',     to: 'marketing#gerar_post_instagram'
-  post 'gerar_email_marketing',    to: 'marketing#gerar_email_marketing'
-  post 'gerar_proposta_comercial', to: 'marketing#gerar_proposta_comercial'
-end
-
-# Health check
+  #
