@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_05_192549) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_12_174324) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -87,6 +87,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_05_192549) do
     t.integer "altura"
     t.integer "profundidade"
     t.integer "status", default: 0
+    t.boolean "contatos_liberados"
   end
 
   create_table "historico_emails", force: :cascade do |t|
@@ -158,6 +159,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_05_192549) do
     t.datetime "updated_at", null: false
     t.integer "fidelidade_pontos"
     t.string "cidade"
+    t.string "email"
+    t.index ["email"], name: "index_transportadores_on_email"
   end
 
   add_foreign_key "modal_transportadores", "modals"
