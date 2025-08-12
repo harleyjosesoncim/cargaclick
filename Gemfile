@@ -6,6 +6,8 @@ ruby "3.2.4" # Verifique se esta é a versão do seu Ruby
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.1.3" # Ou a versão exata do Rails que você está usando
 gem 'pg'
+gem "mercadopago-sdk"
+
 
 gem 'puma', '~> 6.0'
 gem 'bcrypt', '~> 3.1.7'
@@ -51,3 +53,7 @@ gem "sassc-rails"
 # Error monitoring
 gem "sentry-ruby"
 gem "sentry-rails"
+
+gem "sitemap_generator", "~> 6.3"
+
+
