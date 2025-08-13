@@ -1,0 +1,4 @@
+# exemplo para criar um placeholder simples (opcional)
+# substitua depois por uma imagem bonita de 1200x630
+convert -size 1200x630 xc:white -pointsize 72 -gravity center \
+  -annotate 0 "CargaClick" public/og-image.png 2>/dev/null || true
