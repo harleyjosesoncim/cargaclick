@@ -1,4 +1,3 @@
-
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
@@ -18,16 +17,8 @@ Rails.application.routes.draw do
   root "home#index"
 
   # Devise
-  devise_for :clientes, controllers: {
-    registrations: "clientes/registrations",
-    sessions: "clientes/sessions",
-    passwords: "clientes/passwords"
-  }
-  devise_for :transportadores, controllers: {
-    registrations: "transportadores/registrations",
-    sessions: "transportadores/sessions",
-    passwords: "transportadores/passwords"
-  }
+  devise_for :clientes
+  devise_for :transportadores
 
   # Propostas
   resources :propostas do
@@ -40,40 +31,50 @@ Rails.application.routes.draw do
   # Fretes
   resources :fretes do
     member do
-      get :rastreamento
+      get  :rastreamento
       post :entregar
-      get :chat
+      get  :chat
     end
     collection { get :meus }
   end
 
   # Clientes
   resources :clientes do
-    member { get "fidelidade", to: "fidelidade#cliente", as: "fidelidade" }
+    member { get "fidelidade", to: "fidelidade#cliente", as: :fidelidade }
   end
 
   # Transportadores
   resources :transportadores do
-    member { get "fidelidade", to: "fidelidade#transportador", as: "fidelidade" }
+    member { get "fidelidade", to: "fidelidade#transportador", as: :fidelidade }
   end
+
+  # ===== Cadastro público de Transportador (adicionado) =====
+  # GET exibe o formulário, POST envia o formulário — ambos no mesmo path
+  get  "/cadastro/transportador", to: "transportadores#cadastro_publico", as: :cadastro_transportador
+  post "/cadastro/transportador", to: "transportadores#criar_publico"
+  # =========================================================
 
   # Admin
   get "admin/dashboard", to: "admin/dashboard#index"
   namespace :admin do
-    get "/", to: "dashboard#index", as: "index"
-    patch "update", to: "dashboard#update", as: "update"
+    get   "/",    to: "dashboard#index",  as: :index
+    patch "update", to: "dashboard#update", as: :update
   end
 
   # Bolsão & Ranking
-  get "bolsao",  to: "bolsao#index",  as: "bolsao"
-  get "ranking", to: "ranking#index", as: "ranking"
+  get "bolsao",  to: "bolsao#index",  as: :bolsao
+  get "ranking", to: "ranking#index", as: :ranking
+
+  # Pagamentos (MVP / Mercado Pago)
+  post "pagamentos/:frete_id/checkout", to: "pagamentos#checkout", as: :pagamentos_checkout
+  get  "pagamentos/retorno",            to: "pagamentos#retorno",  as: :pagamentos_retorno
+  post "pagamentos/webhook",            to: "pagamentos#webhook",  as: :pagamentos_webhook
 
   # Ações extra
-  post "fretes/:id/gerar_proposta", to: "fretes#gerar_proposta", as: "gerar_proposta_frete"
+  post "fretes/:id/gerar_proposta", to: "fretes#gerar_proposta", as: :gerar_proposta_frete
 
   # Marketing
   post "gerar_post_instagram",     to: "marketing#gerar_post_instagram"
   post "gerar_email_marketing",    to: "marketing#gerar_email_marketing"
   post "gerar_proposta_comercial", to: "marketing#gerar_proposta_comercial"
 end
-

@@ -31,7 +31,9 @@
             <td class="py-3 px-6 text-gray-800"><%= transportador.nome %></td>
             <td class="py-3 px-6 text-gray-800"><%= transportador.cpf %></td>
             <td class="py-3 px-6 text-gray-800"><%= transportador.tipo_veiculo %></td>
-            <td class="py-3 px-6 text-gray-800"><%= transportador.email %></td>
+            <td class="py-3 px-6 text-gray-800">
+              <%= transportador.respond_to?(:email) ? (transportador.email.presence || "-") : "-" %>
+            </td>
             <td class="py-3 px-6">
               <%= link_to "Ver", transportador_path(transportador), class: "text-blue-600 hover:text-blue-800 font-medium hover:underline mr-4" %>
               <%= link_to "Editar", edit_transportador_path(transportador), class: "text-yellow-600 hover:text-yellow-800 font-medium hover:underline mr-4" %>
@@ -42,6 +44,11 @@
       </tbody>
     </table>
   </div>
+</div>
+<div class="max-w-4xl mx-auto mt-16">
+  <%= link_to "🚛 Quero me Cadastrar como Transportador Parceiro",
+              cadastro_transportador_path,
+              class: "block w-full text-center bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl shadow-lg text-xl transition duration-300 ease-in-out" %>
 </div>
 
 <div class="max-w-4xl mx-auto mt-16">
