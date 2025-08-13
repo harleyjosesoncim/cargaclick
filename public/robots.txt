@@ -1,4 +1,12 @@
 User-agent: *
-Disallow:
+Allow: /
 
-Sitemap: https://www.cargaclick.com.br/sitemap.xml.gz
+# Opcional: bloquear áreas sensíveis
+Disallow: /admin
+Disallow: /users
+Disallow: /clientes
+Disallow: /transportadores
+Disallow: /rails/
+
+# Diga onde está o sitemap (recomendado)
+Sitemap: https://www.cargaclick.com.br/sitemap.xml
