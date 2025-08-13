@@ -55,3 +55,5 @@ end
 
 # Compat Windows
 gem "tzinfo-data", platforms: %i[mingw x64_mingw mswin]
+
+gem "sprockets-rails", "~> 3.5"

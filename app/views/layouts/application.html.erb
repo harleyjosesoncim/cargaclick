@@ -18,4 +18,52 @@
     </main>
   </body>
 </html>
+<!-- app/views/layouts/application.html.erb -->
+<head>
+  <!-- ... (deixe o que já existe, como csrf, viewport, etc.) ... -->
+
+  <!-- Título e descrição com fallback + possibilidade de override por página -->
+  <title><%= content_for?(:title) ? yield(:title) : "CargaClick — Simule seu frete agora" %></title>
+  <meta name="description" content="<%= content_for?(:meta_description) ? yield(:meta_description) : "Simule fretes, compare transportadores e feche com segurança no CargaClick." %>">
+  <meta name="robots" content="index,follow">
+
+  <!-- Canonical (host canônico já garantido pelo seu redirect para www) -->
+  <link rel="canonical" href="<%= request.base_url + request.path %>">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:title" content="<%= content_for?(:og_title) ? yield(:og_title) : "CargaClick — Simule seu frete" %>">
+  <meta property="og:description" content="<%= content_for?(:og_description) ? yield(:og_description) : "Simule fretes e escolha o melhor transportador." %>">
+  <meta property="og:url" content="https://www.cargaclick.com.br/">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://www.cargaclick.com.br/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- JSON-LD: Organization -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Organization",
+    "name":"CargaClick",
+    "url":"https://www.cargaclick.com.br",
+    "logo":"https://www.cargaclick.com.br/og-image.png"
+  }
+  </script>
+
+  <!-- JSON-LD: WebSite -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebSite",
+    "url":"https://www.cargaclick.com.br",
+    "potentialAction":{
+      "@type":"SearchAction",
+      "target":"https://www.cargaclick.com.br/busca?q={query}",
+      "query-input":"required name=query"
+    }
+  }
+  </script>
+
+  <!-- ... (demais tags já existentes, como links de CSS, etc.) ... -->
+</head>
+
 

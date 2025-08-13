@@ -2,6 +2,11 @@
   <h1 class="text-4xl font-extrabold text-orange-600 flex justify-center items-center gap-2 mb-6">
     CargaClick <span class="animate-bounce"><%= @modal_sorteado[:emoji] %></span>
   </h1>
+  <% content_for :title, "CargaClick — Simule agora e encontre o melhor frete" %>
+<% content_for :meta_description, "Compare preços e prazos com transportadores da sua região em poucos cliques." %>
+
+<!-- Conteúdo da página... -->
+
 
   <p class="text-sm text-gray-500 italic mb-8">
     Frete disponível via: <%= @modal_sorteado[:nome] %> 😄
