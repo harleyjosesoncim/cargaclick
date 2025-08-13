@@ -13,6 +13,32 @@
       <p><strong>📝 Descrição:</strong> <%= @frete.descricao %></p>
     <% end %>
 
+<% if @frete.contatos_liberados? %>
+  <!-- Mostrar contato completo -->
+  <p><strong>WhatsApp:</strong> <%= @proposta.transportador.whatsapp %></p>
+  <p><strong>Telefone:</strong> <%= @proposta.transportador.telefone %></p>
+<% else %>
+  <!-- Contato mascarado -->
+  <p>WhatsApp: *** *****-****</p>
+  <button id="btn-desbloquear" class="btn">Desbloquear contato (R$ 9,90)</button>
+
+  <script>
+    document.getElementById("btn-desbloquear").addEventListener("click", function () {
+      fetch("<%= pagamentos_checkout_path(@frete.id) %>", {
+        method: "POST",
+        headers: {
+          "X-CSRF-Token": "<%= form_authenticity_token %>"
+        }
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.url) { window.location = data.url; }
+        else { alert("Não foi possível iniciar o pagamento."); }
+      });
+    });
+  </script>
+<% end %>
+
     <p><strong>⚖️ Peso:</strong> <%= @frete.peso %> kg</p>
 
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
