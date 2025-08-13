@@ -4,13 +4,12 @@ SitemapGenerator::Sitemap.public_path  = "public/"
 SitemapGenerator::Sitemap.compress     = true
 
 SitemapGenerator::Sitemap.create do
-  add root_path,                   priority: 1.0, changefreq: "daily"
-  add transportadores_path,        changefreq: "weekly"
-  add clientes_path,               changefreq: "weekly"
-  add fretes_path,                 changefreq: "daily"
-  add propostas_path,              changefreq: "weekly"
-  add bolsao_path,                 changefreq: "weekly"
-  add ranking_path,                changefreq: "weekly"
-  add cadastro_transportador_path, changefreq: "monthly"
+  add '/',                      changefreq: 'daily',   priority: 1.0
+  add '/fretes/novo',           changefreq: 'daily',   priority: 0.9
+  add '/clientes/novo',         changefreq: 'monthly', priority: 0.6
+  add '/transportadores/novo',  changefreq: 'monthly', priority: 0.6
+  # add outras rotas públicas aqui, ex:
+  # add '/ranking',             changefreq: 'weekly'
 end
 RUBY
+# This file is used to configure the sitemap generation for the CargoClick application.
