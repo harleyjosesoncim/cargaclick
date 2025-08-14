@@ -9,6 +9,18 @@ ENV RAILS_ENV=production \
 
 WORKDIR /app
 
+ENV RAILS_ENV=production \
+    RACK_ENV=production \
+    NODE_ENV=production \
+    RAILS_SERVE_STATIC_FILES=true \
+    SECRET_KEY_BASE=dummy \
+    DATABASE_URL=postgresql://postgres:postgres@localhost:5432/dummy \
+    APP_HOST=build.local
+
+RUN bundle exec rake assets:precompile
+# dependências do sistema
+
+
 # deps
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get update -qq && \

@@ -1,9 +1,39 @@
+# render.yaml
+# Blueprint de deploy do CargaClick no Render (Rails + PostgreSQL + Docker opcional)
+
 services:
   - type: web
     name: cargaclick
-    env: docker
-    plan: free
-    repo: https://github.com/harleyjosesoncim/cargaclick
-    branch: main
+    env: ruby
+    plan: starter       # ou free/personal/pro
+    buildCommand: |
+      bundle install --without development test
+      bundle exec rake assets:precompile
+      bundle exec rake db:migrate
+    startCommand: bundle exec puma -C config/puma.rb
     autoDeploy: true
+    envVars:
+      - key: RAILS_ENV
+        value: production
+      - key: RAILS_LOG_TO_STDOUT
+        value: enabled
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cargaclick-db
+          property: connectionString
+      - key: RAILS_MASTER_KEY
+        sync: false   # vai ser configurado manualmente
+      - key: OPEN_ROUTE_SERVICE_API_KEY
+        sync: false
+      - key: MERCADO_PAGO_PLAN_URL
+        sync: false
+      - key: MERCADO_PAGO_PLAN_ID
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
 
+databases:
+  - name: cargaclick-db
+    plan: free
+    databaseName: cargaclick_production
+    user: cargaclick
