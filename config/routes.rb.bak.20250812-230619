@@ -1,37 +1,34 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  # === Canonical redirect: apex -> www (preserva path e querystring)
+  # Canonical redirect: apex -> www (preserva path e querystring)
   constraints(host: "cargaclick.com.br") do
-    # raiz do apex
     match "/", to: redirect("https://www.cargaclick.com.br/"), via: :all
-
-    # qualquer outro caminho no apex
-    match "*path", to: redirect { |params, req|
+    match "(*path)", to: redirect { |p, req|
       qs = req.query_string.to_s
-      "https://www.cargaclick.com.br/#{params[:path]}#{qs.empty? ? "" : "?#{qs}"}"
+      "https://www.cargaclick.com.br/#{p[:path]}#{qs.empty? ? "" : "?#{qs}"}"
     }, via: :all
   end
 
-  # === Health check
+  # Health check
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # === Página inicial
+  # Página inicial
   root "home#index"
 
-  # === Devise
+  # Devise
   devise_for :clientes
   devise_for :transportadores
 
-  # === Propostas
+  # Propostas
   resources :propostas do
     member { get :gerar_proposta_inteligente }
   end
 
-  # === Modals
+  # Modals
   resources :modals
 
-  # === Fretes
+  # Fretes
   resources :fretes do
     member do
       get  :rastreamento
@@ -41,51 +38,60 @@ Rails.application.routes.draw do
     collection { get :meus }
   end
 
-  # === Clientes
+  # Clientes
   resources :clientes do
     member { get "fidelidade", to: "fidelidade#cliente", as: :fidelidade }
   end
 
-  # === Transportadores
+  # Transportadores
   resources :transportadores do
     member { get "fidelidade", to: "fidelidade#transportador", as: :fidelidade }
   end
 
-  # === Cadastro público de Transportador
+  # ===== Cadastro público de Transportador (adicionado) =====
+  # GET exibe o formulário, POST envia o formulário — ambos no mesmo path
   get  "/cadastro/transportador", to: "transportadores#cadastro_publico", as: :cadastro_transportador
   post "/cadastro/transportador", to: "transportadores#criar_publico"
+  # =========================================================
 
-  # === Admin (seu namespace atual)
+  # Admin
   get "admin/dashboard", to: "admin/dashboard#index"
   namespace :admin do
-    get   "/",      to: "dashboard#index",  as: :index
+    get   "/",    to: "dashboard#index",  as: :index
     patch "update", to: "dashboard#update", as: :update
   end
 
-  # === RailsAdmin (monta só se a gem existir; caminho separado do seu namespace :admin)
-  if defined?(RailsAdmin)
-    mount RailsAdmin::Engine => "/rails_admin", as: "rails_admin"
-  end
-
-  # === Bolsão & Ranking
+  # Bolsão & Ranking
   get "bolsao",  to: "bolsao#index",  as: :bolsao
   get "ranking", to: "ranking#index", as: :ranking
 
-  # === Pagamentos (MVP / Mercado Pago)
+  # Pagamentos (MVP / Mercado Pago)
   post "pagamentos/:frete_id/checkout", to: "pagamentos#checkout", as: :pagamentos_checkout
   get  "pagamentos/retorno",            to: "pagamentos#retorno",  as: :pagamentos_retorno
   post "pagamentos/webhook",            to: "pagamentos#webhook",  as: :pagamentos_webhook
+  # comente qualquer mount antigo, se existir
+sed -i 's/^\s*mount RailsAdmin::Engine/# &/' config/routes.rb
 
-  # === Ações extra
+# insira um bloco protegido ANTES da última linha (que é o 'end' do routes.draw)
+grep -q "if defined?(RailsAdmin)" config/routes.rb || \
+sed -i '$i \  # RailsAdmin só se a gem estiver presente\n  if defined?(RailsAdmin)\n    mount RailsAdmin::Engine => "/rails_admin", as: "rails_admin"\n  end' config/routes.rb
+
+# confira sintaxe
+ruby -c config/routes.rb
+  
+
+  # Ações extra
   post "fretes/:id/gerar_proposta", to: "fretes#gerar_proposta", as: :gerar_proposta_frete
+  if defined?(RailsAdmin)
+  mount RailsAdmin::Engine => '/rails_admin', as: 'rails_admin'
+end
 
-  # === Marketing
+
+  # Marketing
   post "gerar_post_instagram",     to: "marketing#gerar_post_instagram"
   post "gerar_email_marketing",    to: "marketing#gerar_email_marketing"
   post "gerar_proposta_comercial", to: "marketing#gerar_proposta_comercial"
-# === IA (GPT via Ollama/OpenAI-compatible)
-get  "gpt/test", to: "ai#test"
-post "gpt/chat", to: "ai#chat"
-  
 
+
+  
 end
