@@ -20,3 +20,5 @@ yarn-debug.log*
 .env
 /public/assets
 /app/assets/builds
+
+/public/assets

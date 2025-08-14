@@ -1,4 +1,0 @@
-/* Estilos adicionais para cards premium */
-.card-hover {
-  @apply hover:scale-105 transition-all duration-300;
-}
