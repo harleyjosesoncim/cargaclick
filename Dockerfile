@@ -1,51 +1,41 @@
+# Dockerfile
 FROM ruby:3.2.4
 
-ENV RAILS_ENV=production \
-    RACK_ENV=production \
-    NODE_ENV=production \
-    BUNDLE_WITHOUT="development:test" \
-    RAILS_SERVE_STATIC_FILES=true \
-    PORT=10000
+# Dependências do SO
+RUN apt-get update -y && apt-get install -y --no-install-recommends \
+  build-essential \
+  nodejs \
+  npm \
+  postgresql-client \
+  libvips \
+  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-ENV RAILS_ENV=production \
-    RACK_ENV=production \
-    NODE_ENV=production \
-    RAILS_SERVE_STATIC_FILES=true \
-    SECRET_KEY_BASE=dummy \
-    DATABASE_URL=postgresql://postgres:postgres@localhost:5432/dummy \
-    APP_HOST=build.local
-
-RUN bundle exec rake assets:precompile
-# dependências do sistema
-
-
-# deps
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
-    apt-get update -qq && \
-    apt-get install -y --no-install-recommends \
-      nodejs postgresql-client libpq-dev build-essential libvips && \
-    rm -rf /var/lib/apt/lists/*
-
-# gems
+# 1) Bundler (precisa do Gemfile)
 COPY Gemfile Gemfile.lock ./
 RUN bundle install --jobs=4 --retry=3
 
-# node/yarn
+# 2) Yarn (se houver front-end)
 COPY package.json yarn.lock* ./
 RUN [ -f yarn.lock ] && npm i -g yarn && yarn install --frozen-lockfile || true
 
-# código
+# 3) App inteiro
 COPY . .
 
-# bundling (js/css) — opcional, mas ajuda no cache
-RUN yarn build || true && yarn build:css || true
+# 4) Variáveis só para o build (o Render injeta as reais em runtime)
+ENV RAILS_ENV=production \
+    SECRET_KEY_BASE=dummy \
+    APP_HOST=build.local \
+    APP_PROTOCOL=https
 
-# PRECOMPILE sprockets (gera public/assets + manifest)
-# usa SECRET_KEY_BASE dummy só no build; em runtime o Render injeta a real
-ENV SECRET_KEY_BASE=dummy
+# 5) Build dos assets (esbuild/tailwind) + precompile
+# (se você chama yarn build/build:css em outros scripts, mantenha;
+# o precompile já dispara tasks js/css em Rails 7 com jsbundling/cssbundling)
+RUN yarn build || true && yarn build:css || true
 RUN bundle exec rake assets:precompile
 
-# servidor
-CMD ["bash","-lc","bundle exec puma -C config/puma.rb"]
+# 6) Servidor (ajuste se tiver puma.rb)
+ENV RAILS_LOG_TO_STDOUT=true \
+    RAILS_SERVE_STATIC_FILES=true
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
