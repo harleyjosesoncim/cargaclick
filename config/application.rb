@@ -1,33 +1,32 @@
+# config/application.rb
 require_relative "boot"
 require "rails/all"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
+# Dotenv em dev/test é carregado pelo Bundler; não precisa forçar aqui.
 # Dotenv::Railtie.load
- 
+
 module CargaClick
   class Application < Rails::Application
-    # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 7.0
+    # Rails 7.1 (compatível com seu Gemfile 7.1.5.1)
+    config.load_defaults 7.1
 
-    # Please, add to the `ignore` list any other `lib` subdirectories that do
-    # not contain `.rb` files, or that should not be reloaded or eager loaded.
-    # Common ones are `templates`, `generators`, or `middleware`, for example.
-    config.autoload_lib(ignore: %w(assets tasks))
+    # Autoload do diretório lib/, ignorando subpastas não-Ruby
+    config.autoload_lib(ignore: %w[assets tasks])
 
+    # Não exigir master key no build (Render injeta secrets em runtime)
     config.require_master_key = false
 
+    # Evita rodar initializers durante assets:precompile
+    config.assets.initialize_on_precompile = false
 
-    # Configuration for the application, engines, and railties goes here.
-    #
-    # These settings can be overridden in specific environments using the files
-    # in config/environments, which are processed later.
-    #
-    # config.time_zone = "Central Time (US & Canada)"
-    # config.eager_load_paths << Rails.root.join("extras")
-
-    # Don't generate system test files.
+    # Não gerar system tests
     config.generators.system_tests = nil
+
+    # Opcional:
+    # config.time_zone = "Brasilia"
+    # config.eager_load_paths << Rails.root.join("extras")
   end
 end
