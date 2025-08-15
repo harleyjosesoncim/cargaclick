@@ -1,41 +1,48 @@
 # Dockerfile
 FROM ruby:3.2.4
 
-# Dependências do SO
+# 1) Variáveis que afetam a instalação de gems (antes do bundle install!)
+ENV RAILS_ENV=production \
+    RACK_ENV=production \
+    BUNDLE_WITHOUT="development:test" \
+    BUNDLE_JOBS=4 \
+    BUNDLE_RETRY=3
+
+# 2) Dependências do SO (inclui libpq-dev para a gem pg e libvips para image_processing)
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
   build-essential \
+  libpq-dev \
+  postgresql-client \
   nodejs \
   npm \
-  postgresql-client \
   libvips \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# 1) Bundler (precisa do Gemfile)
+# 3) Gems com cache de camadas
 COPY Gemfile Gemfile.lock ./
-RUN bundle install --jobs=4 --retry=3
+RUN bundle install
 
-# 2) Yarn (se houver front-end)
+# 4) Front-end (aproveita cache da camada)
 COPY package.json yarn.lock* ./
 RUN [ -f yarn.lock ] && npm i -g yarn && yarn install --frozen-lockfile || true
 
-# 3) App inteiro
+# 5) Copia o app
 COPY . .
 
-# 4) Variáveis só para o build (o Render injeta as reais em runtime)
-ENV RAILS_ENV=production \
-    SECRET_KEY_BASE=dummy \
+# 6) Variáveis apenas para o build (Render injeta as reais em runtime)
+ENV SECRET_KEY_BASE=dummy \
     APP_HOST=build.local \
     APP_PROTOCOL=https
 
-# 5) Build dos assets (esbuild/tailwind) + precompile
-# (se você chama yarn build/build:css em outros scripts, mantenha;
-# o precompile já dispara tasks js/css em Rails 7 com jsbundling/cssbundling)
-RUN yarn build || true && yarn build:css || true
+# 7) Precompile de assets (o rake já dispara js/css do jsbundling/cssbundling)
 RUN bundle exec rake assets:precompile
 
-# 6) Servidor (ajuste se tiver puma.rb)
+# 8) Config de runtime
 ENV RAILS_LOG_TO_STDOUT=true \
     RAILS_SERVE_STATIC_FILES=true
-CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
+
+# 9) Start do servidor
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb", "-b", "tcp://0.0.0.0:${PORT}"]
+# 10) Expor a porta padrão do Puma
