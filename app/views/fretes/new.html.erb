@@ -1,52 +1,5 @@
-<div class="max-w-2xl mx-auto p-6">
-  <h1 class="text-2xl font-semibold mb-6">Novo frete</h1>
-  <% if @frete.errors.any? %>
-    <div class="mb-4 p-4 rounded bg-red-50 text-red-700">
-      <p><strong>Corrija os campos abaixo:</strong></p>
-      <ul class="list-disc pl-6">
-        <% @frete.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-  <%= form_with model: @frete, local: true, class: "space-y-4" do |f| %>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div>
-        <%= f.label :origem, class: "block text-sm font-medium" %>
-        <%= f.text_field :origem, class: "mt-1 w-full border rounded p-2" %>
-      </div>
-      <div>
-        <%= f.label :destino, class: "block text-sm font-medium" %>
-        <%= f.text_field :destino, class: "mt-1 w-full border rounded p-2" %>
-      </div>
-    </div>
-    <div>
-      <%= f.label :descricao, class: "block text-sm font-medium" %>
-      <%= f.text_area :descricao, rows: 3, class: "mt-1 w-full border rounded p-2" %>
-    </div>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <div>
-        <%= f.label :peso, "Peso (kg)", class: "block text-sm font-medium" %>
-        <%= f.number_field :peso, step: :any, class: "mt-1 w-full border rounded p-2" %>
-      </div>
-      <div>
-        <%= f.label :largura, "Largura (cm)", class: "block text-sm font-medium" %>
-        <%= f.number_field :largura, step: :any, class: "mt-1 w-full border rounded p-2" %>
-      </div>
-      <div>
-        <%= f.label :altura, "Altura (cm)", class: "block text-sm font-medium" %>
-        <%= f.number_field :altura, step: :any, class: "mt-1 w-full border rounded p-2" %>
-      </div>
-      <div>
-        <%= f.label :profundidade, "Profundidade (cm)", class: "block text-sm font-medium" %>
-        <%= f.number_field :profundidade, step: :any, class: "mt-1 w-full border rounded p-2" %>
-      </div>
-    </div>
-    <div class="flex items-center gap-3">
-      <%= f.submit "Criar frete",
-          class: "px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700" %>
-      <%= link_to "Cancelar", fretes_path, class: "px-4 py-2 rounded border" %>
-    </div>
-  <% end %>
+<% content_for :title, "Novo Frete — CargaClick" %>
+<h1 class="text-2xl font-bold mb-6">Novo Frete</h1>
+<div class="bg-white rounded-2xl shadow p-4">
+  <%= render "form" %>
 </div>

@@ -1,25 +1,35 @@
-<div class="max-w-4xl mx-auto p-6">
-  <h1 class="text-2xl font-semibold mb-4">Meus fretes</h1>
-  <div class="mb-4">
-    <%= link_to "➕ Novo frete", new_frete_path,
-        class: "px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700" %>
-  </div>
-  <% if @fretes.any? %>
-    <ul class="space-y-3">
-      <% @fretes.each do |frete| %>
-        <li class="p-4 bg-white rounded shadow flex items-center justify-between">
-          <div>
-            <p class="font-semibold"><%= frete.origem %> → <%= frete.destino %></p>
-            <p class="text-sm text-gray-500">Criado em <%= l(frete.created_at, format: :short) %></p>
-          </div>
-          <div class="space-x-2">
-            <%= link_to "Abrir", frete_path(frete),
-                class: "px-3 py-1 rounded border hover:bg-gray-50" %>
-          </div>
-        </li>
+<% content_for :title, "Fretes — CargaClick" %>
+<h1 class="text-2xl font-bold mb-6">Fretes</h1>
+
+<div class="bg-white rounded-2xl shadow p-4 overflow-x-auto">
+  <table class="min-w-full">
+    <thead>
+      <tr class="text-left border-b">
+        <th class="py-2 pr-4">#</th>
+        <th class="py-2 pr-4">Origem</th>
+        <th class="py-2 pr-4">Destino</th>
+        <th class="py-2 pr-4">Distância</th>
+        <th class="py-2 pr-4">Preço</th>
+        <th class="py-2 pr-4">Status</th>
+        <th class="py-2 pr-4"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if @fretes.present? %>
+        <% @fretes.each do |f| %>
+          <tr class="border-b hover:bg-gray-50">
+            <td class="py-2 pr-4"><%= f.id %></td>
+            <td class="py-2 pr-4"><%= safe_val(f.try(:origem) || f.try(:cep_origem)) %></td>
+            <td class="py-2 pr-4"><%= safe_val(f.try(:destino) || f.try(:cep_destino)) %></td>
+            <td class="py-2 pr-4"><%= f.respond_to?(:distancia_km) && f.distancia_km ? ("#{f.distancia_km} km") : "—" %></td>
+            <td class="py-2 pr-4"><%= f.respond_to?(:preco) ? money(f.preco) : (f.respond_to?(:valor_total) ? money(f.valor_total) : (f.respond_to?(:valor) ? money(f.valor) : "—")) %></td>
+            <td class="py-2 pr-4"><%= badge_status(f.try(:status)) %></td>
+            <td class="py-2 pr-4"><%= link_to "Ver", frete_path(f), class: "text-blue-600" %></td>
+          </tr>
+        <% end %>
+      <% else %>
+        <tr><td colspan="7" class="py-4 text-gray-600">Nenhum frete encontrado.</td></tr>
       <% end %>
-    </ul>
-  <% else %>
-    <p class="text-gray-600">Você ainda não possui fretes.</p>
-  <% end %>
+    </tbody>
+  </table>
 </div>

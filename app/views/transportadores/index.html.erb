@@ -1,4 +1,42 @@
-<div class="max-w-3xl mx-auto p-6 space-y-4">
-  <h1 class="text-2xl font-semibold">Área de Transportadores</h1>
-  <p>Em breve: cadastro e match automático de fretes.</p>
+<% content_for :title, "Transportadores — CargaClick" %>
+
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold">Transportadores</h1>
+  <%= form_with url: transportadores_path, method: :get, local: true, class: "flex gap-2" do %>
+    <input type="text" name="q" value="<%= h(@q) %>" placeholder="Buscar por nome, veículo ou cidade" class="border rounded-lg px-3 py-2" />
+    <button class="bg-blue-600 text-white rounded-lg px-4 py-2">Buscar</button>
+  <% end %>
 </div>
+
+<div class="bg-white rounded-2xl shadow p-4 overflow-x-auto">
+  <table class="min-w-full">
+    <thead>
+      <tr class="text-left border-b">
+        <th class="py-2 pr-4">#</th>
+        <th class="py-2 pr-4">Nome</th>
+        <th class="py-2 pr-4">Tipo de Veículo</th>
+        <th class="py-2 pr-4">Custo/Km</th>
+        <th class="py-2 pr-4">Cidade</th>
+        <th class="py-2 pr-4">Criado em</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if @transportadores.present? %>
+        <% @transportadores.each_with_index do |t, i| %>
+          <tr class="border-b hover:bg-gray-50">
+            <td class="py-2 pr-4"><%= i + 1 %></td>
+            <td class="py-2 pr-4"><%= safe_val(t.try(:nome) || t.try(:name)) %></td>
+            <td class="py-2 pr-4"><%= safe_val(t.try(:tipo_veiculo) || t.try(:vehicle_type)) %></td>
+            <td class="py-2 pr-4"><%= t.respond_to?(:custo_por_km) ? money(t.custo_por_km) : (t.respond_to?(:custo_km) ? money(t.custo_km) : "—") %></td>
+            <td class="py-2 pr-4"><%= safe_val(t.try(:cidade) || t.try(:city)) %></td>
+            <td class="py-2 pr-4"><%= t.respond_to?(:created_at) && t.created_at ? l(t.created_at, format: :short) : "—" %></td>
+          </tr>
+        <% end %>
+      <% else %>
+        <tr><td colspan="6" class="py-4 text-gray-600">Nenhum transportador encontrado.</td></tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<%= simple_pagination({ controller: :transportadores, action: :index, q: @q }, @pager) %>

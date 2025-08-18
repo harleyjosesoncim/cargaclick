@@ -1,10 +1,7 @@
 # config/routes.rb
 Rails.application.routes.draw do
-  # Healthcheck
+  # Healthcheck (Render/uptime)
   get "up", to: "rails/health#show", as: :rails_health_check
-
-  # DEBUG: rota de fumaça (ignora controller e banco)
-get "/clientes", to: proc { [200, {"Content-Type"=>"text/plain"}, ["ok /clientes (rack)"]] }
 
   # Home
   root "home#index"
@@ -13,25 +10,20 @@ get "/clientes", to: proc { [200, {"Content-Type"=>"text/plain"}, ["ok /clientes
   devise_for :clientes,
              path: "clientes",
              controllers: {
-               sessions: "clientes/sessions",
+               sessions:      "clientes/sessions",
                registrations: "clientes/registrations",
-               passwords: "clientes/passwords"
+               passwords:     "clientes/passwords"
              }
 
-  # Negócio
+  # Domínio de negócio
   resources :fretes
-  get "fretes/novo", to: "fretes#new", as: :novo_frete       # atalho opcional
-  get "bolsao", to: "fretes#queue", as: :bolsao_solicitacoes # Bolsão de Solicitações
+  get "fretes/novo", to: "fretes#new",   as: :novo_frete
+  get "bolsao",      to: "fretes#queue", as: :bolsao_solicitacoes
 
-  # Páginas de listagem/landing (GET) — usadas pelos botões da Home
-  resources :clientes, only: [:index]
-  resources :transportadores, only: [:index]
+  # Listagens (botões da Home)
+  resources :clientes,        only: [:index]        # GET /clientes  -> ClientesController#index
+  resources :transportadores, only: [:index]        # GET /transportadores -> TransportadoresController#index
 
-  # Opcional: áreas autenticadas
-  # authenticate :cliente do
-  #   get "dashboard", to: "dashboard#show", as: :cliente_dashboard
-  # end
-
-  # Opcional: 404 custom
+  # 404 custom (opcional; deixe comentado até ter ErrorsController)
   # get "*unmatched", to: "errors#not_found", via: :all
 end

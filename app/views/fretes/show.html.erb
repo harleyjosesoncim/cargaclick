@@ -1,20 +1,22 @@
-<div class="max-w-3xl mx-auto p-6 space-y-4">
-  <h1 class="text-2xl font-semibold">Frete #<%= @frete.id %></h1>
-  <div class="p-4 bg-white rounded shadow">
-    <dl class="grid grid-cols-1 md:grid-cols-2 gap-2">
-      <div><dt class="font-medium">Origem</dt><dd><%= @frete.origem %></dd></div>
-      <div><dt class="font-medium">Destino</dt><dd><%= @frete.destino %></dd></div>
-      <div><dt class="font-medium">Peso</dt><dd><%= @frete.peso %> kg</dd></div>
-      <div><dt class="font-medium">Dimensões</dt>
-        <dd><%= [@frete.largura, @frete.altura, @frete.profundidade].compact.join(" x ") %></dd>
-      </div>
-      <div class="md:col-span-2">
-        <dt class="font-medium">Descrição</dt>
-        <dd><%= simple_format(@frete.descricao) %></dd>
-      </div>
-    </dl>
-  </div>
-  <div class="flex gap-3">
-    <%= link_to "Voltar", fretes_path, class: "px-4 py-2 rounded border" %>
-  </div>
+<% content_for :title, "Frete ##{@frete&.id} — CargaClick" %>
+<h1 class="text-2xl font-bold mb-6">Frete #<%= @frete&.id %></h1>
+
+<div class="bg-white rounded-2xl shadow p-4">
+  <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <% if @frete.respond_to?(:attributes) %>
+      <% @frete.attributes.slice(*(@frete.attributes.keys & %w[origem destino cep_origem cep_destino tipo_carga peso volume distancia_km preco valor valor_total status transportador_id cliente_id created_at updated_at])).each do |k, v| %>
+        <div>
+          <dt class="text-sm text-gray-500"><%= k.humanize %></dt>
+          <dd class="text-base"><%= safe_val(v) %></dd>
+        </div>
+      <% end %>
+    <% else %>
+      <p>Dados indisponíveis.</p>
+    <% end %>
+  </dl>
+</div>
+
+<div class="mt-6 flex gap-3">
+  <%= link_to "Voltar", fretes_path, class: "px-4 py-2 rounded border" %>
+  <%= link_to "Editar", edit_frete_path(@frete), class: "px-4 py-2 rounded bg-blue-600 text-white" if respond_to?(:edit_frete_path) %>
 </div>

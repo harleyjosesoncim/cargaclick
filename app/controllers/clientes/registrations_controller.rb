@@ -1,3 +1,4 @@
-class Clientes::RegistrationsController < Devise::RegistrationsController
-  respond_to :html, :turbo_stream
+module Clientes
+  class RegistrationsController < Devise::RegistrationsController
+  end
 end
