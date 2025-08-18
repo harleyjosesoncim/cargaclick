@@ -1,62 +1,44 @@
-<%= render 'shared/erros', object: @frete %>
+<!-- app/views/fretes/new.html.erb -->
+<% content_for :title, "Nova Solicitação de Frete" %>
 
-<%= form_with(model: @frete, local: true) do |form| %>
-  <div class="w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-8 sm:p-10 border border-blue-200 mx-auto mt-10">
+<%= render 'shared/errors', object: @frete %>
 
-    <div class="flex items-center space-x-4 mb-8 pb-4 border-b border-gray-200">
-      <div class="text-5xl text-blue-600">📦</div>
-      <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 leading-tight">
+<%= form_with(model: @frete, local: true, html: { class: 'max-w-2xl mx-auto mt-10' }) do |form| %>
+  <div class="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 border border-blue-200">
+    <div class="flex items-center space-x-4 mb-6 pb-4 border-b border-gray-200">
+      <span class="text-4xl sm:text-5xl text-blue-600">📦</span>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 leading-tight">
         Nova Solicitação de Frete
       </h1>
     </div>
 
-    <div class="space-y-6">
+    <div class="space-y-5">
       <!-- Origem -->
-      <div>
+      <div class="flex flex-col">
         <%= form.label :origem, "Origem (CEP)", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= form.text_field :origem, placeholder: "Ex: 18000-000", class: "w-full rounded-lg border-gray-300 shadow-sm p-3 text-gray-800", pattern: "\\d{5}-?\\d{3}", required: true %>
+        <%= form.text_field :origem,
+                            placeholder: "Ex: 18000-000",
+                            class: "w-full rounded-lg border-gray-300 shadow-sm p-2 sm:p-3 text-gray-800 focus:ring-2 focus:ring-blue-500",
+                            pattern: "\\d{5}-?\\d{3}",
+                            required: true,
+                            aria: { required: true } %>
       </div>
 
       <!-- Destino -->
-      <div>
+      <div class="flex flex-col">
         <%= form.label :destino, "Destino (CEP)", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= form.text_field :destino, placeholder: "Ex: 12892-634", class: "w-full rounded-lg border-gray-300 shadow-sm p-3 text-gray-800", pattern: "\\d{5}-?\\d{3}", required: true %>
+        <%= form.text_field :destino,
+                            placeholder: "Ex: 12892-634",
+                            class: "w-full rounded-lg border-gray-300 shadow-sm p-2 sm:p-3 text-gray-800 focus:ring-2 focus:ring-blue-500",
+                            pattern: "\\d{5}-?\\d{3}",
+                            required: true,
+                            aria: { required: true } %>
       </div>
 
       <!-- Descrição -->
-      <div>
+      <div class="flex flex-col">
         <%= form.label :descricao, "Descrição da Carga", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= form.text_area :descricao, placeholder: "Ex: Caixas, móveis desmontados, etc.", rows: 3, class: "w-full rounded-lg border-gray-300 shadow-sm p-3 text-gray-800 resize-y" %>
-      </div>
-
-      <!-- Peso -->
-      <div>
-        <%= form.label :peso, "Peso (kg)", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= form.number_field :peso, placeholder: "Ex: 50", min: 0.1, step: 0.1, class: "w-full rounded-lg border-gray-300 shadow-sm p-3 text-gray-800", required: true %>
-      </div>
-
-      <!-- Dimensões -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div>
-          <%= form.label :largura, "Largura (cm)", class: "block text-sm font-medium text-gray-700 mb-1" %>
-          <%= form.number_field :largura, min: 1, class: "w-full rounded-lg border-gray-300 shadow-sm p-3 text-gray-800" %>
-        </div>
-        <div>
-          <%= form.label :altura, "Altura (cm)", class: "block text-sm font-medium text-gray-700 mb-1" %>
-          <%= form.number_field :altura, min: 1, class: "w-full rounded-lg border-gray-300 shadow-sm p-3 text-gray-800" %>
-        </div>
-        <div>
-          <%= form.label :profundidade, "Profundidade (cm)", class: "block text-sm font-medium text-gray-700 mb-1" %>
-          <%= form.number_field :profundidade, min: 1, class: "w-full rounded-lg border-gray-300 shadow-sm p-3 text-gray-800" %>
-        </div>
-      </div>
-
-      <!-- Ações -->
-      <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6">
-        <%= link_to "Cancelar", root_path, class: "w-full sm:w-auto px-8 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition text-center" %>
-        <%= form.submit "Confirmar Frete", class: "w-full sm:w-auto px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition" %>
-      </div>
-    </div>
-  </div>
-<% end %>
+        <%= form.text_area :descricao,
+                           placeholder: "Ex: Caixas, móveis desmontados, etc.",
+                           rows: 3
 

@@ -1,0 +1,45 @@
+cd ~/projects/Cargaclick
+
+# Backup do arquivo atual (só por segurança)
+cp config/initializers/devise.rb config/initializers/devise.rb.bak.$(date +%s)
+
+# Substituir por um initializer LIMPO (Ruby puro, compatível com Rails 7.1 + Devise 4.9)
+cat > config/initializers/devise.rb <<'RUBY'
+# frozen_string_literal: true
+
+# Doc: https://github.com/heartcombo/devise
+Devise.setup do |config|
+  config.mailer_sender = "no-reply@cargaclick.com.br"
+
+  require "devise/orm/active_record"
+
+  # Hotwire/Turbo
+  config.navigational_formats = ["*/*", :html, :turbo_stream]
+
+  # Segurança / Senhas
+  config.stretches = Rails.env.test? ? 1 : 12
+  config.password_length = 8..128
+
+  # E-mail como login
+  config.authentication_keys = [:email]
+  config.reset_password_keys  = [:email]
+  config.confirmation_keys    = [:email]
+
+  # Normalizações de e-mail
+  config.case_insensitive_keys = [:email]
+  config.strip_whitespace_keys = [:email]
+
+  # Sessão / Lembre-me / Logout
+  config.skip_session_storage = [:http_auth]
+  config.remember_for = 2.weeks
+  config.sign_out_via = :delete
+
+  # Reset de senha
+  config.reset_password_within = 6.hours
+
+  # Outras opções (habilite se usar confirmable/lockable/etc)
+  # config.reconfirmable    = true
+  # config.lock_strategy    = :failed_attempts
+  # config.maximum_attempts = 5
+end
+RUBY
