@@ -1,29 +1,34 @@
 # config/routes.rb
 Rails.application.routes.draw do
-  # Healthcheck para monitoramento (ex.: Render/uptime checks)
-  get 'up', to: 'rails/health#show', as: :rails_health_check
+  # Healthcheck
+  get "up", to: "rails/health#show", as: :rails_health_check
 
-  # Página inicial
-  root to: 'home#index'
+  # Home
+  root "home#index"
 
-  # Configuração do Devise para autenticação de clientes
+  # Devise (Clientes)
   devise_for :clientes,
-             path: 'clientes',
+             path: "clientes",
              controllers: {
-               sessions: 'clientes/sessions',
-               registrations: 'clientes/registrations',
-               passwords: 'clientes/passwords'
+               sessions: "clientes/sessions",
+               registrations: "clientes/registrations",
+               passwords: "clientes/passwords"
              }
 
-  # Rotas de negócio
+  # Negócio
   resources :fretes
+  get "fretes/novo", to: "fretes#new", as: :novo_frete       # atalho opcional
+  get "bolsao", to: "fretes#queue", as: :bolsao_solicitacoes # Bolsão de Solicitações
 
-  # Áreas autenticadas (opcional, descomente e ajuste conforme necessário)
+  # Páginas de listagem/landing (GET) — usadas pelos botões da Home
+  resources :clientes, only: [:index]
+  resources :transportadores, only: [:index]
+
+  # Opcional: áreas autenticadas
   # authenticate :cliente do
-  #   get 'dashboard', to: 'dashboard#show', as: :cliente_dashboard
-  #   resources :minhas_viagens, only: [:index, :show]
+  #   get "dashboard", to: "dashboard#show", as: :cliente_dashboard
   # end
 
-  # Fallback para 404 (opcional, descomente se desejar)
-  # get '*unmatched', to: 'errors#not_found', via: :all
+  # Opcional: 404 custom
+  # get "*unmatched", to: "errors#not_found", via: :all
 end

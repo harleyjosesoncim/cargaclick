@@ -1,44 +1,52 @@
-<!-- app/views/fretes/new.html.erb -->
-<% content_for :title, "Nova Solicitação de Frete" %>
-
-<%= render 'shared/errors', object: @frete %>
-
-<%= form_with(model: @frete, local: true, html: { class: 'max-w-2xl mx-auto mt-10' }) do |form| %>
-  <div class="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 border border-blue-200">
-    <div class="flex items-center space-x-4 mb-6 pb-4 border-b border-gray-200">
-      <span class="text-4xl sm:text-5xl text-blue-600">📦</span>
-      <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 leading-tight">
-        Nova Solicitação de Frete
-      </h1>
+<div class="max-w-2xl mx-auto p-6">
+  <h1 class="text-2xl font-semibold mb-6">Novo frete</h1>
+  <% if @frete.errors.any? %>
+    <div class="mb-4 p-4 rounded bg-red-50 text-red-700">
+      <p><strong>Corrija os campos abaixo:</strong></p>
+      <ul class="list-disc pl-6">
+        <% @frete.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
     </div>
-
-    <div class="space-y-5">
-      <!-- Origem -->
-      <div class="flex flex-col">
-        <%= form.label :origem, "Origem (CEP)", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= form.text_field :origem,
-                            placeholder: "Ex: 18000-000",
-                            class: "w-full rounded-lg border-gray-300 shadow-sm p-2 sm:p-3 text-gray-800 focus:ring-2 focus:ring-blue-500",
-                            pattern: "\\d{5}-?\\d{3}",
-                            required: true,
-                            aria: { required: true } %>
+  <% end %>
+  <%= form_with model: @frete, local: true, class: "space-y-4" do |f| %>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <%= f.label :origem, class: "block text-sm font-medium" %>
+        <%= f.text_field :origem, class: "mt-1 w-full border rounded p-2" %>
       </div>
-
-      <!-- Destino -->
-      <div class="flex flex-col">
-        <%= form.label :destino, "Destino (CEP)", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= form.text_field :destino,
-                            placeholder: "Ex: 12892-634",
-                            class: "w-full rounded-lg border-gray-300 shadow-sm p-2 sm:p-3 text-gray-800 focus:ring-2 focus:ring-blue-500",
-                            pattern: "\\d{5}-?\\d{3}",
-                            required: true,
-                            aria: { required: true } %>
+      <div>
+        <%= f.label :destino, class: "block text-sm font-medium" %>
+        <%= f.text_field :destino, class: "mt-1 w-full border rounded p-2" %>
       </div>
-
-      <!-- Descrição -->
-      <div class="flex flex-col">
-        <%= form.label :descricao, "Descrição da Carga", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= form.text_area :descricao,
-                           placeholder: "Ex: Caixas, móveis desmontados, etc.",
-                           rows: 3
-
+    </div>
+    <div>
+      <%= f.label :descricao, class: "block text-sm font-medium" %>
+      <%= f.text_area :descricao, rows: 3, class: "mt-1 w-full border rounded p-2" %>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div>
+        <%= f.label :peso, "Peso (kg)", class: "block text-sm font-medium" %>
+        <%= f.number_field :peso, step: :any, class: "mt-1 w-full border rounded p-2" %>
+      </div>
+      <div>
+        <%= f.label :largura, "Largura (cm)", class: "block text-sm font-medium" %>
+        <%= f.number_field :largura, step: :any, class: "mt-1 w-full border rounded p-2" %>
+      </div>
+      <div>
+        <%= f.label :altura, "Altura (cm)", class: "block text-sm font-medium" %>
+        <%= f.number_field :altura, step: :any, class: "mt-1 w-full border rounded p-2" %>
+      </div>
+      <div>
+        <%= f.label :profundidade, "Profundidade (cm)", class: "block text-sm font-medium" %>
+        <%= f.number_field :profundidade, step: :any, class: "mt-1 w-full border rounded p-2" %>
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <%= f.submit "Criar frete",
+          class: "px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700" %>
+      <%= link_to "Cancelar", fretes_path, class: "px-4 py-2 rounded border" %>
+    </div>
+  <% end %>
+</div>

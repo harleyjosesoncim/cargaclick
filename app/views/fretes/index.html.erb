@@ -1,31 +1,25 @@
-<div class="flex flex-wrap gap-3 pt-2">
-
-  <!-- Ver detalhes -->
-  <%= link_to 'Ver', frete_path(frete),
-        class: "text-blue-600 hover:underline font-semibold text-sm" %>
-
-  <!-- Editar frete -->
-  <%= link_to 'Editar', edit_frete_path(frete),
-        class: "text-yellow-600 hover:underline font-semibold text-sm" %>
-
-  <!-- Rastrear frete -->
-  <%= link_to 'Rastrear', rastreamento_frete_path(frete),
-        class: "text-indigo-600 hover:underline font-semibold text-sm" %>
-
-  <!-- Marcar como entregue (somente se não estiver entregue ainda) -->
-  <% if frete.pendente? || frete.em_andamento? %>
-    <%= button_to 'Marcar como Entregue',
-          entregar_frete_path(frete),
-          method: :post,
-          data: { confirm: 'Tem certeza que deseja marcar este frete como entregue?' },
-          class: "bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded text-sm shadow transition" %>
+<div class="max-w-4xl mx-auto p-6">
+  <h1 class="text-2xl font-semibold mb-4">Meus fretes</h1>
+  <div class="mb-4">
+    <%= link_to "➕ Novo frete", new_frete_path,
+        class: "px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700" %>
+  </div>
+  <% if @fretes.any? %>
+    <ul class="space-y-3">
+      <% @fretes.each do |frete| %>
+        <li class="p-4 bg-white rounded shadow flex items-center justify-between">
+          <div>
+            <p class="font-semibold"><%= frete.origem %> → <%= frete.destino %></p>
+            <p class="text-sm text-gray-500">Criado em <%= l(frete.created_at, format: :short) %></p>
+          </div>
+          <div class="space-x-2">
+            <%= link_to "Abrir", frete_path(frete),
+                class: "px-3 py-1 rounded border hover:bg-gray-50" %>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="text-gray-600">Você ainda não possui fretes.</p>
   <% end %>
-
-  <!-- Excluir frete -->
-  <%= link_to 'Excluir', frete_path(frete),
-        method: :delete,
-        data: { confirm: 'Tem certeza que deseja excluir este frete?' },
-        class: "text-red-600 hover:underline font-semibold text-sm" %>
-
 </div>
-
