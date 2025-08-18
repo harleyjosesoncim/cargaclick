@@ -23,8 +23,12 @@ gem "cssbundling-rails"  # Tailwind/PostCSS/Sass
 
 # Autenticação / Uploads / SEO
 gem "devise", "~> 4.9"
+gem "bcrypt", ">= 3.1"             # usado pelo devise/has_secure_password
 gem "image_processing", "~> 1.12"
 gem "sitemap_generator", "~> 6.3"
+
+# Integrações / Pagamentos
+gem "mercadopago-sdk"              # Mercadopago::SDK (SDK oficial)
 
 # Agendamento via cron (se usar VPS/cron do SO)
 gem "whenever", require: false
@@ -37,7 +41,7 @@ gem "bootsnap", ">= 1.16.0", require: false
 # gem "rails_admin", "~> 3.1"
 
 group :development, :test do
-  gem "dotenv-rails"
+  gem "dotenv-rails"               # carrega .env* fora de produção
 end
 
 group :development do

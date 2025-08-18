@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html>
   <head>
+  <meta name="google-site-verification" content="SEU_CODIGO_AQUI">
+
     <title>Cargaclick App</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <% if current_cliente&.email == 'admin@cargaclick.com' %>
+    <% if (defined?(current_cliente) && current_cliente&.email == 'admin@cargaclick.com') %>
+  <!-- conteúdo do admin -->
+<% end %>
+
   <%= link_to 'Dashboard Admin', admin_dashboard_path, class: "ml-4 text-blue-700 font-bold" %>
 <% end %>
 

@@ -1,23 +1,79 @@
+<%# app/views/shared/_frete_cards.html.erb %>
+<% cliente_logado       = (defined?(cliente_signed_in?) && cliente_signed_in?) %>
+<% transportador_logado = (defined?(transportador_signed_in?) && transportador_signed_in?) %>
+<% frete_ok             = (defined?(frete) && frete.present?) %>
+
+<% can_chat  = cliente_logado       && frete_ok && respond_to?(:chat_frete_path) %>
+<% can_track = transportador_logado && frete_ok && respond_to?(:rastreamento_frete_path) %>
+
 <div class="grid md:grid-cols-2 gap-4 mt-6">
-  <% if current_cliente %>
-    <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow hover:scale-105 transition-all duration-300">
+  <% if can_chat %>
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow hover:scale-105 transition-all duration-300"
+         role="region" aria-label="Chat com Transportador">
       <div class="flex items-center gap-2 mb-2">
-        <%= render 'shared/icons/chat' %>
+        <% if lookup_context.exists?('shared/icons/chat') %>
+          <%= render 'shared/icons/chat' %>
+        <% else %>
+          <span aria-hidden="true">💬</span>
+        <% end %>
         <h3 class="text-lg font-bold text-blue-700">Chat com Transportador</h3>
       </div>
-      <p class="text-gray-600 dark:text-gray-300 mb-4">Converse sobre este frete em tempo real.</p>
-      <%= link_to "Abrir Chat", chat_frete_path(frete), class: "inline-block bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded" %>
+      <p class="text-gray-600 dark:text-gray-300 mb-4">
+        Converse sobre este frete em tempo real.
+      </p>
+      <%= link_to "Abrir Chat",
+                  chat_frete_path(frete),
+                  class: "inline-block bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded",
+                  rel: "nofollow",
+                  data: { turbo: true, turbo_prefetch: false },
+                  aria: { label: "Abrir chat do frete ##{frete.id}" } %>
     </div>
   <% end %>
 
-  <% if current_transportador %>
-    <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow hover:scale-105 transition-all duration-300">
+  <% if can_track %>
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow hover:scale-105 transition-all duration-300"
+         role="region" aria-label="Acompanhar Entrega">
       <div class="flex items-center gap-2 mb-2">
-        <%= render 'shared/icons/gps' %>
+        <% if lookup_context.exists?('shared/icons/gps') %>
+          <%= render 'shared/icons/gps' %>
+        <% else %>
+          <span aria-hidden="true">📍</span>
+        <% end %>
         <h3 class="text-lg font-bold text-green-700">Acompanhar Entrega</h3>
       </div>
-      <p class="text-gray-600 dark:text-gray-300 mb-4">Veja a localização da carga e atualize sua posição.</p>
-      <%= link_to "Ver Mapa", rastreamento_frete_path(frete), class: "inline-block bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded" %>
+      <p class="text-gray-600 dark:text-gray-300 mb-4">
+        Veja a localização da carga e atualize sua posição.
+      </p>
+      <%= link_to "Ver Mapa",
+                  rastreamento_frete_path(frete),
+                  class: "inline-block bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded",
+                  rel: "nofollow",
+                  data: { turbo: true, turbo_prefetch: false },
+                  aria: { label: "Ver mapa do frete ##{frete.id}" } %>
+    </div>
+  <% end %>
+
+  <% unless can_chat || can_track %>
+    <div class="col-span-full">
+      <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-xl p-4">
+        <p>
+          Para acessar estas funções, faça login como <strong>cliente</strong> ou
+          <strong>transportador</strong> e selecione um frete válido.
+        </p>
+        <div class="mt-3 flex gap-2 flex-wrap">
+          <% if respond_to?(:new_cliente_session_path) %>
+            <%= link_to "Entrar como Cliente",
+                        new_cliente_session_path,
+                        class: "inline-block bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded" %>
+          <% end %>
+          <% if respond_to?(:new_transportador_session_path) %>
+            <%= link_to "Entrar como Transportador",
+                        new_transportador_session_path,
+                        class: "inline-block bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded" %>
+          <% end %>
+        </div>
+      </div>
     </div>
   <% end %>
 </div>
+

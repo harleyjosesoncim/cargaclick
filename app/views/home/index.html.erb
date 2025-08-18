@@ -1,40 +1,74 @@
-<div class="min-h-screen bg-gradient-to-b from-blue-50 to-white py-10 px-4 text-center">
-  <h1 class="text-4xl font-extrabold text-orange-600 flex justify-center items-center gap-2 mb-6">
-    CargaClick <span class="animate-bounce"><%= @modal_sorteado[:emoji] %></span>
-  </h1>
-  <% content_for :title, "CargaClick — Simule agora e encontre o melhor frete" %>
+<% content_for :title, "CargaClick — Simule agora e encontre o melhor frete" %>
 <% content_for :meta_description, "Compare preços e prazos com transportadores da sua região em poucos cliques." %>
 
-<!-- Conteúdo da página... -->
+<% modal = (@modal_sorteado || {}).with_indifferent_access %>
+<% modal_nome  = modal[:nome].presence  || "Caminhão" %>
+<% modal_emoji = modal[:emoji].presence || "🚚" %>
 
+<% link_solicitar_frete =
+     if respond_to?(:new_frete_path)      then new_frete_path
+     elsif respond_to?(:fretes_path)      then fretes_path
+     else "#"
+     end %>
+
+<% link_clientes =
+     if respond_to?(:clientes_path)               then clientes_path
+     elsif respond_to?(:new_cliente_session_path) then new_cliente_session_path
+     else "#"
+     end %>
+
+<% link_transportadores =
+     if respond_to?(:transportadores_path)          then transportadores_path
+     elsif respond_to?(:admin_transportadores_path) then admin_transportadores_path
+     else "#"
+     end %>
+
+<% link_bolsao =
+     if respond_to?(:bolsao_path) then bolsao_path
+     elsif respond_to?(:fretes_path) then fretes_path
+     else "#"
+     end %>
+
+<div class="min-h-screen bg-gradient-to-b from-blue-50 to-white py-10 px-4 text-center">
+  <h1 class="text-4xl font-extrabold text-orange-600 flex justify-center items-center gap-2 mb-6">
+    CargaClick <span class="animate-bounce" aria-hidden="true"><%= modal_emoji %></span>
+  </h1>
 
   <p class="text-sm text-gray-500 italic mb-8">
-    Frete disponível via: <%= @modal_sorteado[:nome] %> 😄
+    Frete disponível via: <%= modal_nome %> 😄
   </p>
 
   <div class="max-w-4xl mx-auto space-y-10">
-    <!-- CLIENTE -->
     <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition">
       <h2 class="text-2xl font-semibold text-blue-700 mb-4">Sou um Cliente</h2>
       <div class="flex flex-col md:flex-row justify-center gap-4">
-        <%= link_to '🚀 Solicitar Frete', new_frete_path, class: 'bg-orange-100 text-orange-700 px-6 py-3 rounded-full font-semibold shadow hover:bg-orange-200' %>
-        <%= link_to '🧑‍💼 Clientes', clientes_path, class: 'bg-blue-100 text-blue-700 px-6 py-3 rounded-full font-semibold shadow hover:bg-blue-200' %>
+        <%= link_to '🚀 Solicitar Frete', link_solicitar_frete,
+          class: 'bg-orange-100 text-orange-700 px-6 py-3 rounded-full font-semibold shadow hover:bg-orange-200',
+          data: { turbo: true, turbo_prefetch: false } %>
+
+        <%= link_to '🧑‍💼 Clientes', link_clientes,
+          class: 'bg-blue-100 text-blue-700 px-6 py-3 rounded-full font-semibold shadow hover:bg-blue-200',
+          data: { turbo: true, turbo_prefetch: false } %>
       </div>
     </div>
 
-    <!-- TRANSPORTADOR -->
     <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition">
       <h2 class="text-2xl font-semibold text-green-700 mb-4">Sou um Transportador</h2>
       <div class="flex flex-col md:flex-row justify-center gap-4">
-        <%= link_to '🚚 Transportadores', transportadores_path, class: 'bg-green-100 text-green-700 px-6 py-3 rounded-full font-semibold shadow hover:bg-green-200' %>
-        <%= link_to '🧾 Bolsão de Solicitações', bolsao_path, class: 'bg-purple-100 text-purple-700 px-6 py-3 rounded-full font-semibold shadow hover:bg-purple-200' %>
+        <%= link_to '🚚 Transportadores', link_transportadores,
+          class: 'bg-green-100 text-green-700 px-6 py-3 rounded-full font-semibold shadow hover:bg-green-200',
+          data: { turbo: true, turbo_prefetch: false } %>
+
+        <%= link_to '🧾 Bolsão de Solicitações', link_bolsao,
+          class: 'bg-purple-100 text-purple-700 px-6 py-3 rounded-full font-semibold shadow hover:bg-purple-200',
+          data: { turbo: true, turbo_prefetch: false } %>
       </div>
     </div>
 
-    <!-- EASTER EGG -->
     <div class="text-sm text-gray-400 italic pt-6">
       <span class="hidden md:inline">🐣 Dica: clique 5 vezes no ícone do frete para descobrir uma surpresa.</span>
     </div>
   </div>
 </div>
+
 

@@ -1,21 +1,21 @@
-# config/puma.rb
 # frozen_string_literal: true
 
-max_threads = ENV.fetch("RAILS_MAX_THREADS", 5).to_i
-min_threads = ENV.fetch("RAILS_MIN_THREADS", max_threads).to_i
+# Threads
+max_threads = Integer(ENV.fetch("RAILS_MAX_THREADS", 5))
+min_threads = Integer(ENV.fetch("RAILS_MIN_THREADS", max_threads))
 threads min_threads, max_threads
 
-environment ENV.fetch("RAILS_ENV", "development")
+# Ambiente
+environment ENV.fetch("RAILS_ENV", "production")
 
-# Render define ENV["PORT"] (ex.: 10000). Use essa porta e 0.0.0.0
-port ENV.fetch("PORT", 3000)
-# Se preferir, pode forçar explicitamente o bind (equivalente ao 'port' acima):
-# bind "tcp://0.0.0.0:#{ENV.fetch('PORT', 3000)}"
+# Bind explícito (Render usa PORT=10000; no compose vamos mapear 3000 -> 10000)
+bind "tcp://0.0.0.0:#{ENV.fetch('PORT', '10000')}"
 
+# Concurrency (0 = single)
+workers Integer(ENV.fetch("WEB_CONCURRENCY", 0))
+preload_app!
+
+# PID e restart
 pidfile ENV.fetch("PIDFILE", "tmp/pids/server.pid")
-
-workers ENV.fetch("WEB_CONCURRENCY", 0).to_i
-preload_app! if ENV["WEB_CONCURRENCY"].to_i > 0
-
 plugin :tmp_restart
 

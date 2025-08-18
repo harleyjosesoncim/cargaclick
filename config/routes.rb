@@ -1,91 +1,41 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  # === Canonical redirect: apex -> www (preserva path e querystring)
-  constraints(host: "cargaclick.com.br") do
-    # raiz do apex
-    match "/", to: redirect("https://www.cargaclick.com.br/"), via: :all
-
-    # qualquer outro caminho no apex
-    match "*path", to: redirect { |params, req|
-      qs = req.query_string.to_s
-      "https://www.cargaclick.com.br/#{params[:path]}#{qs.empty? ? "" : "?#{qs}"}"
-    }, via: :all
-  end
-
-  # === Health check
-  get "up" => "rails/health#show", as: :rails_health_check
-
-  # === Página inicial
+  # Página inicial
   root "home#index"
 
-  # === Devise
-  devise_for :clientes
-  devise_for :transportadores
+  # Healthcheck e favicon (evita 404 barulhento nos logs)
+  get "/up",          to: "rails/health#show", as: :health_check
+  get "/favicon.ico", to: proc { [204, {}, []] }
 
-  # === Propostas
-  resources :propostas do
-    member { get :gerar_proposta_inteligente }
-  end
+  # Autenticação (Devise) — ajuste os controllers se forem outros
+  devise_for :clientes,
+             path: "clientes",
+             controllers: {
+               sessions:      "clientes/sessions",
+               registrations: "clientes/registrations"
+             }
+             devise_for :clientes, path: "clientes"   # sem controllers custom, por enquanto
+#
 
-  # === Modals
-  resources :modals
+  # Recursos simples
+  resources :clientes, only: [:index]
 
-  # === Fretes
-  resources :fretes do
+  # Fretes (somente o que você usa) + rotas membro usadas nas views
+  resources :fretes, only: %i[index new create show] do
     member do
-      get  :rastreamento
-      post :entregar
-      get  :chat
+      get  :chat            # => chat_frete_path(:id)
+      get  :rastreamento    # => rastreamento_frete_path(:id)
+      post :gerar_proposta  # => gerar_proposta_frete_path(:id)
+      post :entregar        # => entregar_frete_path(:id) (se usar)
     end
-    collection { get :meus }
   end
 
-  # === Clientes
-  resources :clientes do
-    member { get "fidelidade", to: "fidelidade#cliente", as: :fidelidade }
-  end
+  # Listagem pública e “bolsão”
+  resources :transportadores, only: %i[index show]   # => transportadores_path
+  get "/bolsao", to: "fretes#bolsao", as: :bolsao    # => bolsao_path
 
-  # === Transportadores
-  resources :transportadores do
-    member { get "fidelidade", to: "fidelidade#transportador", as: :fidelidade }
-  end
-
-  # === Cadastro público de Transportador
-  get  "/cadastro/transportador", to: "transportadores#cadastro_publico", as: :cadastro_transportador
-  post "/cadastro/transportador", to: "transportadores#criar_publico"
-
-  # === Admin (seu namespace atual)
-  get "admin/dashboard", to: "admin/dashboard#index"
-  namespace :admin do
-    get   "/",      to: "dashboard#index",  as: :index
-    patch "update", to: "dashboard#update", as: :update
-  end
-
-  # === RailsAdmin (monta só se a gem existir; caminho separado do seu namespace :admin)
-  if defined?(RailsAdmin)
-    mount RailsAdmin::Engine => "/rails_admin", as: "rails_admin"
-  end
-
-  # === Bolsão & Ranking
-  get "bolsao",  to: "bolsao#index",  as: :bolsao
-  get "ranking", to: "ranking#index", as: :ranking
-
-  # === Pagamentos (MVP / Mercado Pago)
-  post "pagamentos/:frete_id/checkout", to: "pagamentos#checkout", as: :pagamentos_checkout
-  get  "pagamentos/retorno",            to: "pagamentos#retorno",  as: :pagamentos_retorno
-  post "pagamentos/webhook",            to: "pagamentos#webhook",  as: :pagamentos_webhook
-
-  # === Ações extra
-  post "fretes/:id/gerar_proposta", to: "fretes#gerar_proposta", as: :gerar_proposta_frete
-
-  # === Marketing
-  post "gerar_post_instagram",     to: "marketing#gerar_post_instagram"
-  post "gerar_email_marketing",    to: "marketing#gerar_email_marketing"
-  post "gerar_proposta_comercial", to: "marketing#gerar_proposta_comercial"
-# === IA (GPT via Ollama/OpenAI-compatible)
-get  "gpt/test", to: "ai#test"
-post "gpt/chat", to: "ai#chat"
-  
-
+  # Admin (monta só se a gem estiver presente)
+  mount RailsAdmin::Engine => "/rails_admin", as: "rails_admin" if defined?(RailsAdmin)
 end
+
