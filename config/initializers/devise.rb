@@ -3,6 +3,10 @@
 Devise.setup do |config|
   creds = Rails.application.credentials
 
+  <%= form_with(model: resource, url: session_path(resource_name), data: { turbo: false }) do |f| %>
+  ...
+<% end %>
+# config.parent_controller = "DeviseController"
   config.secret_key =
     ENV["DEVISE_SECRET_KEY"] ||
     creds.dig(:devise, :secret_key) ||

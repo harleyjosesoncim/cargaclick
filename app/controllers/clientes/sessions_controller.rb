@@ -1,4 +1,3 @@
-# frozen_string_literal: true
 class Clientes::SessionsController < Devise::SessionsController
-  layout "devise"
+  respond_to :html, :turbo_stream
 end

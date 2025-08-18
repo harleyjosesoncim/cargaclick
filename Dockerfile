@@ -1,57 +1,87 @@
-# Usar a imagem oficial do Ruby 3.2.4
-FROM ruby:3.2.4
+# Etapa 1: Build (compilar assets e instalar dependências)
+FROM ruby:3.2.4-slim AS builder
 
-# 1) Definir variáveis de ambiente para o build
+# Definir variáveis de ambiente para o build
 ENV RAILS_ENV=production \
     RACK_ENV=production \
     BUNDLE_WITHOUT="development:test" \
     BUNDLE_JOBS=4 \
-    BUNDLE_RETRY=3
+    BUNDLE_RETRY=3 \
+    NODE_ENV=production
 
-# 2) Instalar dependências do sistema operacional
+# Instalar dependências do sistema necessárias para o build
 RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     build-essential \
     libpq-dev \
-    postgresql-client \
     nodejs \
     npm \
     yarn \
-    libvips \
+    libvips42 \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
-# 3) Definir diretório de trabalho
+# Instalar versão específica do Bundler
+RUN gem install bundler -v 2.6.9
+
+# Definir diretório de trabalho
 WORKDIR /app
 
-# 4) Copiar Gemfile e Gemfile.lock para aproveitar cache
+# Copiar arquivos de dependências para aproveitar cache
 COPY Gemfile Gemfile.lock ./
+RUN bundle install
 
-# 5) Instalar gems com Bundler
-RUN gem install bundler -v 2.6.9 && bundle install
-
-# 6) Copiar package.json e yarn.lock (se existir) para instalar dependências JS
+# Copiar arquivos de dependências JavaScript
 COPY package.json yarn.lock* ./
-RUN npm install -g yarn && yarn install --frozen-lockfile
+RUN npm install -g yarn && yarn install --frozen-lockfile --production
 
-# 7) Atualizar banco de dados do Browserslist para evitar aviso
+# Atualizar banco de dados do Browserslist
 RUN npx update-browserslist-db@latest
 
-# 8) Copiar o restante da aplicação
+# Copiar o restante da aplicação
 COPY . .
 
-# 9) Definir variáveis de ambiente para pré-compilação de assets
+# Pré-compilar assets
 ENV SECRET_KEY_BASE=dummy \
     APP_HOST=build.local \
     APP_PROTOCOL=https
-
-# 10) Pré-compilar assets (JavaScript e CSS via jsbundling-rails/cssbundling-rails)
 RUN bundle exec rake assets:precompile
 
-# 11) Configurações de runtime
-ENV RAILS_LOG_TO_STDOUT=true \
-    RAILS_SERVE_STATIC_FILES=true
+# Etapa 2: Imagem final (runtime)
+FROM ruby:3.2.4-slim
 
-# 12) Expor a porta padrão (3000, usada pelo Render)
+# Instalar dependências mínimas para runtime
+RUN apt-get update -qq && apt-get install -y --no-install-recommends \
+    libpq-dev \
+    postgresql-client \
+    libvips42 \
+    && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+
+# Criar usuário não-root para maior segurança
+RUN useradd -m -u 1000 appuser
+
+# Definir diretório de trabalho
+WORKDIR /app
+
+# Copiar artefatos da etapa de build
+COPY --from=builder /usr/local/bundle /usr/local/bundle
+COPY --from=builder /app /app
+
+# Ajustar permissões
+RUN chown -R appuser:appuser /app
+USER appuser
+
+# Configurações de runtime
+ENV RAILS_ENV=production \
+    RACK_ENV=production \
+    RAILS_LOG_TO_STDOUT=true \
+    RAILS_SERVE_STATIC_FILES=true \
+    PORT=3000
+
+# Expor porta padrão
 EXPOSE 3000
 
-# 13) Iniciar o servidor Puma com configuração personalizada
-CMD ["bundle", "exec", "puma", "-C", "config/puma.rb", "-b", "tcp://0.0.0.0:${PORT:-3000}"]
+# Healthcheck para monitoramento
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
+    CMD curl -f http://localhost:${PORT}/up || exit 1
+
+# Iniciar o servidor Puma
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb", "-b", "tcp://0.0.0.0:${PORT}"]

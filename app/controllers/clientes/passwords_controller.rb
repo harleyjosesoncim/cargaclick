@@ -1,7 +1,3 @@
 class Clientes::PasswordsController < Devise::PasswordsController
-  protected
-
-  def after_resetting_password_path_for(resource)
-    sucesso_senha_path
-  end
+  respond_to :html, :turbo_stream
 end
