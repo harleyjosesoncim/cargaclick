@@ -3,6 +3,9 @@ Rails.application.routes.draw do
   # Healthcheck
   get "up", to: "rails/health#show", as: :rails_health_check
 
+  # DEBUG: rota de fumaça (ignora controller e banco)
+get "/clientes", to: proc { [200, {"Content-Type"=>"text/plain"}, ["ok /clientes (rack)"]] }
+
   # Home
   root "home#index"
 
