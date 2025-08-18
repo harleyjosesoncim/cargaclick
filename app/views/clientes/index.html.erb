@@ -1,39 +1,10 @@
-<%= render 'filtro' %>
-<div class="max-w-4xl mx-auto mt-10 bg-white p-6 rounded-xl shadow">
-  <h1 class="text-2xl font-bold text-blue-700 mb-4">📋 Lista de Clientes</h1>
-
-  <%= link_to "➕ Novo Cliente", new_cliente_path,
-        class: "mb-4 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" %>
-
-  <% if @clientes.any? %>
-    <table class="w-full mt-4 text-sm text-left text-gray-600">
-      <thead class="bg-gray-100 text-gray-700">
-        <tr>
-          <th class="px-4 py-2">Nome</th>
-          <th class="px-4 py-2">CPF</th>
-          <th class="px-4 py-2">Endereço</th>
-          <th class="px-4 py-2">Ações</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-gray-200">
-        <% @clientes.each do |cliente| %>
-          <tr>
-            <td class="px-4 py-2"><%= cliente.nome %></td>
-            <td class="px-4 py-2"><%= cliente.cpf %></td>
-            <td class="px-4 py-2"><%= cliente.endereco %></td>
-            <td class="px-4 py-2 flex gap-2">
-              <%= link_to "👁 Ver", cliente_path(cliente), class: "text-blue-600 hover:underline" %>
-              <%= link_to "✏️ Editar", edit_cliente_path(cliente), class: "text-yellow-600 hover:underline" %>
-              <%= link_to "🗑 Excluir", cliente_path(cliente), method: :delete,
-                    data: { confirm: "Deseja realmente excluir?" },
-                    class: "text-red-600 hover:underline" %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  <% else %>
-    <p class="mt-4 text-gray-500">Nenhum cliente cadastrado.</p>
-    <%= render 'paginacao' %>
-  <% end %>
+<div class="max-w-3xl mx-auto p-6 space-y-4">
+  <h1 class="text-2xl font-semibold">Área de Clientes</h1>
+  <p>Faça login para gerenciar seus fretes.</p>
+  <div class="flex gap-3">
+    <%= link_to "Entrar", new_cliente_session_path,
+        class: "px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700" %>
+    <%= link_to "Criar conta", new_cliente_registration_path,
+        class: "px-4 py-2 rounded border" %>
+  </div>
 </div>
