@@ -1,1 +1,60 @@
-# (cole aqui o conteúdo do bloco acima)
+# OS / Editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Bundler / Ruby
+/.bundle/
+vendor/bundle/
+
+# Node / Yarn
+/node_modules/
+yarn-error.log
+yarn-debug.log*
+.pnpm-debug.log*
+.yarn-integrity
+
+# Logs / Temp
+/log/*
+!/log/.keep
+/tmp/*
+!/tmp/.keep
+
+# Test / Coverage
+/coverage/
+/spec/examples.txt
+
+# Assets (Sprockets/ESBuild/Tailwind)
+public/assets
+app/assets/builds/*
+!app/assets/builds/.keep
+public/packs
+public/packs-test
+
+# Active Storage
+/storage/*
+!/storage/.keep
+
+# Credenciais / Env
+/config/master.key
+/config/credentials/*.key
+.env
+.env.*
+!.env.example
+
+# SQLite (se usar local)
+db/*.sqlite3
+db/*.sqlite3-journal
+
+# Depuração / Miscelânea
+.byebug_history
+byebug_history
+*.gem
+*.log
+*.out
+*.zip
+
+# Vendors
+/vendor/
