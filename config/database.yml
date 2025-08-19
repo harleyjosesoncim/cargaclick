@@ -1,18 +1,28 @@
+# config/database.yml
 default: &default
   adapter: postgresql
   encoding: unicode
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  url: <%= ENV['DATABASE_URL'] %>
+  # Pool = WEB_CONCURRENCY * RAILS_MAX_THREADS + 2 (fallback 2*5+2=12)
+  pool: <%= ENV.fetch("DB_POOL") { (ENV.fetch("WEB_CONCURRENCY", "2").to_i * ENV.fetch("RAILS_MAX_THREADS", "5").to_i + 2) } %>
+  checkout_timeout: <%= ENV.fetch("DB_CHECKOUT_TIMEOUT", "5") %>
+  variables:
+    statement_timeout: <%= ENV.fetch("DB_STATEMENT_TIMEOUT_MS", "15000") %>
+    lock_timeout: <%= ENV.fetch("DB_LOCK_TIMEOUT_MS", "5000") %>
 
 development:
   <<: *default
-  username: postgres
-  password: postgres
-  host: localhost
-  port: 5432
-  database: carga_click_development
+  # usa DATABASE_URL se existir; senão, conecta local
+  url: <%= ENV.fetch("DATABASE_URL", "postgres://postgres:postgres@localhost:5432/cargaclick_development") %>
+
+test:
+  <<: *default
+  url: <%= ENV.fetch("DATABASE_URL", "postgres://postgres:postgres@localhost:5432/cargaclick_test") %>
 
 production:
   <<: *default
-  url: postgresql://cargaclick_db_user:VCmo64zWUHEQCC8puJ3ZvKRRJFTNFN3@dpg-d1m9dcqli9vc73988kbg-a/cargaclick_db
+  # Defina DATABASE_URL no Render (NÃO deixe credenciais aqui no repo)
+  url: <%= ENV.fetch("DATABASE_URL") %>
+  reaping_frequency: <%= ENV.fetch("DB_REAPING_FREQUENCY", "10") %>
+  prepared_statements: <%= ENV.fetch("DB_PREPARED_STATEMENTS", "true") == "true" %>
+
   
