@@ -1,4 +1,15 @@
 # config/boot.rb
+# config/boot.rb
+# frozen_string_literal: true
+
+env = ENV["RAILS_ENV"] || ENV["RACK_ENV"] || "development"
+require "dotenv/load" if %w[development test].include?(env)
+
+ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../Gemfile", __dir__)
+
+require "bundler/setup"
+require "bootsnap/setup"
+# config/boot.rb
 
 # Garante que o Bundler use o Gemfile do app
 ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../Gemfile", __dir__)
