@@ -1,37 +1,46 @@
-# See https://docs.docker.com/engine/reference/builder/#dockerignore-file for more about ignoring files.
+# Ignora diretório do Git (não deve ir para a imagem)
+.git/
 
-# Ignore git directory.
-/.git/
+# Ignora configurações locais de bundler
+.bundle/
 
-# Ignore bundler config.
-/.bundle
+# Ignora variáveis de ambiente sensíveis
+.env*
+!/.env*.erb  # exceto templates de exemplo
 
-# Ignore all environment files (except templates).
-/.env*
-!/.env*.erb
-
-# Ignore all default key files.
+# Ignora arquivos de chave de criptografia
 /config/master.key
 /config/credentials/*.key
 
-# Ignore all logfiles and tempfiles.
+# Ignora arquivos de log e temp
 /log/*
 /tmp/*
 !/log/.keep
 !/tmp/.keep
 
-# Ignore pidfiles, but keep the directory.
+# Ignora arquivos PID, mantendo diretório
 /tmp/pids/*
 !/tmp/pids/.keep
 
-# Ignore storage (uploaded files in development and any SQLite databases).
+# Ignora uploads locais e bancos SQLite
 /storage/*
 !/storage/.keep
 /tmp/storage/*
 !/tmp/storage/.keep
 
-# Ignore assets.
-/node_modules/
-/app/assets/builds/*
-!/app/assets/builds/.keep
-/public/assets
+# Ignora arquivos temporários do editor
+*.swp
+*.swo
+
+# Ignora builds locais de assets (serão regenerados)
+node_modules/
+app/assets/builds/*
+!app/assets/builds/.keep
+
+# Ignora assets públicos pré-compilados
+/public/assets/*
+!/public/assets/.keep
+
+# Ignora arquivos do sistema operacional/macOS
+.DS_Store
+Thumbs.db
