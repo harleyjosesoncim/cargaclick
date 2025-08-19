@@ -10,6 +10,8 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
 
 # Bundler
 RUN gem install bundler -v 2.6.9
+RUN npm install -g yarn@1.22.22
+# Configurar timezone (opcional, mas recomendado)
 
 WORKDIR /app
 
@@ -21,6 +23,8 @@ ENV RAILS_ENV=production \
     BUNDLE_DEPLOYMENT=true \
     BUNDLE_JOBS=4 \
     BUNDLE_RETRY=3
+    
+
 
 # Garantir configs locais do Bundler (gravadas em /app/.bundle/config)
 RUN bundle config set --local deployment 'true' \
@@ -32,8 +36,8 @@ RUN bundle install
 
 # JS deps (precisamos de devDependencies para build dos assets)
 COPY package.json yarn.lock* ./
-RUN yarn install --frozen-lockfile
-
+RUN yarn install --check-files
+# Instalar dependências JS adicionais
 # Atualizar browserslist (opcional)
 RUN npx update-browserslist-db@latest
 
@@ -63,6 +67,16 @@ COPY --from=builder /app /app
 # Permissões
 RUN chown -R appuser:appuser /app
 USER appuser
+
+# Instala Node.js, Yarn, etc
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor > /usr/share/keyrings/yarn.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/yarn.gpg] https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
+    apt-get update -qq && \
+    apt-get install -yq --no-install-recommends \
+      nodejs yarn postgresql-client libpq-dev build-essential && \
+    npm install -g yarn@1.22.22
+# Limpar cache do apt
 
 # Ambiente de runtime
 ENV RAILS_ENV=production \
