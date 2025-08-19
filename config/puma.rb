@@ -1,50 +1,73 @@
-# config/puma.rb — Puma para Rails 6/7
-
+# config/puma.rb — Puma para Rails 6/7 (Render/Docker)
 require "fileutils"
+require "etc"
+
 FileUtils.mkdir_p("tmp/pids")
 FileUtils.mkdir_p("tmp/sockets")
 
-# Threads
-threads_count = Integer(ENV.fetch("RAILS_MAX_THREADS", ENV.fetch("PUMA_THREADS", 5)))
-threads threads_count, threads_count
-
-# Ambiente
+# ===== Ambiente =====
 environment ENV.fetch("RAILS_ENV", "development")
 
-# Porta (Render/Heroku define PORT; local usa 3000)
-port ENV.fetch("PORT", 3000)
+# (Opcional) Tag para logs do Puma
+tag ENV.fetch("PUMA_TAG", "cargaclick")
 
-# PIDs/State
-pidfile "tmp/pids/puma.pid"
-state_path "tmp/pids/puma.state"
+# ===== Threads =====
+# Usa RAILS_MAX_THREADS (ou MAX_THREADS/PUMA_THREADS), mesmo valor para min/max.
+threads_count = Integer(
+  ENV.fetch("RAILS_MAX_THREADS",
+    ENV.fetch("MAX_THREADS",
+      ENV.fetch("PUMA_THREADS", "5")
+    )
+  )
+)
+threads threads_count, threads_count
 
-# Timeout em dev
-worker_timeout 60 if ENV.fetch("RAILS_ENV", "development") == "development"
+# ===== Workers (cluster) =====
+# Default: 2 workers se a máquina tiver >1 CPU, senão 1.
+cpu             = (Etc.nprocessors rescue 2)
+default_workers = cpu > 1 ? 2 : 1
+workers_count   = Integer(ENV.fetch("WEB_CONCURRENCY", default_workers.to_s))
+workers workers_count
 
-# Workers (cluster) — defina WEB_CONCURRENCY (ex.: 2) para ativar
-workers_count = Integer(ENV.fetch("WEB_CONCURRENCY", 0))
-workers workers_count if workers_count > 0
+# ===== Porta / Bind =====
+# Render injeta PORT. Bind em 0.0.0.0 para aceitar tráfego do container.
+port Integer(ENV.fetch("PORT", "3000")), "0.0.0.0"
 
-# Preload quando em cluster
-preload_app! if workers_count > 0
+# ===== Timeouts =====
+# Em dev: 60s para evitar queda durante debug; em prod pode ser menor.
+if ENV.fetch("RAILS_ENV", "development") == "development"
+  worker_timeout 60
+else
+  worker_timeout Integer(ENV.fetch("PUMA_WORKER_TIMEOUT", "30"))
+end
 
-# Hooks de ActiveRecord apenas em cluster
-if workers_count > 0
-  before_fork do
-    if defined?(ActiveRecord::Base)
-      ActiveRecord::Base.connection_pool.disconnect!
-    end
-  end
+# ===== Preload & Hooks de banco =====
+preload_app!  # economiza RAM (copy-on-write) e acelera fork
 
-  on_worker_boot do
-    if defined?(ActiveRecord::Base)
-      ActiveRecord::Base.establish_connection
-    end
+before_fork do
+  if defined?(ActiveRecord::Base)
+    ActiveRecord::Base.connection_pool.disconnect!
   end
 end
 
-# Permite `bin/rails restart` em dev
-plugin :tmp_restart
+on_worker_boot do
+  if defined?(ActiveRecord::Base)
+    ActiveRecord::Base.establish_connection
+  end
+end
 
-# Rackup explícito
+# ===== PIDs/State =====
+pidfile    ENV.fetch("PUMA_PIDFILE", "tmp/pids/puma.pid")
+state_path ENV.fetch("PUMA_STATEFILE", "tmp/pids/puma.state")
+
+# ===== Rackup explícito =====
 rackup "config.ru"
+
+# ===== Low-level error handler (loga exceções fora do Rails) =====
+lowlevel_error_handler do |ex, _env|
+  $stderr.puts "Puma lowlevel_error: #{ex.class}: #{ex.message}\n#{ex.backtrace&.first(5)&.join("\n")}"
+  [500, { "Content-Type" => "text/plain" }, ["Internal Server Error"]]
+end
+
+# ===== Dev convenience =====
+plugin :tmp_restart  # permite `bin/rails restart` em dev

@@ -22,3 +22,6 @@ yarn-debug.log*
 /app/assets/builds
 
 /public/assets
+/.bundle
+.env.development
+app/assets/builds/*
