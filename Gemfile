@@ -1,69 +1,62 @@
-# frozen_string_literal: true
+# Gemfile
 source "https://rubygems.org"
-
 ruby "3.2.4"
 
-# Framework
-gem "rails", "~> 7.1.5", ">= 7.1.5.1"
+# Detecta o sistema operacional (para gems de file-watcher)
+require "rbconfig"
+HOST_OS = RbConfig::CONFIG["host_os"]
 
-# Servidor web
-gem "puma", "~> 6.4"
+# --- Núcleo
+gem "rails", "~> 7.1"
+gem "pg", ">= 1.5", "< 2.0"
+gem "puma", "~> 6.6"
+gem "bootsnap", ">= 1.17", require: false
 
-# Banco de dados
-gem "pg", "~> 1.5", "< 2.0"
+# --- Assets (Sprockets + Sass). Se usar Propshaft, remova estes e adicione `propshaft`.
+gem "sprockets-rails"
+gem "sassc-rails"
 
-# Assets / Front-end
-gem "sprockets-rails", "~> 3.5"
-gem "jsbundling-rails", "~> 1.3"
-gem "cssbundling-rails", "~> 1.4"
-gem "turbo-rails", "~> 2.0"
-gem "stimulus-rails", "~> 1.3"
+# --- Hotwire (se usar)
+gem "turbo-rails"
+gem "stimulus-rails"
 
-# Autenticação e segurança
-gem "devise", "~> 4.9"
-gem "bcrypt", "~> 3.1"
+# --- Autenticação
+gem "devise"
+gem "responders"
 
-# Uploads e SEO
-gem "image_processing", "~> 1.12"
-gem "sitemap_generator", "~> 6.3"
+# --- Cache / Rate limit
+gem "redis", "~> 5.0"        # opcional, recomendado p/ sessão/cache
+gem "rack-attack"            # proteção básica
 
-# Integrações
-gem "mercadopago-sdk", "~> 2.0"
-
-# Agendamento (cron)
-gem "whenever", "~> 1.0", require: false
-
-# Performance e CORS
-gem "bootsnap", "~> 1.16", require: false
-# Rails 7.1 usa Rack 3 → precisa rack-cors v3 (NÃO duplique esta gem em outra linha)
-gem "rack-cors", "~> 3.0"
-
-# Monitoramento (produção)
+# --- Produção
 group :production do
-  # 10.x não existe no RubyGems; use 9.x estável
-  gem "newrelic_rpm", ">= 9.0", "< 10.0"
-  gem "sentry-ruby",  "~> 5.17"
-  gem "sentry-rails", "~> 5.17"
+  gem "lograge", "~> 0.14"           # logs concisos
+  gem "rack-timeout", "~> 0.6"       # mata requests travadas
+  gem "puma_worker_killer", "~> 0.3" # recicla workers por memória
+  # gem "sentry-ruby"                # opcional
 end
 
-# Desenvolvimento e Teste
+# --- Windows (dev em Windows)
+gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]
+
+# --- Dev & Test (NÃO vai para produção)
 group :development, :test do
-  gem "dotenv-rails", "~> 3.1"
-  gem "debug", "~> 1.9", platforms: [:mri]
+  gem "dotenv-rails"                  # carrega .env local
+  gem "debug", ">= 1.11.0", platforms: %i[mri mingw x64_mingw]
 end
 
 group :development do
-  gem "web-console", "~> 4.2"
-  gem "listen", "~> 3.8"
+  gem "web-console"
+  gem "listen", "~> 3.9"
+  gem "spring"
+  gem "spring-watcher-listen", "~> 2.1"
+  gem "bindex"
+
+  # Watchers específicos por SO — sem usar `platforms: :darwin`
+  if HOST_OS =~ /darwin/i
+    gem "rb-fsevent", require: false
+  elsif HOST_OS =~ /linux/i
+    gem "rb-inotify", require: false
+  end
 end
 
-group :test do
-  gem "minitest", "~> 5.25"
-  # gem "rspec-rails", "~> 6.1"
-end
-
-# Compatibilidade com Windows
-gem "tzinfo-data", platforms: %i[mingw x64_mingw mswin]
-
-# Admin (opcional)
-# gem "rails_admin", "~> 3.2"
