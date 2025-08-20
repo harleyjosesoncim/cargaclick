@@ -1,28 +1,52 @@
-# render.yaml
-# Blueprint de deploy do CargaClick no Render (Rails + PostgreSQL + Docker opcional)
+# render.yaml — Rails + Postgres no runtime Ruby da Render
+databases:
+  - name: cargaclick-db
+    plan: free
+    databaseName: cargaclick_production
+    user: cargaclick
 
 services:
   - type: web
     name: cargaclick
-    env: ruby
-    plan: starter       # ou free/personal/pro
+    env: ruby                     # ✅ corretíssimo no blueprint da Render
+    plan: starter                 # ou free/personal/pro
     buildCommand: |
-      bundle install --without development test
-      bundle exec rake assets:precompile
-      bundle exec rake db:migrate
+      bundle config set without 'development test'
+      bundle install
+      bundle exec rails assets:precompile
+    preDeployCommand: bundle exec rails db:migrate
     startCommand: bundle exec puma -C config/puma.rb
+    healthCheckPath: /up
     autoDeploy: true
     envVars:
       - key: RAILS_ENV
         value: production
       - key: RAILS_LOG_TO_STDOUT
-        value: enabled
+        value: "1"
+      - key: RAILS_SERVE_STATIC_FILES
+        value: "true"
+      - key: WEB_CONCURRENCY
+        value: "2"
+
+      # 🔐 Segredos (definir no dashboard)
+      - key: SECRET_KEY_BASE       # gere com: bin/rails secret
+        sync: false
+      - key: DEVISE_SECRET_KEY     # já tem o teu valor hex; pode colar aqui
+        sync: false
+      - key: RAILS_MASTER_KEY      # use só se você estiver usando credentials
+        sync: false
+
+      # 🔗 Banco via Internal DB da Render
       - key: DATABASE_URL
         fromDatabase:
           name: cargaclick-db
           property: connectionString
-      - key: RAILS_MASTER_KEY
-        sync: false   # vai ser configurado manualmente
+
+      # 🔧 App configs
+      - key: ADMIN_EMAIL
+        value: admin@cargaclick.com
+
+      # 🔐 APIs (defina no dashboard)
       - key: OPEN_ROUTE_SERVICE_API_KEY
         sync: false
       - key: MERCADO_PAGO_PLAN_URL
@@ -32,8 +56,10 @@ services:
       - key: OPENAI_API_KEY
         sync: false
 
-databases:
-  - name: cargaclick-db
-    plan: free
-    databaseName: cargaclick_production
-    user: cargaclick
+      # 🛡️ Rack::Attack (opcional, mas recomendado)
+      - key: RACK_ATTACK_ENABLED
+        value: "true"
+      - key: RACK_ATTACK_REQ_LIMIT
+        value: "120"
+      - key: RACK_ATTACK_REQ_PERIOD
+        value: "60"
