@@ -1,46 +1,43 @@
-# Ignora diretório do Git (não deve ir para a imagem)
-.git/
+# Git / VCS
+.git
+.gitignore
+.github
+.gitlab-ci.yml
 
-# Ignora configurações locais de bundler
-.bundle/
+# Documentação/Meta
+README*
+LICENSE*
 
-# Ignora variáveis de ambiente sensíveis
-.env*
-!/.env*.erb  # exceto templates de exemplo
+# Node / Yarn
+node_modules
+npm-debug.log*
+yarn-error.log
+yarn-debug.log*
+.pnpm-debug.log*
 
-# Ignora arquivos de chave de criptografia
-/config/master.key
-/config/credentials/*.key
+# Ruby / Bundler
+.bundle
+vendor/bundle
 
-# Ignora arquivos de log e temp
-/log/*
-/tmp/*
-!/log/.keep
-!/tmp/.keep
+# Logs / Temp
+log
+tmp
+storage
+coverage
 
-# Ignora arquivos PID, mantendo diretório
-/tmp/pids/*
-!/tmp/pids/.keep
+# Credenciais / Env (NÃO envie isso pro build context)
+.env
+.env.*
+config/master.key
+config/credentials/*.key
 
-# Ignora uploads locais e bancos SQLite
-/storage/*
-!/storage/.keep
-/tmp/storage/*
-!/tmp/storage/.keep
+# Assets gerados localmente
+public/assets
+app/assets/builds
+public/packs
+public/packs-test
 
-# Ignora arquivos temporários do editor
+# Outras coisas
 *.swp
-*.swo
-
-# Ignora builds locais de assets (serão regenerados)
-node_modules/
-app/assets/builds/*
-!app/assets/builds/.keep
-
-# Ignora assets públicos pré-compilados
-/public/assets/*
-!/public/assets/.keep
-
-# Ignora arquivos do sistema operacional/macOS
 .DS_Store
 Thumbs.db

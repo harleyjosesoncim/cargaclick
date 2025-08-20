@@ -7,6 +7,7 @@ Bundler.require(*Rails.groups)
 
 module Cargaclick
   class Application < Rails::Application
+        config.middleware.use Rack::Attack if Rails.env.production? && defined?(Rack::Attack)
     config.load_defaults 7.1
 
     # Autoload do diretório lib/ (Rails 7.1+)
@@ -21,6 +22,6 @@ module Cargaclick
 
 
     # Não coloca Rack::Attack aqui; o initializer já faz isso no momento certo.
-    # (Se você achar alguma linha como `config.middleware.use Rack::Attack` remova)
+    # (Se você achar alguma linha como `    config.middleware.use Rack::Attack if Rails.env.production? && defined?(Rack::Attack)
   end
 end
