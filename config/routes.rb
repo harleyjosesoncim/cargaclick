@@ -21,9 +21,9 @@ Rails.application.routes.draw do
   get "bolsao",      to: "fretes#queue", as: :bolsao_solicitacoes
 
   # Listagens (botões da Home)
-  resources :clientes,        only: [:index]        # GET /clientes  -> ClientesController#index
-  resources :transportadores, only: [:index]        # GET /transportadores -> TransportadoresController#index
+  resources :clientes,        only: [:index]        # GET /clientes
+  resources :transportadores, only: [:index]        # GET /transportadores
 
-  # 404 custom (opcional; deixe comentado até ter ErrorsController)
-  # get "*unmatched", to: "errors#not_found", via: :all
+  # 404 custom (deixe comentado até implementar ErrorsController)
+  # match "*unmatched", to: "errors#not_found", via: :all
 end
