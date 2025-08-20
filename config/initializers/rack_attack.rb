@@ -17,8 +17,8 @@ if defined?(Rack::Attack)
     safelist('allow-healthcheck') { |req| req.path == '/up' }
     blocklist('bad-uas') { |req| req.user_agent.to_s =~ /(sqlmap|nikto|nmap|dirbuster)/i }
 
-    self.throttled_response = lambda do |_env|
-      [429, { 'Content-Type' => 'application/json' }, [{ error: 'Too many requests' }.to_json]]
-    end
+    # depois:
+self.throttled_responder = lambda do |_request|
+  [429, { 'Content-Type' => 'application/json' }, [{ error: 'Too many requests' }.to_json]]
   end
 end
