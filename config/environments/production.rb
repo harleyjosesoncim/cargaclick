@@ -8,17 +8,30 @@ Rails.application.configure do
   config.enable_reloading = false
   config.eager_load       = true
 
-  config.hosts << "www.cargaclick.com.br"
-# config.hosts << "cargaclick.onrender.com" # se usar o domínio do Render também
+  # ===== Host e URLs canônicas =====
+  canonical_host = ENV.fetch("APP_HOST", "www.cargaclick.com.br")
 
-config.action_mailer.default_url_options = { host: "www.cargaclick.com.br", protocol: "https" }
-config.action_mailer.asset_host = "https://www.cargaclick.com.br"
+  allowed_hosts = ENV
+                    .fetch("ALLOWED_HOSTS",
+                           "cargaclick.com.br,www.cargaclick.com.br,cargaclick.onrender.com,localhost,127.0.0.1")
+                    .split(",").map(&:strip).reject(&:blank?)
 
+  (allowed_hosts + [canonical_host]).uniq.each { |h| config.hosts << h }
+  config.hosts << /\A.*\.onrender\.com\z/ # qualquer subdomínio do Render
+  # Permite /up sem verificação de host
+  config.host_authorization = { exclude: ->(req) { req.path == "/up" } }
+
+  # URLs geradas por helpers e mailers
+  config.action_mailer.perform_caching     = false
+  config.action_mailer.default_url_options = { host: canonical_host, protocol: "https" }
+  config.action_mailer.asset_host          = "https://#{canonical_host}"
+  Rails.application.routes.default_url_options[:host]     = canonical_host
+  Rails.application.routes.default_url_options[:protocol] = "https"
 
   # ===== Erros / Cache =====
-  # Ligue stack trace temporariamente com: RAILS_CONSIDER_ALL_REQUESTS_LOCAL=true
+  # Habilite stacktrace via ENV quando necessário
   config.consider_all_requests_local = ENV["RAILS_CONSIDER_ALL_REQUESTS_LOCAL"] == "true"
-  # Cache store: usa Redis se REDIS_URL existir (recomendado p/ Rack::Attack em múltiplos workers/instâncias)
+
   if ENV["REDIS_URL"].present?
     config.cache_store = :redis_cache_store, {
       url: ENV["REDIS_URL"],
@@ -48,10 +61,10 @@ config.action_mailer.asset_host = "https://www.cargaclick.com.br"
 
   # ===== Assets =====
   config.assets.compile        = false
-  config.assets.css_compressor = nil # Tailwind/Esbuild fazem o papel
+  config.assets.css_compressor = nil # (Tailwind/Esbuild cuidam)
 
   # ===== Active Storage =====
-  # Em Render, disco é efêmero. Use serviço externo em produção real (S3, GCS):
+  # Em Render, disco é efêmero. Use serviço externo real em produção (S3/GCS) se necessário.
   config.active_storage.service = ENV.fetch("ACTIVE_STORAGE_SERVICE", "local").to_sym
 
   # ===== Segurança =====
@@ -74,58 +87,33 @@ config.action_mailer.asset_host = "https://www.cargaclick.com.br"
 
   # Lograge (JSON enxuto)
   if defined?(Lograge)
-    config.lograge.enabled = true
+    config.lograge.enabled   = true
     config.lograge.formatter = Lograge::Formatters::Json.new
     config.lograge.custom_payload do |controller|
       {
         request_id: controller.request.request_id,
-        user_id: (controller.respond_to?(:current_user) && controller.current_user&.id),
+        cliente_id: (controller.respond_to?(:current_cliente) && controller.current_cliente&.id),
       }
     end
     config.lograge.custom_options = lambda { |event|
       {
-        params: event.payload[:params].slice("controller", "action", "format"),
-        time: Time.now.utc.iso8601
+        params: (event.payload[:params] || {}).slice("controller", "action", "format"),
+        time:   Time.now.utc.iso8601
       }
-    }
+    end
   end
 
   # ===== I18n / Deprecações =====
-  config.i18n.fallbacks = true
+  config.i18n.fallbacks                  = true
   config.active_support.report_deprecations = false
 
   # ===== DB =====
   config.active_record.dump_schema_after_migration = false
 
-  # ===== Host e URLs canônicas =====
-  canonical_host = ENV.fetch("APP_HOST", "www.cargaclick.com.br")
-  allowed_hosts  = ENV.fetch("ALLOWED_HOSTS", "cargaclick.com.br,www.cargaclick.com.br,localhost,127.0.0.1")
-                    .split(",").map(&:strip).reject(&:blank?)
-  (allowed_hosts + [canonical_host]).uniq.each { |h| config.hosts << h }
-  config.hosts << /\A.*\.onrender\.com\z/ # Render
-  # Permite /up sem verificação de host
-  config.host_authorization = { exclude: ->(req) { req.path == "/up" } }
-
-  # ===== Mailer / URLs geradas =====
-  config.action_mailer.perform_caching     = false
-  config.action_mailer.default_url_options = { host: canonical_host, protocol: "https" }
-  config.action_mailer.asset_host          = "https://#{canonical_host}"
-  # Se usar SMTP em produção, configure via ENV:
-  # config.action_mailer.delivery_method = :smtp
-  # config.action_mailer.smtp_settings = { address: ..., user_name: ..., password: ..., ... }
-
-  # ===== URL helpers (ex.: *_url) =====
-  Rails.application.routes.default_url_options[:host]     = canonical_host
-  Rails.application.routes.default_url_options[:protocol] = "https"
-
   # ===== Compressão HTTP =====
-  # Pode reduzir bastante o tráfego. Ative via ENV para evitar duplicidade com proxy/CDN.
-  if ENV["ENABLE_DEFLATE"] == "true"
-    config.middleware.use Rack::Deflater
-  end
+  config.middleware.use Rack::Deflater if ENV["ENABLE_DEFLATE"] == "true"
 
   # ===== Exceptions =====
-  # nil => usa as páginas estáticas em /public/404.html, 422.html, 500.html
+  # nil => usa /public/404.html, 422.html, 500.html
   config.exceptions_app = nil
 end
-
