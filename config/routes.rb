@@ -1,12 +1,9 @@
 # config/routes.rb
 Rails.application.routes.draw do
-  # Healthcheck (Render/uptime)
+  # Healthcheck (Rails 7)
   get "up", to: "rails/health#show", as: :rails_health_check
 
-  # Home
-  root "home#index"
-
-  # Devise (Clientes)
+  # === AUTENTICAÇÃO (UMA ÚNICA DECLARAÇÃO) =====================
   devise_for :clientes,
              path: "clientes",
              controllers: {
@@ -14,16 +11,24 @@ Rails.application.routes.draw do
                registrations: "clientes/registrations",
                passwords:     "clientes/passwords"
              }
+  # =============================================================
 
-  # Domínio de negócio
+  # Raiz autenticada vs pública
+  authenticated :cliente do
+    root "fretes#index", as: :authenticated_root
+  end
+
+  unauthenticated do
+    root "home#index", as: :unauthenticated_root
+  end
+
+  # ATENÇÃO: deixe só index/show para não colidir com o Devise (POST /clientes)
+  resources :clientes, only: [:index, :show]
+
+  resources :transportadores, only: [:index]
   resources :fretes
+
+  # Atalhos/aliases
   get "fretes/novo", to: "fretes#new",   as: :novo_frete
   get "bolsao",      to: "fretes#queue", as: :bolsao_solicitacoes
-
-  # Listagens (botões da Home)
-  resources :clientes,        only: [:index]        # GET /clientes
-  resources :transportadores, only: [:index]        # GET /transportadores
-
-  # 404 custom (deixe comentado até implementar ErrorsController)
-  # match "*unmatched", to: "errors#not_found", via: :all
 end

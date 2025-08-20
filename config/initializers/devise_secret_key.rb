@@ -1,5 +1,12 @@
-# Evita o uso de Rails.application.secrets (deprecado)
-Devise.secret_key =
-  ENV["DEVISE_SECRET_KEY"] ||
-  ENV["SECRET_KEY_BASE"] ||
-  (Rails.application.credentials.respond_to?(:secret_key_base) ? Rails.application.credentials.secret_key_base : nil)
+Devise.setup do |config|
+  # Se você quiser chave dedicada ao Devise, descomente a linha abaixo.
+  # Caso contrário, o Devise usará Rails.application.secret_key_base automaticamente.
+  #
+  # prioridade: DEVISE_SECRET_KEY -> credentials.devise_secret_key -> secret_key_base
+  key =
+    ENV["DEVISE_SECRET_KEY"].presence ||
+    Rails.application.credentials.devise_secret_key ||
+    Rails.application.secret_key_base
+
+  config.secret_key = key
+end

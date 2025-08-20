@@ -9,7 +9,6 @@ HOST_OS = RbConfig::CONFIG["host_os"]
 # --- Núcleo (produção também usa)
 gem "rails", "~> 7.1"
 gem "pg", ">= 1.5", "< 2.0"
-gem "puma", "~> 6.6"
 gem "bootsnap", ">= 1.17", require: false
 
 # --- Assets (Sprockets + SassC). Se você migrar p/ Propshaft, ajuste aqui.
@@ -24,6 +23,7 @@ group :production do
   gem "lograge", "~> 0.14"           # logs mais limpos
   gem "puma_worker_killer", "~> 0.3" # recicla workers por memória
   gem "rack-attack", "~> 6.7"        # rate limiting / proteção
+  gem "puma", "~> 6.6" # servidor web
   gem "rack-timeout", "~> 0.7"       # timeout em requests travados
 end
 

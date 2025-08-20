@@ -1,15 +1,27 @@
+<%# app/views/clientes/index.html.erb %>
 <% content_for :title, "Clientes — CargaClick" %>
 
 <div class="flex items-center justify-between mb-6">
   <h1 class="text-2xl font-bold">Clientes</h1>
-  <%= form_with url: clientes_path, method: :get, local: true, class: "flex gap-2" do %>
-    <input type="text" name="q" value="<%= h(@q) %>" placeholder="Buscar por nome ou e-mail" class="border rounded-lg px-3 py-2" />
-    <button class="bg-blue-600 text-white rounded-lg px-4 py-2">Buscar</button>
+
+  <%= form_with url: clientes_path, method: :get, local: true, class: "flex gap-2 items-center" do %>
+    <input
+      type="text"
+      name="q"
+      value="<%= h(@q) %>"
+      placeholder="Buscar por nome ou e-mail"
+      class="border rounded-lg px-3 py-2 w-64"
+      aria-label="Buscar clientes por nome ou e-mail" />
+    <%# mantém o per atual ao paginar/buscar %>
+    <%= hidden_field_tag :per, (@pager && @pager[:per] || 20) %>
+    <button class="bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 focus:outline-none focus:ring">
+      Buscar
+    </button>
   <% end %>
 </div>
 
 <div class="bg-white rounded-2xl shadow p-4 overflow-x-auto">
-  <table class="min-w-full">
+  <table class="min-w-full text-sm">
     <thead>
       <tr class="text-left border-b">
         <th class="py-2 pr-4">#</th>
@@ -20,16 +32,36 @@
     </thead>
     <tbody>
       <% if @clientes.present? %>
+        <% base_index = ((@pager&.dig(:page).to_i - 1) * @pager&.dig(:per).to_i rescue 0) %>
         <% @clientes.each_with_index do |c, i| %>
           <tr class="border-b hover:bg-gray-50">
-            <td class="py-2 pr-4"><%= i + 1 %></td>
-            <td class="py-2 pr-4"><%= safe_val(c.try(:nome) || c.try(:name)) %></td>
+            <td class="py-2 pr-4 text-gray-600"><%= base_index + i + 1 %></td>
+            <td class="py-2 pr-4">
+              <% nome = c.respond_to?(:nome) ? c.nome : (c.respond_to?(:name) ? c.name : nil) %>
+              <% label = nome.presence || c.try(:email) || "Cliente ##{c.id}" %>
+              <%# linka para show se houver rota %>
+              <% if respond_to?(:cliente_path) %>
+                <%= link_to safe_val(label), cliente_path(c), class: "text-blue-700 hover:underline" %>
+              <% else %>
+                <%= safe_val(label) %>
+              <% end %>
+            </td>
             <td class="py-2 pr-4"><%= safe_val(c.try(:email)) %></td>
-            <td class="py-2 pr-4"><%= c.respond_to?(:created_at) && c.created_at ? l(c.created_at, format: :short) : "—" %></td>
+            <td class="py-2 pr-4">
+              <% if c.respond_to?(:created_at) && c.created_at.present? %>
+                <%= (l(c.created_at, format: :short) rescue c.created_at.to_s(:db)) %>
+              <% else %>
+                —
+              <% end %>
+            </td>
           </tr>
         <% end %>
       <% else %>
-        <tr><td colspan="4" class="py-4 text-gray-600">Nenhum cliente encontrado.</td></tr>
+        <tr>
+          <td colspan="4" class="py-6 text-gray-600 text-center">
+            Nenhum cliente encontrado.
+          </td>
+        </tr>
       <% end %>
     </tbody>
   </table>

@@ -8,6 +8,13 @@ Rails.application.configure do
   config.enable_reloading = false
   config.eager_load       = true
 
+  config.hosts << "www.cargaclick.com.br"
+# config.hosts << "cargaclick.onrender.com" # se usar o domínio do Render também
+
+config.action_mailer.default_url_options = { host: "www.cargaclick.com.br", protocol: "https" }
+config.action_mailer.asset_host = "https://www.cargaclick.com.br"
+
+
   # ===== Erros / Cache =====
   # Ligue stack trace temporariamente com: RAILS_CONSIDER_ALL_REQUESTS_LOCAL=true
   config.consider_all_requests_local = ENV["RAILS_CONSIDER_ALL_REQUESTS_LOCAL"] == "true"
