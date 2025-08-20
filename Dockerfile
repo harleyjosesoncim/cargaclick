@@ -1,9 +1,9 @@
 # syntax=docker/dockerfile:1
 ARG RUBY_VERSION=3.2.4
 
-# ========================================
-# Stage 1 — Builder: gems, yarn e precompile
-# ========================================
+# ===============================
+# Stage 1 — Builder (gems + yarn)
+# ===============================
 FROM ruby:${RUBY_VERSION}-slim AS builder
 
 RUN apt-get update -qq && apt-get install -y --no-install-recommends \
@@ -23,24 +23,27 @@ ENV RAILS_ENV=production \
     BUNDLE_WITHOUT=development:test \
     BUNDLE_DEPLOYMENT=1
 
+# Bundler cache
 COPY Gemfile Gemfile.lock ./
-# garante plataforma linux no lockfile para produção
 RUN bundle lock --add-platform x86_64-linux || true
 RUN bundle install --jobs 4 --retry 3
 
+# Yarn cache
 COPY package.json yarn.lock* ./
 RUN yarn install --frozen-lockfile || true
 
+# Código da aplicação
 COPY . .
-RUN rm -rf tmp/cache public/assets \
- && SECRET_KEY_BASE=dummy bundle exec rails assets:precompile
 
-# ========================================
-# Stage 2 — Runtime: produção
-# ========================================
+# (Importante) NÃO faça assets:precompile na build!
+# Apenas gere o CSS do Tailwind (opcional — ajuda no runtime)
+RUN yarn build:css || true
+
+# ===============================
+# Stage 2 — Runtime (produção)
+# ===============================
 FROM ruby:${RUBY_VERSION}-slim
 
-# Somente libs de runtime (nada de compilar aqui)
 RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     libpq5 libvips42 tzdata postgresql-client \
  && rm -rf /var/lib/apt/lists/*
@@ -53,12 +56,6 @@ ENV RAILS_ENV=production \
     RAILS_LOG_TO_STDOUT=1 \
     RAILS_SERVE_STATIC_FILES=1
 
+# Copia app e gems do builder
 COPY --from=builder /app /app
-COPY --from=builder /usr/local/bundle /usr/local/bundle
-
-# Entrypoint: prepara o banco e executa o comando
-COPY docker/entrypoint.sh /usr/bin/entrypoint.sh
-RUN chmod +x /usr/bin/entrypoint.sh
-
-EXPOSE 3000
-CMD ["/usr/bin/entrypoint.sh", "bundle", "exec", "puma", "-C", "config/puma.rb"]
+COPY --from=builder /usr/local/bu
