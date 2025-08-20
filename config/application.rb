@@ -11,6 +11,7 @@ Bundler.require(*Rails.groups)
 module Cargaclick
   class Application < Rails::Application
         config.middleware.use Rack::Attack if Rails.env.production? && defined?(Rack::Attack)
+    # Configura o timezone e a localidade
     # Configurações do Rails 7.1
     config.load_defaults 7.1
 
