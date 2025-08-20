@@ -2,6 +2,9 @@
 source "https://rubygems.org"
 ruby "3.2.4"
 
+gem "puma", "~> 6.4"
+# Use Bundler 2.4+ para compatibilidade com Ruby 3.2
+
 # Detecta o SO para gems específicas em dev
 require "rbconfig"
 HOST_OS = RbConfig::CONFIG["host_os"]
@@ -23,7 +26,7 @@ group :production do
   gem "lograge", "~> 0.14"           # logs mais limpos
   gem "puma_worker_killer", "~> 0.3" # recicla workers por memória
   gem "rack-attack", "~> 6.7"        # rate limiting / proteção
-  gem "puma", "~> 6.6" # servidor web
+  
   gem "rack-timeout", "~> 0.7"       # timeout em requests travados
 end
 
