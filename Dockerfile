@@ -35,4 +35,4 @@ RUN rm -rf tmp/cache public/assets && \
 # ========================================
 FROM ruby:3.2.4-slim
 
-RUN apt-get update -qq && apt-get install -y --no-install-reco
+RUN apt-get update -qq && apt-get install -y --no-install-recommends
