@@ -35,9 +35,11 @@ RUN yarn install --frozen-lockfile || true
 # Código da aplicação
 COPY . .
 
+# Builda JS e CSS (para não precisar de Node no runtime)
+RUN yarn build:js && yarn build:css || true
+
 # (Importante) NÃO faça assets:precompile na build!
-# Apenas gere o CSS do Tailwind (opcional — ajuda no runtime)
-RUN yarn build:css || true
+# Deixaremos para o runtime com as ENVs reais.
 
 # ===============================
 # Stage 2 — Runtime (produção)
@@ -58,4 +60,12 @@ ENV RAILS_ENV=production \
 
 # Copia app e gems do builder
 COPY --from=builder /app /app
-COPY --from=builder /usr/local/bu
+COPY --from=builder /usr/local/bundle/ /usr/local/bundle/
+
+# Entrypoint: migra DB e precompila assets no runtime
+COPY docker/entrypoint.sh /usr/bin/entrypoint.sh
+RUN chmod +x /usr/bin/entrypoint.sh
+
+EXPOSE 3000
+CMD ["/usr/bin/entrypoint.sh", "bundle", "exec", "puma", "-C", "config/puma.rb"]
+
