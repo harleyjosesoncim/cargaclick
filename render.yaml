@@ -1,25 +1,29 @@
+databases:
+  - name: cargaclick-db
+    plan: free
+    databaseName: cargaclick_production
+    user: cargaclick
+
 services:
   - type: web
     name: cargaclick
-    runtime: docker          # ✅ em vez de "env: docker"
-    plan: starter
-    dockerfilePath: ./Dockerfile
-
-    # roda as migrações antes do deploy
-    preDeployCommand: "bundle exec rails db:migrate"
-
-    # variáveis de ambiente padrão para Rails em produção
+    env: docker
+    plan: free
+    autoDeploy: true
+    healthCheckPath: /up
     envVars:
       - key: RAILS_ENV
         value: production
       - key: RAILS_LOG_TO_STDOUT
-        value: "1"
+        value: "true"
       - key: RAILS_SERVE_STATIC_FILES
         value: "true"
       - key: RAILS_MASTER_KEY
-        sync: false
-      # O Render injeta DATABASE_URL automaticamente se você usar o Postgres do Render
-      # Caso contrário, defina aqui:
-      # - key: DATABASE_URL
-      #   value: postgres://usuario:senha@host:5432/cargaclick_production
-i
+        sync: false         # você cola manualmente no dashboard da Render
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cargaclick-db
+          property: connectionString
+
+
+

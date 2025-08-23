@@ -64,7 +64,7 @@ class ClientesController < ApplicationController
     admin_email = ENV.fetch("ADMIN_EMAIL", "sac.cargaclick@gmail.com")
     return if current_cliente&.email.to_s.casecmp?(admin_email)
 
-    redirect_to(root_path, alert: "Acesso restrito ao admin.")
+    redirect_to(authenticated_root_path, alert: "Acesso restrito ao admin.")
   end
 
   # ---- Busca / Paginação ----
