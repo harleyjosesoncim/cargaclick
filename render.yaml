@@ -1,11 +1,11 @@
 services:
   - type: web
     name: cargaclick
-    runtime: docker
+    runtime: docker          # usa o Dockerfile da raiz
     plan: starter
     dockerfilePath: ./Dockerfile
 
-    # Executa as migrações antes de liberar o deploy
+    # Roda migrações antes de iniciar
     preDeployCommand: "bundle exec rails db:migrate"
 
     envVars:
@@ -16,11 +16,11 @@ services:
       - key: RAILS_SERVE_STATIC_FILES
         value: "true"
       - key: RAILS_MASTER_KEY
-        sync: false   # você adiciona a master key no painel da Render
-
-      # O Render injeta automaticamente DATABASE_URL se você criar um Postgres lá.
-      # Caso queira usar seu próprio banco, descomente e configure:
+        sync: false
+      # Render já injeta DATABASE_URL se você criar Postgres lá.
+      # Caso queira usar outro banco, defina manualmente:
       # - key: DATABASE_URL
       #   value: postgres://usuario:senha@host:5432/cargaclick_production
+
 
 
