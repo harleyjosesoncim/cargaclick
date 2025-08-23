@@ -302,7 +302,7 @@ DEPENDENCIES
   puma_worker_killer (~> 0.3)
   rack-attack (~> 6.7)
   rack-timeout (~> 0.7)
-  rails (~> 7.1)
+  rails (~> 7.1.5, >= 7.1.5.1)
   rb-inotify (~> 0.11)
   sassc-rails (~> 2.1)
   sprockets-rails (~> 3.4)
