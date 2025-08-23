@@ -1,71 +1,80 @@
-# syntax=docker/dockerfile:1
-ARG RUBY_VERSION=3.2.4
-
-# ===============================
-# Stage 1 — Builder (gems + yarn)
-# ===============================
-FROM ruby:${RUBY_VERSION}-slim AS builder
-
-RUN apt-get update -qq && apt-get install -y --no-install-recommends \
-    curl ca-certificates gnupg build-essential git libpq-dev libvips42 pkg-config
-
-# Node + Yarn só no builder
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
- && curl -fsSL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/yarn.gpg \
- && echo "deb [signed-by=/usr/share/keyrings/yarn.gpg] https://dl.yarnpkg.com/debian stable main" > /etc/apt/sources.list.d/yarn.list \
- && apt-get update -qq && apt-get install -y --no-install-recommends nodejs yarn \
- && rm -rf /var/lib/apt/lists/*
-
-WORKDIR /app
-
-ENV RAILS_ENV=production \
-    NODE_ENV=production \
-    BUNDLE_WITHOUT=development:test \
-    BUNDLE_DEPLOYMENT=1
-
-# Bundler cache
-COPY Gemfile Gemfile.lock ./
-RUN bundle lock --add-platform x86_64-linux || true
-RUN bundle install --jobs 4 --retry 3
-
-# Yarn cache
-COPY package.json yarn.lock* ./
-RUN yarn install --frozen-lockfile || true
-
-# Código da aplicação
-COPY . .
-
-# Builda JS e CSS (para não precisar de Node no runtime)
-RUN yarn build:js && yarn build:css || true
-
-# (Importante) NÃO faça assets:precompile na build!
-# Deixaremos para o runtime com as ENVs reais.
-
-# ===============================
-# Stage 2 — Runtime (produção)
-# ===============================
-FROM ruby:${RUBY_VERSION}-slim
-
-RUN apt-get update -qq && apt-get install -y --no-install-recommends \
-    libpq5 libvips42 tzdata postgresql-client \
- && rm -rf /var/lib/apt/lists/*
-
-WORKDIR /app
+# ---------- BUILD STAGE ----------
+FROM ruby:3.2.4-slim AS build
 
 ENV RAILS_ENV=production \
     RACK_ENV=production \
-    NODE_ENV=production \
-    RAILS_LOG_TO_STDOUT=1 \
-    RAILS_SERVE_STATIC_FILES=1
+    BUNDLE_WITHOUT="development:test" \
+    GEM_HOME=/usr/local/bundle \
+    BUNDLE_PATH=/usr/local/bundle \
+    PATH="/usr/local/bundle/bin:${PATH}"
+    ENV PATH="/app/bin:$PATH"
 
-# Copia app e gems do builder
-COPY --from=builder /app /app
-COPY --from=builder /usr/local/bundle/ /usr/local/bundle/
 
-# Entrypoint: migra DB e precompila assets no runtime
+# Instalar dependências de build
+RUN apt-get update -y && apt-get install -y --no-install-recommends \
+    build-essential git libpq-dev nodejs yarn curl \
+    libssl-dev zlib1g-dev pkg-config \
+ && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+
+# Copiar Gemfile e Gemfile.lock para cache
+COPY Gemfile Gemfile.lock ./
+
+# Instalar bundler na versão especificada no Gemfile.lock
+RUN gem install bundler:2.6.9
+
+# Adicionar plataformas necessárias antes do install
+RUN bundle lock --add-platform ruby x86_64-linux
+
+# Configurar e instalar gems
+RUN bundle config set force_ruby_platform true \
+ && bundle config set without 'development test' \
+ && bundle install --jobs 4 --retry 3
+
+# Instalar dependências de frontend
+COPY package.json yarn.lock* ./
+RUN yarn install --frozen-lockfile || true
+RUN npx update-browserslist-db@latest
+
+# Copiar o aplicativo
+COPY . .
+
+# Pré-compilar assets
+RUN SECRET_KEY_BASE=dummy bundle exec rake assets:precompile
+
+# ---------- RUNTIME STAGE ----------
+FROM ruby:3.2.4-slim AS app
+
+ENV RAILS_ENV=production \
+    RACK_ENV=production \
+    GEM_HOME=/usr/local/bundle \
+    BUNDLE_PATH=/usr/local/bundle \
+    PATH="/usr/local/bundle/bin:${PATH}"
+
+# Instalar dependências mínimas para runtime
+RUN apt-get update -y && apt-get install -y --no-install-recommends \
+    libpq5 nodejs curl \
+ && rm -rf /var/lib/apt/lists/*
+
+# Instalar bundler no runtime
+RUN gem install bundler:2.6.9
+
+ENV PATH="/app/bin:$PATH"
+
+
+WORKDIR /app
+COPY --from=build /usr/local/bundle /usr/local/bundle
+COPY --from=build /app /app
+
+# Verificar se o comando rails está disponível
+RUN bundle exec rails --version
+
+# Copiar e configurar script de entrada
 COPY docker/entrypoint.sh /usr/bin/entrypoint.sh
 RUN chmod +x /usr/bin/entrypoint.sh
 
 EXPOSE 3000
-CMD ["/usr/bin/entrypoint.sh", "bundle", "exec", "puma", "-C", "config/puma.rb"]
-
+ENTRYPOINT ["/usr/bin/entrypoint.sh"]
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]

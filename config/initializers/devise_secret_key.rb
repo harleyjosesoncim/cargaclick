@@ -1,12 +1,21 @@
-Devise.setup do |config|
-  # Se você quiser chave dedicada ao Devise, descomente a linha abaixo.
-  # Caso contrário, o Devise usará Rails.application.secret_key_base automaticamente.
-  #
-  # prioridade: DEVISE_SECRET_KEY -> credentials.devise_secret_key -> secret_key_base
-  key =
-    ENV["DEVISE_SECRET_KEY"].presence ||
-    Rails.application.credentials.devise_secret_key ||
-    Rails.application.secret_key_base
+# frozen_string_literal: true
+return unless defined?(Devise)
 
-  config.secret_key = key
+Devise.setup do |config|
+  # 1) tenta ENV (recomendado na Render)
+  key = ENV["DEVISE_SECRET_KEY"]
+
+  # 2) só tenta credentials se existir e for válido
+  if key.blank?
+    begin
+      key = Rails.application.credentials.dig(:devise, :secret_key)
+    rescue ActiveSupport::MessageEncryptor::InvalidMessage, ArgumentError
+      key = nil
+    end
+  end
+
+  # 3) fallback para secret_key_base se ainda estiver vazio
+  key ||= Rails.application.secret_key_base
+
+  config.secret_key = key if key.present?
 end

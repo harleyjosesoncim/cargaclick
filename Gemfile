@@ -2,6 +2,8 @@
 source "https://rubygems.org"
 ruby "3.2.4"
 
+
+
 gem "puma", "~> 6.4"
 # Use Bundler 2.4+ para compatibilidade com Ruby 3.2
 
@@ -10,7 +12,7 @@ require "rbconfig"
 HOST_OS = RbConfig::CONFIG["host_os"]
 
 # --- Núcleo (produção também usa)
-gem "rails", "~> 7.1"
+gem "rails", "~> 7.1.5", ">= 7.1.5.1"
 gem "pg", ">= 1.5", "< 2.0"
 gem "bootsnap", ">= 1.17", require: false
 

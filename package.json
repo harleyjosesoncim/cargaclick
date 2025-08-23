@@ -3,11 +3,20 @@
   "private": true,
   "version": "1.0.0",
   "description": "Aplicativo CargaClick - Rails 7 com ESBuild e TailwindCSS",
+  "license": "MIT",
+  "packageManager": "yarn@1.22.22",
+  "engines": {
+    "node": ">=18",
+    "yarn": ">=1.22.0"
+  },
   "scripts": {
-    "build": "esbuild app/javascript/application.js --bundle --sourcemap --outdir=app/assets/builds",
-    "build:css": "tailwindcss -c ./config/tailwind.config.js -i ./app/assets/stylesheets/app.css -o ./app/assets/builds/application.css",
-    "dev": "yarn build --watch",
-    "dev:css": "yarn build:css --watch"
+    "build:js": "esbuild app/javascript/application.js --bundle --sourcemap --outdir=app/assets/builds --minify",
+    "build:css": "tailwindcss -c ./config/tailwind.config.js -i ./app/assets/stylesheets/app.css -o ./app/assets/builds/application.css -m",
+    "build": "yarn build:js && yarn build:css",
+    "dev:js": "esbuild app/javascript/application.js --bundle --sourcemap --outdir=app/assets/builds --watch",
+    "dev:css": "tailwindcss -c ./config/tailwind.config.js -i ./app/assets/stylesheets/app.css -o ./app/assets/builds/application.css --watch",
+    "dev": "yarn dev:js & yarn dev:css",
+    "update:browserslist": "npx update-browserslist-db@latest --update-db"
   },
   "dependencies": {
     "@rails/actioncable": "^8.0.200",
@@ -18,5 +27,11 @@
     "leaflet": "^1.9.4",
     "tailwindcss": "^3.4.3"
   },
-  "license": "MIT"
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not op_mini all"
+  ]
 }
+
+

@@ -1,4 +1,3 @@
-# config/environments/production.rb
 # frozen_string_literal: true
 
 require "active_support/core_ext/integer/time"
@@ -7,48 +6,14 @@ Rails.application.configure do
   # Boot
   config.enable_reloading = false
   config.eager_load       = true
+  config.require_master_key = true
 
-  # ===== Host e URLs canônicas =====
-  canonical_host = ENV.fetch("APP_HOST", "www.cargaclick.com.br")
-
-  allowed_hosts = ENV
-                    .fetch("ALLOWED_HOSTS",
-                           "cargaclick.com.br,www.cargaclick.com.br,cargaclick.onrender.com,localhost,127.0.0.1")
-                    .split(",").map(&:strip).reject(&:blank?)
-
-  (allowed_hosts + [canonical_host]).uniq.each { |h| config.hosts << h }
-  config.hosts << /\A.*\.onrender\.com\z/ # qualquer subdomínio do Render
-  # Permite /up sem verificação de host
-  config.host_authorization = { exclude: ->(req) { req.path == "/up" } }
-
-  # URLs geradas por helpers e mailers
-  config.action_mailer.perform_caching     = false
-  config.action_mailer.default_url_options = { host: canonical_host, protocol: "https" }
-  config.action_mailer.asset_host          = "https://#{canonical_host}"
-  Rails.application.routes.default_url_options[:host]     = canonical_host
-  Rails.application.routes.default_url_options[:protocol] = "https"
-
-  # ===== Erros / Cache =====
-  # Habilite stacktrace via ENV quando necessário
-  config.consider_all_requests_local = ENV["RAILS_CONSIDER_ALL_REQUESTS_LOCAL"] == "true"
-
-  if ENV["REDIS_URL"].present?
-    config.cache_store = :redis_cache_store, {
-      url: ENV["REDIS_URL"],
-      connect_timeout: 5,
-      read_timeout: 1,
-      write_timeout: 1,
-      reconnect_attempts: 1,
-      error_handler: ->(method:, returning:, exception:) {
-        Rails.logger.warn("Redis cache error #{method} -> #{exception.class}: #{exception.message}")
-      }
-    }
-  else
-    config.cache_store = :memory_store, { size: 128.megabytes }
-  end
+  # Erros / Cache
+  config.consider_all_requests_local       = false
   config.action_controller.perform_caching = true
+  config.cache_store = :memory_store, { size: 64.megabytes }
 
-  # ===== Arquivos estáticos (Render/Heroku/K8s) =====
+  # Arquivos estáticos (Render/Heroku/K8s)
   serve_static = ENV["RAILS_SERVE_STATIC_FILES"].present? || ENV["RENDER"].present? || ENV["HEROKU"].present?
   config.public_file_server.enabled = serve_static
   if serve_static
@@ -58,62 +23,85 @@ Rails.application.configure do
       "Surrogate-Control" => "max-age=#{max}"
     }
   end
+# config/environments/production.rb
+Rails.application.configure do
+  # …
+  config.assets.css_compressor = nil   # evita SassC quebrar com CSS4 (rgb/…)
+  # opcional: config.assets.js_compressor = nil
+  # …
+end
 
-  # ===== Assets =====
-  config.assets.compile        = false
-  config.assets.css_compressor = nil # (Tailwind/Esbuild cuidam)
+  # SSL opcional via ENV
+  config.force_ssl = ENV["FORCE_SSL"] == "1"
 
-  # ===== Active Storage =====
-  # Em Render, disco é efêmero. Use serviço externo real em produção (S3/GCS) se necessário.
-  config.active_storage.service = ENV.fetch("ACTIVE_STORAGE_SERVICE", "local").to_sym
-
-  # ===== Segurança =====
-  force_ssl = ENV.fetch("FORCE_SSL", "true") == "true"
-  config.force_ssl  = force_ssl
-  config.ssl_options = { hsts: { expires: 2.years, preload: true, subdomains: true } } if force_ssl
-  config.action_controller.forgery_protection_origin_check = true
-  config.action_dispatch.use_cookies_with_metadata         = true
-
-  # ===== Log =====
-  config.log_level     = ENV.fetch("RAILS_LOG_LEVEL", "info").to_sym
-  config.log_tags      = [:request_id, ->(req) { "ip=#{req.ip}" }]
-  config.log_formatter = ::Logger::Formatter.new
+  # Log
+  config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info").to_sym
+  config.log_tags  = [:request_id, :remote_ip]
 
   if ENV["RAILS_LOG_TO_STDOUT"].present?
-    logger = ActiveSupport::Logger.new($stdout)
-    logger.formatter = config.log_formatter
+    logger           = ActiveSupport::Logger.new($stdout)
+    logger.formatter = ::Logger::Formatter.new
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
 
-  # Lograge (JSON enxuto)
+  # I18n
+  config.i18n.fallbacks = true
+
+  # Active Storage (ajuste se usar S3/GCS)
+  config.active_storage.service = ENV.fetch("ACTIVE_STORAGE_SERVICE", "local").to_sym
+
+  # Mailer (só configura se tiver host)
+  mail_host = ENV["MAILER_HOST"]
+  if mail_host.present?
+    proto = ENV["MAILER_PROTOCOL"] || "https"
+    config.action_mailer.default_url_options = { host: mail_host, protocol: proto }
+    config.action_mailer.asset_host          = "#{proto}://#{mail_host}"
+  end
+  config.action_mailer.perform_caching       = false
+  config.action_mailer.raise_delivery_errors = false
+
+  # Hosts permitidos
+  app_host = ENV["APP_HOST"]
+  config.hosts << app_host if app_host.present?
+  if (csv = ENV["ALLOWED_HOSTS"]).present?
+    csv.split(",").map(&:strip).reject(&:empty?).each { |h| config.hosts << h }
+  end
+
+  # Rack::Attack (se presente)
+  config.middleware.use Rack::Attack if defined?(Rack::Attack)
+
+  # Lograge (se presente)
   if defined?(Lograge)
     config.lograge.enabled   = true
     config.lograge.formatter = Lograge::Formatters::Json.new
+
+    # Campos extras por request
     config.lograge.custom_payload do |controller|
       {
         request_id: controller.request.request_id,
-        cliente_id: (controller.respond_to?(:current_cliente) && controller.current_cliente&.id),
+        user_id:    (controller.respond_to?(:current_user) ? controller.current_user&.id : nil),
+        remote_ip:  controller.request.remote_ip,
+        params:     controller.request.filtered_parameters.except("controller", "action")
       }
     end
-    config.lograge.custom_options = lambda { |event|
+
+    # Campos extras por evento
+    config.lograge.custom_options = lambda do |event|
       {
-        params: (event.payload[:params] || {}).slice("controller", "action", "format"),
-        time:   Time.now.utc.iso8601
+        time:      (event.time.respond_to?(:iso8601) ? event.time.iso8601 : event.time),
+        method:    event.payload[:method],
+        path:      event.payload[:path],
+        status:    event.payload[:status],
+        duration:  event.duration,
+        exception: event.payload[:exception_object]&.class&.name,
+        exception_message: event.payload[:exception_object]&.message
       }
     end
   end
 
-  # ===== I18n / Deprecações =====
-  config.i18n.fallbacks                  = true
+  # Deprecações
   config.active_support.report_deprecations = false
 
-  # ===== DB =====
+  # Não dumpa schema após migrações
   config.active_record.dump_schema_after_migration = false
-
-  # ===== Compressão HTTP =====
-  config.middleware.use Rack::Deflater if ENV["ENABLE_DEFLATE"] == "true"
-
-  # ===== Exceptions =====
-  # nil => usa /public/404.html, 422.html, 500.html
-  config.exceptions_app = nil
 end

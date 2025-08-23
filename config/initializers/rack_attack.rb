@@ -1,62 +1,44 @@
+# config/initializers/rack_attack.rb
 # frozen_string_literal: true
 
-# Garanta que a gem está carregada ANTES de abrir a classe
-require "rack/attack"
-
-# Só configura se a constante existir e se for produção
-# (ou habilite em dev com RACK_ATTACK=1)
 return unless defined?(Rack::Attack)
-return unless Rails.env.production? || ENV["RACK_ATTACK"] == "1"
 
-class Rack::Attack
-  SIGN_IN_PATH = "/clientes/sign_in".freeze
-  SIGN_UP_PATH = "/clientes".freeze # Devise registrations#create
+# Habilita por padrão só em produção (pode forçar via ENV)
+enabled_default = Rails.env.production? ? "true" : "false"
+enabled = ENV.fetch("RACK_ATTACK_ENABLED", enabled_default) == "true"
+Rack::Attack.enabled = enabled
 
-  # Helpers para diferenças de versão (allowlist/safelist/whitelist; blocklist/blacklist)
-  def self._allowlist(name, &blk)
-    if respond_to?(:allowlist)      then allowlist(name, &blk)
-    elsif respond_to?(:safelist)    then safelist(name, &blk)
-    elsif respond_to?(:whitelist)   then whitelist(name, &blk)
-    end
-  end
+# Store para contadores (se não houver Redis, usa memória local)
+Rack::Attack.cache.store ||= ActiveSupport::Cache::MemoryStore.new
 
-  def self._blocklist(name, &blk)
-    if respond_to?(:blocklist)      then blocklist(name, &blk)
-    elsif respond_to?(:blacklist)   then blacklist(name, &blk)
-    end
-  end
+if enabled
+  # Limites padrão (ajustáveis por ENV)
+  req_limit = Integer(ENV.fetch("RACK_ATTACK_REQ_LIMIT", "120"))
+  period    = Integer(ENV.fetch("RACK_ATTACK_PERIOD", "60")) # segundos
 
-  # Protege caso a sua versão (muito antiga) não tenha `throttle`
-  def self._throttle(name, opts = {}, &blk)
-    return unless respond_to?(:throttle)
-    throttle(name, opts, &blk)
-  end
+  # Safelists úteis
+  Rack::Attack.safelist("healthcheck") { |req| req.path == "/up" }
+  Rack::Attack.safelist("assets")      { |req| req.path.start_with?("/assets/") }
+  Rack::Attack.safelist("robots")      { |req| req.path == "/robots.txt" }
+  Rack::Attack.safelist("favicon")     { |req| req.path == "/favicon.ico" }
 
-  # Allowlist do healthcheck
-  _allowlist("healthcheck-up") { |req| req.get? && req.path == "/up" }
+  # Throttle básico por IP
+  Rack::Attack.throttle("requests/ip", limit: req_limit, period: period) { |req| req.ip }
+end
 
-  # Throttles
-  _throttle("logins/ip",   limit: 10, period: 60)        { |req| req.ip if req.post? && req.path == SIGN_IN_PATH }
-  _throttle("signups/ip",  limit: 5,  period: 3600)      { |req| req.ip if req.post? && req.path == SIGN_UP_PATH }
-  _throttle("password/ip", limit: 5,  period: 600)       { |req| req.ip if req.post? && req.path == "/clientes/password" }
+# Resposta padrão quando estoura o limite (API nova: throttled_responder)
+Rack::Attack.throttled_responder = lambda do |request|
+  match = request.env["rack.attack.match_data"] || {}
+  headers = {
+    "Content-Type" => "application/json",
+    "Retry-After"  => (match[:period] || 60).to_s
+  }
+  body = {
+    error:  "Too Many Requests",
+    limit:  match[:limit],
+    period: match[:period],
+    count:  match[:count]
+  }.to_json
 
-  # Blocklist opcional
-  _blocklist("bad-ua") { |req| req.user_agent.to_s.strip.empty? }
-
-  # Resposta 429 unificada (compatível com APIs antigas e novas)
-  responder = lambda do |env|
-    body = {
-      error: "Throttle limit reached",
-      match: env["rack.attack.match_type"],
-      rule:  env["rack.attack.matched"],
-      at:    Time.now.utc.iso8601
-    }.to_json
-    [429, { "Content-Type" => "application/json" }, [body]]
-  end
-
-  if respond_to?(:throttled_responder=)
-    self.throttled_responder = responder
-  else
-    self.throttled_response  = responder
-  end
+  [429, headers, [body]]
 end

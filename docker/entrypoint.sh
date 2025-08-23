@@ -7,10 +7,14 @@ export RAILS_ENV=${RAILS_ENV:-production}
 export RACK_ENV=${RACK_ENV:-$RAILS_ENV}
 export NODE_ENV=${NODE_ENV:-production}
 
-# Falhar cedo se faltar secrets importantes
-: "${SECRET_KEY_BASE:?SECRET_KEY_BASE is required}"
-# Use somente se você usa credentials:
-: "${RAILS_MASTER_KEY:?RAILS_MASTER_KEY is required}"
+# Forçar a configuração do Bundler
+bundle config set path /usr/local/bundle
+bundle config set without 'development test'
+
+# Depuração
+echo "Verificando Bundler e Rails..."
+bundle --version
+bundle exec rails --version
 
 echo "===> DB migrate"
 bundle exec rails db:migrate

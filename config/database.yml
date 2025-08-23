@@ -12,17 +12,17 @@ default: &default
 development:
   <<: *default
   # Usa DATABASE_URL se existir; senão Postgres local
-  url: <%= ENV["DATABASE_URL"] || "postgres://postgres:postgres@localhost:5432/cargaclick_development" %>
+  url: <%= ENV["DATABASE_URL"] || "postgres://postgres:1234@localhost:5432/cargaclick_development" %>
 
 test:
   <<: *default
-  url: <%= ENV["DATABASE_URL"] || "postgres://postgres:postgres@localhost:5432/cargaclick_test" %>
+  url: <%= ENV["DATABASE_URL"] || "postgres://postgres:1234@localhost:5432/cargaclick_test" %>
 
 production:
   <<: *default
   # Em produção (Render), defina DATABASE_URL no painel (com ?sslmode=require).
   # Localmente, se não houver, cai para Postgres local para não quebrar.
-  url: <%= ENV["DATABASE_URL"] || ENV["RENDER_DATABASE_URL"] || "postgres://postgres:postgres@localhost:5432/cargaclick_production" %>
+  url: <%= ENV["DATABASE_URL"] || ENV["RENDER_DATABASE_URL"] || "postgres://postgres:1234@localhost:5432/cargaclick_production" %>
   reaping_frequency: <%= ENV.fetch("DB_REAPING_FREQUENCY", "10") %>
   prepared_statements: <%= ENV.fetch("DB_PREPARED_STATEMENTS", "true") == "true" %>
 

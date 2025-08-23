@@ -1,5 +1,5 @@
-class RenameCotacaosToCotacoes < ActiveRecord::Migration[7.0]
+class AddEntregueToFretes < ActiveRecord::Migration[7.1]
   def change
-    rename_table :cotacaos, :cotacoes
+    add_column :fretes, :entregue, :boolean, default: false unless column_exists?(:fretes, :entregue)
   end
 end
