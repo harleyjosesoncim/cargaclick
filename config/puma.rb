@@ -1,21 +1,21 @@
+# config/puma.rb
 # Puma configuration for CargaClick (Render/Docker ready)
 
 # Número de threads por worker (mínimo e máximo iguais)
 threads_count = ENV.fetch("RAILS_MAX_THREADS") { 5 }
 threads threads_count, threads_count
 
-# Porta que o Render define via ENV
+# Porta definida pelo Render (ou 3000 em dev)
 port ENV.fetch("PORT") { 3000 }
 
-# Bind para todas as interfaces (necessário em container)
-bind "tcp://0.0.0.0:#{ENV.fetch("PORT") { 3000 }}"
+# Não precisa de bind manual: Render já seta PORT corretamente
+# bind "tcp://0.0.0.0:#{ENV.fetch("PORT") { 3000 }}"
 
-# Define o ambiente
-environment ENV.fetch("RAILS_ENV") { "production" }
+# Ambiente padrão: production em Render, development local
+environment ENV.fetch("RAILS_ENV") { "development" }
 
-# Workers (processos em paralelo). 
-# Se WEB_CONCURRENCY não for definido, roda em modo single-process.
-workers ENV.fetch("WEB_CONCURRENCY") { 0 }.to_i
+# Workers (processos paralelos). 0 => single mode
+workers ENV.fetch("WEB_CONCURRENCY") { 2 }
 
 # Preload melhora uso de memória em produção
 preload_app!
