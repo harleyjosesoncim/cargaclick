@@ -4,7 +4,7 @@ FROM ruby:3.2.4 AS build
 ARG RAILS_MASTER_KEY
 ENV RAILS_MASTER_KEY=$RAILS_MASTER_KEY
 
-# Variáveis de ambiente
+# Variáveis de ambiente para build
 ENV RAILS_ENV=production \
     NODE_ENV=production \
     BUNDLE_WITHOUT=development:test \
@@ -16,21 +16,23 @@ RUN apt-get update -qq && apt-get install -y \
     build-essential \
     libpq-dev \
     nodejs \
-    yarn \
     npm \
+    yarn \
     git \
+    tzdata \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Copiar arquivos de dependência primeiro (cache de build)
+# Copiar dependências primeiro (melhor cache)
 COPY Gemfile Gemfile.lock ./
-RUN bundle install --jobs 4 --retry 5
+RUN bundle config set without 'development test' \
+ && bundle install --jobs 4 --retry 5
 
 COPY package.json yarn.lock* ./
-RUN yarn install --check-files || true
+RUN yarn install --frozen-lockfile || true
 
-# Copiar toda a aplicação
+# Copiar a aplicação
 COPY . .
 
 # Pré-compilar assets (Rails + Tailwind/JS)
@@ -50,6 +52,8 @@ RUN apt-get update -qq && apt-get install -y \
     libpq-dev \
     nodejs \
     yarn \
+    tzdata \
+    vim-tiny \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -58,8 +62,11 @@ WORKDIR /app
 COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY --from=build /app /app
 
+# Garantir permissões (evita problemas no container)
+RUN chown -R root:root /app
+
 # Porta exposta
 EXPOSE 3000
 
-# Comando para iniciar o servidor Puma
+# Iniciar Puma
 CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]

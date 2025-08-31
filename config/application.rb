@@ -3,6 +3,9 @@ require_relative "boot"
 require "rails/all"
 
 Bundler.require(*Rails.groups)
+require 'dotenv/load' if defined?(Dotenv)
+
+
 
 module Cargaclick
   class Application < Rails::Application
