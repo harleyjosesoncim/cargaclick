@@ -7,7 +7,7 @@ databases:
 services:
   - type: web
     name: cargaclick
-    runtime: docker              # usa o Dockerfile da raiz
+    runtime: docker
     plan: starter
     dockerfilePath: ./Dockerfile
     autoDeploy: true
@@ -15,8 +15,8 @@ services:
 
     buildCommand: "./bin/render-build.sh"
 
-    # 🔑 releaseCommand = roda ANTES do serviço web subir
-    releaseCommand: "bundle exec rails db:migrate"
+    # Rodar migrations antes do serviço subir
+    releaseCommand: "./bin/render-release.sh"
 
     envVars:
       - key: RAILS_ENV
@@ -26,7 +26,7 @@ services:
       - key: RAILS_SERVE_STATIC_FILES
         value: "true"
       - key: RAILS_MASTER_KEY
-        sync: false   # você cola a master key no painel da Render
+        sync: false   # cole manualmente no painel do Render
       - key: DATABASE_URL
         fromDatabase:
           name: cargaclick-db
