@@ -1,14 +1,10 @@
 class CreateCotacoes < ActiveRecord::Migration[7.1]
   def change
     create_table :cotacoes do |t|
-      t.references :cliente, null: false, foreign_key: true
-      t.string :origem
-      t.string :destino
-      t.decimal :peso
-      t.decimal :volume
-      t.string :status
-
+      t.references :cliente, foreign_key: true
+      t.references :frete, foreign_key: true
+      t.decimal :valor, precision: 10, scale: 2
       t.timestamps
-    end
+    end unless table_exists?(:cotacoes)
   end
 end

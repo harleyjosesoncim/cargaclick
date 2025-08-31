@@ -3,8 +3,7 @@ class CreateConfigs < ActiveRecord::Migration[7.1]
     create_table :configs do |t|
       t.decimal :comissao_padrao
       t.decimal :comissao_assinante
-
       t.timestamps
-    end
+    end unless table_exists?(:configs)
   end
 end

@@ -3,8 +3,11 @@ databases:
     plan: free
     databaseName: cargaclick_production
     user: cargaclick
+    releaseCommand: "bundle exec rails db:migrate"
+
 
 services:
+
   - type: web
     name: cargaclick
     runtime: docker

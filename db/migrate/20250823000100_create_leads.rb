@@ -1,14 +1,11 @@
 class CreateLeads < ActiveRecord::Migration[7.1]
   def change
     create_table :leads do |t|
-      t.string :tipo       # cliente ou transportador
       t.string :nome
-      t.string :contato
-      t.string :origem
-      t.string :destino
-      t.text :detalhes
-
+      t.string :email
+      t.string :telefone
+      t.string :canal
       t.timestamps
-    end
+    end unless table_exists?(:leads)
   end
 end

@@ -1,19 +1,6 @@
 class AddConfirmableToClientesAndTransportadores < ActiveRecord::Migration[7.1]
   def change
-    # Clientes
-    add_column :clientes, :confirmation_token, :string
-    add_column :clientes, :confirmed_at, :datetime
-    add_column :clientes, :confirmation_sent_at, :datetime
-    add_column :clientes, :unconfirmed_email, :string
-
-    add_index :clientes, :confirmation_token, unique: true
-
-    # Transportadores
-    add_column :transportadores, :confirmation_token, :string
-    add_column :transportadores, :confirmed_at, :datetime
-    add_column :transportadores, :confirmation_sent_at, :datetime
-    add_column :transportadores, :unconfirmed_email, :string
-
-    add_index :transportadores, :confirmation_token, unique: true
+    add_column :clientes, :confirmation_token, :string unless column_exists?(:clientes, :confirmation_token)
+    add_column :transportadores, :confirmation_token, :string unless column_exists?(:transportadores, :confirmation_token)
   end
 end

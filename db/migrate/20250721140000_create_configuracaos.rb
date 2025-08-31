@@ -1,10 +1,9 @@
-class CreateConfiguracaos < ActiveRecord::Migration[6.1]
+class CreateConfiguracaos < ActiveRecord::Migration[7.1]
   def change
     create_table :configuracaos do |t|
-      t.float :comissao_padrao, default: 6.0
-      t.float :comissao_assinante, default: 3.0
-
+      t.string :chave
+      t.string :valor
       t.timestamps
-    end
+    end unless table_exists?(:configuracaos)
   end
 end

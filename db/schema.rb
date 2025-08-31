@@ -17,9 +17,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_29_123000) do
   create_table "clientes", force: :cascade do |t|
     t.string "nome"
     t.string "email"
-    t.string "telefone"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "telefone"
     t.string "endereco"
     t.string "cep"
     t.float "largura"
@@ -35,8 +35,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_29_123000) do
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
+    t.string "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string "unconfirmed_email"
     t.string "campo"
     t.index ["cnpj"], name: "index_clientes_on_cnpj", unique: true, where: "(cnpj IS NOT NULL)"
+    t.index ["confirmation_token"], name: "index_clientes_on_confirmation_token", unique: true
     t.index ["cpf"], name: "index_clientes_on_cpf", unique: true, where: "(cpf IS NOT NULL)"
     t.index ["email"], name: "index_clientes_on_email", unique: true
     t.index ["reset_password_token"], name: "index_clientes_on_reset_password_token", unique: true
@@ -57,16 +62,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_29_123000) do
   end
 
   create_table "cotacoes", force: :cascade do |t|
-    t.bigint "cliente_id", null: false
+    t.integer "cliente_id"
     t.string "origem"
     t.string "destino"
-    t.decimal "peso"
-    t.decimal "volume"
+    t.float "peso"
+    t.float "volume"
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "comissao"
-    t.index ["cliente_id"], name: "index_cotacoes_on_cliente_id"
   end
 
   create_table "fretes", force: :cascade do |t|
@@ -91,6 +95,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_29_123000) do
     t.string "cep_atual"
     t.float "latitude_atual_transportador"
     t.float "longitude_atual_transportador"
+    t.boolean "entregue"
     t.string "origem"
     t.string "destino"
     t.text "descricao"
@@ -99,7 +104,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_29_123000) do
     t.integer "profundidade"
     t.integer "status", default: 0
     t.boolean "contatos_liberados"
-    t.boolean "entregue", default: false
     t.string "cliente_nome"
   end
 
@@ -162,6 +166,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_29_123000) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "proposta", force: :cascade do |t|
+    t.bigint "frete_id", null: false
+    t.bigint "transportador_id", null: false
+    t.decimal "valor_proposto"
+    t.text "observacao"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["frete_id"], name: "index_proposta_on_frete_id"
+    t.index ["transportador_id"], name: "index_proposta_on_transportador_id"
+  end
+
   create_table "propostas", force: :cascade do |t|
     t.decimal "valor_proposto", precision: 10, scale: 2
     t.text "observacao"
@@ -188,13 +203,19 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_29_123000) do
     t.integer "fidelidade_pontos", default: 0
     t.string "cidade"
     t.string "email"
+    t.string "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string "unconfirmed_email"
     t.string "pix_key"
     t.string "mercado_pago_link"
+    t.index ["confirmation_token"], name: "index_transportadores_on_confirmation_token", unique: true
     t.index ["email"], name: "index_transportadores_on_email", unique: true, where: "(email IS NOT NULL)"
   end
 
-  add_foreign_key "cotacoes", "clientes"
   add_foreign_key "messages", "fretes"
   add_foreign_key "modal_transportadores", "modals"
   add_foreign_key "modal_transportadores", "transportadores"
+  add_foreign_key "proposta", "fretes"
+  add_foreign_key "proposta", "transportadores"
 end
