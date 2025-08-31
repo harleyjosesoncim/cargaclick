@@ -2,16 +2,18 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  # Pool = WEB_CONCURRENCY * RAILS_MAX_THREADS + 2 (fallback 2*5+2=12)
+
+  # Pool = WEB_CONCURRENCY * RAILS_MAX_THREADS + 2
   pool: <%= ENV.fetch("DB_POOL") { (ENV.fetch("WEB_CONCURRENCY", "2").to_i * ENV.fetch("RAILS_MAX_THREADS", "5").to_i + 2) } %>
   checkout_timeout: <%= ENV.fetch("DB_CHECKOUT_TIMEOUT", "5") %>
+
   variables:
     statement_timeout: <%= ENV.fetch("DB_STATEMENT_TIMEOUT_MS", "15000") %>
     lock_timeout: <%= ENV.fetch("DB_LOCK_TIMEOUT_MS", "5000") %>
 
 development:
   <<: *default
-  # Usa DATABASE_URL se existir; senão Postgres local
+  # Usa DATABASE_URL se existir, senão fallback local
   url: <%= ENV["DATABASE_URL"] || "postgres://postgres:1234@localhost:5432/cargaclick_development" %>
 
 test:
@@ -20,10 +22,13 @@ test:
 
 production:
   <<: *default
-  # Em produção (Render), defina DATABASE_URL no painel (com ?sslmode=require).
-  # Localmente, se não houver, cai para Postgres local para não quebrar.
+  # No Render, o DATABASE_URL já vem configurado (use ?sslmode=require)
   url: <%= ENV["DATABASE_URL"] || ENV["RENDER_DATABASE_URL"] || "postgres://postgres:1234@localhost:5432/cargaclick_production" %>
+
+  # Evita conexões zumbis em containers
   reaping_frequency: <%= ENV.fetch("DB_REAPING_FREQUENCY", "10") %>
+
+  # Prepared statements melhoram performance, mas podem travar em PG antigos
   prepared_statements: <%= ENV.fetch("DB_PREPARED_STATEMENTS", "true") == "true" %>
 
   
