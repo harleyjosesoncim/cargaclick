@@ -1,62 +1,75 @@
 # frozen_string_literal: true
-
 class FretesController < ApplicationController
-  # /bolsao hoje aponta para fretes#queue; ambos são públicos
-  before_action :authenticate_cliente!, except: %i[bolsao queue]
-  before_action :set_frete, only: %i[show]
+  before_action :authenticate_cliente!, only: [:new, :create, :edit, :update, :destroy]
+  before_action :set_frete, only: [:show, :edit, :update, :destroy]
 
-  rescue_from ActiveRecord::RecordNotFound, with: :render_404
-
-  # GET /fretes
+  # 👉 Redireciona a lista de fretes para o formulário de solicitação
   def index
-    @fretes = current_cliente.fretes.order(created_at: :desc).limit(50)
+    redirect_to new_frete_path
   end
 
-  # GET /fretes/new
+  def show; end
+
   def new
-    @frete = current_cliente.fretes.build
+    @frete = Frete.new
   end
 
-  # POST /fretes
   def create
     @frete = current_cliente.fretes.build(frete_params)
-    if @frete.save
-      redirect_to @frete, notice: 'Frete criado com sucesso.'
-    else
-      flash.now[:error] = 'Revise os campos abaixo.'
+
+    ActiveRecord::Base.transaction do
+      if @frete.save
+        @frete.create_cotacao!(
+          cliente_id: current_cliente.id,
+          origem: @frete.cep_origem,
+          destino: @frete.cep_destino,
+          peso: @frete.peso,
+          volume: @frete.volume,
+          status: "pendente"
+        )
+
+        redirect_to @frete, notice: "✅ Solicitação enviada e cotação criada com sucesso."
+      else
+        render :new, status: :unprocessable_entity
+      end
+    rescue ActiveRecord::RecordInvalid => e
+      flash[:alert] = "Erro ao salvar: #{e.record.errors.full_messages.to_sentence}"
       render :new, status: :unprocessable_entity
     end
   end
 
-  # GET /fretes/:id
-  def show; end
+  def edit; end
 
-  # GET /bolsao (público) – usa app/views/fretes/bolsao.html.erb
-  def bolsao
-    scope = Frete
-    scope = scope.where(publico: true) if Frete.column_names.include?('publico')
-    @fretes = scope.order(created_at: :desc).limit(50)
-    expires_in 60.seconds, public: true
-    render :bolsao
+  def update
+    if @frete.update(frete_params)
+      redirect_to @frete, notice: "✏️ Frete atualizado com sucesso."
+    else
+      render :edit, status: :unprocessable_entity
+    end
   end
 
-  # Compatível com a rota atual: fretes#queue
-  def queue
-    bolsao
+  def destroy
+    if @frete.destroy
+      redirect_to new_frete_path, notice: "🗑️ Frete removido com sucesso."
+    else
+      redirect_to @frete, alert: "Erro ao tentar remover o frete."
+    end
   end
 
   private
 
   def set_frete
-    @frete = current_cliente.fretes.find(params[:id])
+    @frete = Frete.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    redirect_to new_frete_path, alert: "⚠️ Frete não encontrado."
   end
 
   def frete_params
-    params.require(:frete).permit(:origem, :destino, :descricao,
-                                  :peso, :largura, :altura, :profundidade, :publico)
-  end
-
-  def render_404
-    render file: Rails.root.join('public/404.html'), status: :not_found, layout: false
+    params.require(:frete).permit(
+      :cliente_id, :transportador_id,
+      :cep_origem, :cep_destino, :descricao,
+      :peso, :largura, :altura, :profundidade,
+      :valor_estimado, :status
+    )
   end
 end

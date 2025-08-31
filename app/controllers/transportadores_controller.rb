@@ -1,33 +1,78 @@
+# frozen_string_literal: true
 class TransportadoresController < ApplicationController
-  # Público: lista de transportadores (landing). Coloque authenticate_cliente! se quiser restringir.
+  before_action :authenticate_cliente!   # exige login
+  before_action :set_transportador, only: [:show, :edit, :update, :destroy]
+  before_action :require_admin!, only: [:index, :destroy]
+  before_action :authorize_transportador!, only: [:show, :edit, :update]
+
   def index
-    @q    = params[:q].to_s.strip
-    page  = params.fetch(:page, 1).to_i
-    per   = params.fetch(:per, 20).to_i
-    page  = 1 if page < 1
-    per   = 20 if per <= 0
-    per   = 100 if per > 100
+    @transportadores = Transportador.order(created_at: :desc)
+  end
 
-    scope = defined?(Transportador) ? Transportador.all : []
+  def show; end
 
-    if scope.respond_to?(:where) && @q.present?
-      like  = "%#{@q}%"
-      # tenta por nome/veículo/cidade, se as colunas existirem
-      if scope.column_names.include?("nome") || scope.column_names.include?("name")
-        scope = scope.where("LOWER(nome) LIKE LOWER(?)", like) if scope.column_names.include?("nome")
-        scope = scope.or(Transportador.where("LOWER(name) LIKE LOWER(?)", like)) if scope.column_names.include?("name")
-      end
-      scope = scope.where("LOWER(tipo_veiculo) LIKE LOWER(?)", like) if scope.column_names.include?("tipo_veiculo")
-      scope = scope.where("LOWER(cidade) LIKE LOWER(?)", like) if scope.column_names.include?("cidade")
-    end
+  def new
+    @transportador = Transportador.new
+  end
 
-    if scope.respond_to?(:order)
-      scope = scope.order(created_at: :desc)
-      @transportadores = scope.limit(per).offset((page - 1) * per)
+  def create
+    @transportador = Transportador.new(transportador_params)
+    if @transportador.save
+      redirect_to @transportador, notice: "Transportador cadastrado com sucesso."
     else
-      @transportadores = []
+      render :new, status: :unprocessable_entity
     end
+  end
 
-    @pager = { page: page, per: per, has_next: @transportadores.size == per }
+  def edit; end
+
+  def update
+    if @transportador.update(transportador_params)
+      redirect_to @transportador, notice: "Transportador atualizado."
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    @transportador.destroy
+    redirect_to transportadores_path, notice: "Transportador removido."
+  end
+
+  private
+
+  def set_transportador
+    @transportador = Transportador.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    redirect_to transportadores_path, alert: "Transportador não encontrado."
+  end
+
+  def transportador_params
+    params.require(:transportador).permit(
+      :nome, :cpf, :telefone, :email,
+      :endereco, :cep, :cidade,
+      :tipo_veiculo, :carga_maxima,
+      :valor_km, :largura, :altura, :profundidade, :peso_aproximado,
+      :pix_key, :mercado_pago_link, :fidelidade_pontos,
+      :password, :password_confirmation
+    )
+  end
+
+  # Só admin pode listar todos ou excluir
+  def require_admin!
+    admin_email = ENV.fetch("ADMIN_EMAIL", "sac.cargaclick@gmail.com")
+    unless current_cliente&.respond_to?(:admin?) && current_cliente.admin? ||
+           current_cliente&.email.to_s.casecmp?(admin_email)
+      redirect_to root_path, alert: "Acesso restrito ao administrador."
+    end
+  end
+
+  # Transportador só pode editar/ver o próprio perfil (ou admin)
+  def authorize_transportador!
+    return if current_cliente&.email.to_s.casecmp?(@transportador.email.to_s)
+    return if current_cliente&.respond_to?(:admin?) && current_cliente.admin?
+
+    redirect_to root_path, alert: "Você não tem permissão para acessar este transportador."
   end
 end
+

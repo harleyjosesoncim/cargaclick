@@ -1,60 +1,46 @@
 class CotacoesController < ApplicationController
+  before_action :authenticate_cliente!   # exige login
   before_action :set_cotacao, only: [:show, :edit, :update, :destroy]
 
   # GET /cotacoes
   def index
-    @cotacoes = Cotacao.all
+    # mostra apenas as cotações do cliente logado
+    @cotacoes = current_cliente.cotacoes.includes(:frete).order(created_at: :desc)
   end
 
-  # GET /cotacoes/1
+  # GET /cotacoes/:id
   def show
   end
 
-  # GET /cotacoes/new
-  def new
-    @cotacao = Cotacao.new
-  end
-
-  # GET /cotacoes/1/edit
+  # GET /cotacoes/:id/edit
   def edit
   end
 
-  # POST /cotacoes
-  def create
-    @cotacao = Cotacao.new(cotacao_params)
-
-    if @cotacao.save
-      redirect_to @cotacao, notice: 'Cotação criada com sucesso.'
-    else
-      render :new, status: :unprocessable_entity
-    end
-  end
-
-  # PATCH/PUT /cotacoes/1
+  # PATCH/PUT /cotacoes/:id
   def update
     if @cotacao.update(cotacao_params)
-      redirect_to @cotacao, notice: 'Cotação atualizada com sucesso.', status: :see_other
+      redirect_to cotacoes_path, notice: "Cotação atualizada com sucesso."
     else
       render :edit, status: :unprocessable_entity
     end
   end
 
-  # DELETE /cotacoes/1
+  # DELETE /cotacoes/:id
   def destroy
-    @cotacao.destroy!
-    redirect_to cotacoes_url, notice: 'Cotação apagada com sucesso.', status: :see_other
+    @cotacao.destroy
+    redirect_to cotacoes_path, notice: "Cotação removida com sucesso."
   end
 
   private
 
-    # Callback para carregar a cotação pelo ID
-    def set_cotacao
-      @cotacao = Cotacao.find(params[:id])
-    end
+  def set_cotacao
+    # segurança: só permite acessar se a cotação pertencer ao cliente logado
+    @cotacao = current_cliente.cotacoes.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    redirect_to cotacoes_path, alert: "Cotação não encontrada ou não pertence a você."
+  end
 
-    # Parâmetros permitidos para criação/edição de cotações
-    def cotacao_params
-      params.require(:cotacao).permit(:cliente_id, :origem, :destino, :peso, :volume, :status)
-    end
+  def cotacao_params
+    params.require(:cotacao).permit(:valor, :status, :observacoes)
+  end
 end
-

@@ -1,14 +1,17 @@
-# Clientes de exemplo (Devise)
-clientes = [
-  { email: "ana@exemplo.com",  password: "senha123" },
-  { email: "bruno@exemplo.com", password: "senha123" },
-  { email: "carla@exemplo.com", password: "senha123" }
-]
-
-clientes.each do |attrs|
-  Cliente.find_or_create_by!(email: attrs[:email]) do |c|
-    c.password = attrs[:password]
-    c.password_confirmation = attrs[:password]
-  end
+# Usuário master Cliente
+Cliente.find_or_create_by!(email: "master.cliente@cargaclick.com") do |c|
+  c.nome = "Master Cliente"
+  c.password = "123456"
+  c.password_confirmation = "123456"
+  c.confirmed_at = Time.now
 end
-puts "[seeds] Clientes criados/garantidos: #{clientes.map { _1[:email] }.join(', ')}"
+
+# Usuário master Transportador
+Transportador.find_or_create_by!(email: "master.transportador@cargaclick.com") do |t|
+  t.nome = "Master Transportador"
+  t.password = "123456"
+  t.password_confirmation = "123456"
+  t.tipo_veiculo = "Caminhão"
+  t.confirmed_at = Time.now
+end
+# Usuário master Admin

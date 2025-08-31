@@ -16,15 +16,13 @@ services:
   web:
     build: .
     command: bundle exec puma -C config/puma.rb
-    # NÃO montar volume em produção local, pra não apagar os assets do build
     ports:
-      - "3000:10000"   # host:container (puma escuta 10000, acessa em http://localhost:3000)
+      - "3000:3000"   # agora bate certinho com Puma escutando em 3000
     environment:
       RAILS_ENV: production
       RACK_ENV: production
-      PORT: "10000"
       DATABASE_URL: postgres://postgres:password@db:5432/cargaclick_production
-      SECRET_KEY_BASE: ${SECRET_KEY_BASE:-dummy}
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}  # usa seu master.key real
       RAILS_LOG_TO_STDOUT: "true"
       RAILS_SERVE_STATIC_FILES: "true"
     depends_on:
@@ -33,4 +31,3 @@ services:
 
 volumes:
   db_data:
-:

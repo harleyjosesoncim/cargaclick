@@ -1,81 +1,125 @@
-<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
-  <div class="max-w-3xl mx-auto bg-white rounded-3xl shadow-xl p-8 sm:p-10 border border-blue-200">
+<%= form_with(model: transportador, local: true, class: "space-y-6") do |f| %>
+  <% if transportador.errors.any? %>
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow">
+      <h2 class="font-bold flex items-center gap-2">
+        ⚠ <span><%= pluralize(transportador.errors.count, "erro") %> impediram o salvamento:</span>
+      </h2>
+      <ul class="mt-2 list-disc list-inside text-sm">
+        <% transportador.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
 
-    <div class="flex items-center space-x-4 mb-8">
-      <div class="text-5xl">🚚</div>
-      <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 leading-tight">
-        <%= @transportador.new_record? ? "Novo Transportador" : "Editar Transportador" %>
-      </h1>
+  <!-- Nome -->
+  <div>
+    <%= f.label :nome, "Nome do Transportador", class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+    <%= f.text_field :nome, required: true,
+          placeholder: "Ex: Transportes Silva",
+          class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm 
+                 focus:border-blue-500 focus:ring-blue-500 sm:text-sm
+                 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+  </div>
+
+  <!-- CPF -->
+  <div>
+    <%= f.label :cpf, "CPF", class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+    <%= f.text_field :cpf, required: true,
+          placeholder: "123.456.789-01",
+          class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm 
+                 focus:border-blue-500 focus:ring-blue-500 sm:text-sm
+                 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+  </div>
+
+  <!-- Telefone -->
+  <div>
+    <%= f.label :telefone, "Telefone/WhatsApp", class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+    <%= f.telephone_field :telefone, placeholder: "(11) 99999-9999",
+          class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm 
+                 focus:border-blue-500 focus:ring-blue-500 sm:text-sm
+                 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+  </div>
+
+  <!-- Endereço + Cidade + CEP -->
+  <div>
+    <%= f.label :endereco, "Endereço", class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+    <%= f.text_field :endereco, class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+  </div>
+
+  <div>
+    <%= f.label :cidade, "Cidade", class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+    <%= f.text_field :cidade, class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+  </div>
+
+  <div>
+    <%= f.label :cep, "CEP", class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+    <%= f.text_field :cep, placeholder: "18000-000",
+          class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+  </div>
+
+  <!-- Veículo -->
+  <div>
+    <%= f.label :tipo_veiculo, "Tipo de Veículo", class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+    <%= f.text_field :tipo_veiculo, required: true,
+          placeholder: "Caminhão, Van, Moto...",
+          class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+  </div>
+
+  <div>
+    <%= f.label :carga_maxima, "Carga Máxima (kg)", class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+    <%= f.number_field :carga_maxima, step: 0.01,
+          placeholder: "Ex: 1200",
+          class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+  </div>
+
+  <!-- Valor por km -->
+  <div>
+    <%= f.label :valor_km, "Valor por Km (R$)", class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+    <%= f.number_field :valor_km, step: 0.01, required: true,
+          placeholder: "2.50",
+          class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+  </div>
+
+  <!-- Pagamento -->
+  <div>
+    <%= f.label :pix_key, "Chave Pix", class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+    <%= f.text_field :pix_key, placeholder: "email@provedor.com ou chave aleatória",
+          class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+  </div>
+
+  <div>
+    <%= f.label :mercado_pago_link, "Link Mercado Pago", class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+    <%= f.url_field :mercado_pago_link, placeholder: "https://mpago.la/xxxx",
+          class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+  </div>
+
+  <!-- Fidelidade -->
+  <div>
+    <%= f.label :fidelidade_pontos, "Pontos de Fidelidade", class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+    <%= f.number_field :fidelidade_pontos, step: 1, readonly: true,
+          class: "mt-1 block w-full rounded-lg border-gray-300 bg-gray-100 text-gray-600 sm:text-sm" %>
+  </div>
+
+  <% if action_name == "new" %>
+    <!-- Senha -->
+    <div>
+      <%= f.label :password, "Senha", class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+      <%= f.password_field :password, required: true,
+            class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
     </div>
 
-    <%# Certifique-se de que o partial 'shared/erros' existe e funciona corretamente %>
-    <%= render 'shared/erros', object: @transportador %>
+    <div>
+      <%= f.label :password_confirmation, "Confirme a Senha", class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+      <%= f.password_field :password_confirmation, required: true,
+            class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+    </div>
+  <% end %>
 
-    <%= form_with(model: @transportador, local: true, class: "space-y-6") do |form| %>
-
-      <div>
-        <%= form.label :nome, "Nome Completo", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= form.text_field :nome, placeholder: "Ex: Maria Transportadora Silva", class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" %>
-      </div>
-
-      <div>
-        <%= form.label :cpf, "CPF", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= form.text_field :cpf,
-            placeholder: "Apenas números (Ex: 12345678900)",
-            pattern: "\\d{11}",
-            maxlength: 11,
-            title: "Digite exatamente 11 dígitos numéricos para o CPF.",
-            oninput: "this.value = this.value.replace(/[^0-9]/g, '')",
-            class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" %>
-      </div>
-
-      <div>
-        <%= form.label :telefone, "Telefone", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= form.telephone_field :telefone, placeholder: "Ex: (11) 99999-8888 ou 11999998888", class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" %>
-      </div>
-
-      <div>
-        <%= form.label :endereco, "Endereço Completo", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= form.text_field :endereco, placeholder: "Ex: Rua das Flores, 123, Apto 45", class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" %>
-      </div>
-
-      <div>
-        <%= form.label :cep, "CEP", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= form.text_field :cep, placeholder: "Ex: 18000-000", class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" %>
-      </div>
-
-      <div>
-        <%= form.label :cidade, "Cidade", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= form.text_field :cidade, placeholder: "Ex: São Paulo", class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" %>
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Modal de Transporte <span class="text-gray-500 text-xs">(selecione todos que se aplicam)</span></label>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-          <% Modal.all.each do |modal| %>
-            <div class="flex items-center gap-2 bg-gray-50 p-3 rounded-lg border border-gray-200 hover:bg-blue-50 cursor-pointer">
-              <%#
-                Utilizando check_box_tag para enviar um array de modal_ids.
-                O terceiro argumento (@transportador.modals.include?(modal)) verifica se o modal
-                já está associado a este transportador para pré-selecionar o checkbox ao editar.
-              %>
-              <%= check_box_tag "transportador[modal_ids][]", modal.id, @transportador.modals.include?(modal), id: "modal_#{modal.id}" %>
-              <%= label_tag "modal_#{modal.id}", modal.nome %>
-            </div>
-          <% end %>
-        </div>
-      </div>
-
-      <div>
-        <%= form.label :carga_maxima, "Carga Máxima (kg)", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= form.number_field :carga_maxima, placeholder: "Ex: 5000", class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" %>
-      </div>
-
-      <div class="flex flex-col sm:flex-row justify-end gap-3 pt-4">
-        <%= link_to 'Cancelar', transportadores_path, class: "w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 text-center" %>
-        <%= form.submit (@transportador.new_record? ? "Cadastrar Transportador" : "Atualizar Cadastro"), class: "w-full sm:w-auto px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 cursor-pointer" %>
-      </div>
-
-    <% end %>
+  <!-- Submit -->
+  <div>
+    <%= f.submit (transportador.persisted? ? "Atualizar Transportador" : "Criar Transportador"),
+          class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition" %>
   </div>
-</div>
+<% end %>
+

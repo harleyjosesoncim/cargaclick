@@ -1,22 +1,119 @@
-<% content_for :title, "Frete ##{@frete&.id} — CargaClick" %>
-<h1 class="text-2xl font-bold mb-6">Frete #<%= @frete&.id %></h1>
+<div class="container mx-auto mt-8 space-y-8">
 
-<div class="bg-white rounded-2xl shadow p-4">
-  <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <% if @frete.respond_to?(:attributes) %>
-      <% @frete.attributes.slice(*(@frete.attributes.keys & %w[origem destino cep_origem cep_destino tipo_carga peso volume distancia_km preco valor valor_total status transportador_id cliente_id created_at updated_at])).each do |k, v| %>
-        <div>
-          <dt class="text-sm text-gray-500"><%= k.humanize %></dt>
-          <dd class="text-base"><%= safe_val(v) %></dd>
-        </div>
-      <% end %>
+  <!-- Card Frete -->
+  <div class="bg-white shadow-lg rounded-xl p-6">
+    <h1 class="text-2xl font-bold mb-6 text-gray-800">📦 Detalhes do Frete</h1>
+
+    <dl class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <dt class="font-semibold text-gray-700">Origem (CEP)</dt>
+        <dd class="text-gray-900"><%= @frete.cep_origem %></dd>
+      </div>
+
+      <div>
+        <dt class="font-semibold text-gray-700">Destino (CEP)</dt>
+        <dd class="text-gray-900"><%= @frete.cep_destino %></dd>
+      </div>
+
+      <div>
+        <dt class="font-semibold text-gray-700">Descrição</dt>
+        <dd class="text-gray-900"><%= @frete.descricao %></dd>
+      </div>
+
+      <div>
+        <dt class="font-semibold text-gray-700">Status</dt>
+        <dd class="text-gray-900"><%= @frete.status.humanize %></dd>
+      </div>
+
+      <div>
+        <dt class="font-semibold text-gray-700">Peso</dt>
+        <dd class="text-gray-900"><%= @frete.peso %> kg</dd>
+      </div>
+
+      <div>
+        <dt class="font-semibold text-gray-700">Dimensões</dt>
+        <dd class="text-gray-900">
+          <%= @frete.largura %>cm x
+          <%= @frete.altura %>cm x
+          <%= @frete.profundidade %>cm
+        </dd>
+      </div>
+
+      <div>
+        <dt class="font-semibold text-gray-700">Volume</dt>
+        <dd class="text-gray-900"><%= @frete.volume %> m³</dd>
+      </div>
+
+      <div>
+        <dt class="font-semibold text-gray-700">Distância</dt>
+        <dd class="text-gray-900"><%= @frete.distancia %> km</dd>
+      </div>
+
+      <div>
+        <dt class="font-semibold text-gray-700">Valor Estimado</dt>
+        <dd class="text-gray-900"><%= number_to_currency(@frete.valor_estimado) %></dd>
+      </div>
+
+      <div>
+        <dt class="font-semibold text-gray-700">Valor Total</dt>
+        <dd class="text-gray-900"><%= number_to_currency(@frete.valor_total) %></dd>
+      </div>
+
+      <div>
+        <dt class="font-semibold text-gray-700">Cliente</dt>
+        <dd class="text-gray-900"><%= @frete.cliente&.nome || "Não informado" %></dd>
+      </div>
+
+      <div>
+        <dt class="font-semibold text-gray-700">Transportador</dt>
+        <dd class="text-gray-900"><%= @frete.transportador&.nome || "Ainda não definido" %></dd>
+      </div>
+    </dl>
+
+    <!-- Botões -->
+    <div class="mt-8 flex flex-wrap gap-4">
+      <%= link_to "Editar", edit_frete_path(@frete),
+                  class: "bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg shadow" %>
+
+      <%= link_to "Nova Cotação", new_frete_cotacao_path(@frete),
+                  class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow" %>
+
+      <%= link_to "Ver Cotações", frete_cotacoes_path(@frete),
+                  class: "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow" %>
+
+      <%= link_to "Voltar", fretes_path,
+                  class: "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg shadow" %>
+
+      <%= link_to "Excluir", frete_path(@frete),
+                  method: :delete,
+                  data: { confirm: "Tem certeza que deseja excluir este frete?" },
+                  class: "bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow" %>
+    </div>
+  </div>
+
+  <!-- Resumo de Cotações vinculadas -->
+  <div class="bg-white shadow-lg rounded-xl p-6">
+    <h2 class="text-xl font-bold mb-4 text-gray-800">💰 Cotações</h2>
+
+    <% if @frete.cotacoes.any? %>
+      <ul class="divide-y divide-gray-200">
+        <% @frete.cotacoes.each do |cotacao| %>
+          <li class="py-3 flex justify-between items-center">
+            <span>
+              Transportador: <strong><%= cotacao.transportador&.nome || "N/A" %></strong> —
+              Valor: <%= number_to_currency(cotacao.valor) %> —
+              Status: <%= cotacao.status.capitalize %>
+            </span>
+            <%= link_to "Detalhes", cotacao_path(cotacao),
+                        class: "px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700" %>
+          </li>
+        <% end %>
+      </ul>
     <% else %>
-      <p>Dados indisponíveis.</p>
+      <div class="bg-yellow-50 border border-yellow-300 text-yellow-800 rounded-lg p-4">
+        Nenhuma cotação registrada para este frete.
+      </div>
     <% end %>
-  </dl>
-</div>
+  </div>
 
-<div class="mt-6 flex gap-3">
-  <%= link_to "Voltar", fretes_path, class: "px-4 py-2 rounded border" %>
-  <%= link_to "Editar", edit_frete_path(@frete), class: "px-4 py-2 rounded bg-blue-600 text-white" if respond_to?(:edit_frete_path) %>
 </div>

@@ -1,59 +1,28 @@
+# app/controllers/propostas_controller.rb
+# frozen_string_literal: true
+
 class PropostasController < ApplicationController
-  before_action :set_proposta, only: [:show, :edit, :update, :destroy, :gerar_proposta_inteligente]
-
-  def index
-    @propostas = Proposta.all
-  end
-
-  def show
-  end
+  before_action :set_proposta, only: [:show, :gerar_proposta_inteligente]
 
   def new
-    @proposta = Proposta.new
-  end
-
-  def edit
+    @frete = Frete.find(params[:frete_id]) if params[:frete_id]
+    @proposta = Proposta.new(frete: @frete)
   end
 
   def create
     @proposta = Proposta.new(proposta_params)
     if @proposta.save
-      redirect_to @proposta, notice: 'Proposta criada com sucesso.'
+      redirect_to @proposta, notice: "Proposta criada com sucesso."
     else
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
-  def update
-    if @proposta.update(proposta_params)
-      redirect_to @proposta, notice: 'Proposta atualizada com sucesso.'
-    else
-      render :edit
-    end
-  end
-
-  def destroy
-    @proposta.destroy
-    redirect_to propostas_url, notice: 'Proposta excluída com sucesso.'
-  end
+  def show; end
 
   def gerar_proposta_inteligente
-    frete = @proposta.frete
-
-    prompt = <<~PROMPT
-      Crie uma proposta profissional de transporte com as seguintes informações:
-      - Origem: #{frete.origem}
-      - Destino: #{frete.destino}
-      - Tipo de Carga: #{frete.descricao}
-      - Peso: #{frete.peso} kg
-      - Transportador: #{@proposta.transportador.nome}
-      - Valor Proposto: R$ #{@proposta.valor_proposto}
-
-      O tom deve ser profissional, persuasivo e objetivo.
-    PROMPT
-
-    @proposta_inteligente = GptService.generate_content(prompt)
-
+    valor_sugerido = @proposta.valor_proposto.to_f * 0.95
+    @proposta_inteligente = "Proposta otimizada para frete ##{@proposta.frete_id}, valor sugerido: R$#{valor_sugerido.round(2)}"
     render :proposta_inteligente
   end
 
@@ -67,4 +36,3 @@ class PropostasController < ApplicationController
     params.require(:proposta).permit(:frete_id, :transportador_id, :valor_proposto, :observacao)
   end
 end
-

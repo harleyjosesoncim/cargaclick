@@ -20,9 +20,27 @@ module Cargaclick
     config.assets.version = "1.0"
     config.assets.initialize_on_precompile = false
 
-    # Timezone (opcional; ajuste se desejar)
-    # config.time_zone = "America/Sao_Paulo"
+    # Encoding padrão
+    config.encoding = "utf-8"
+
+    # Localização
+    config.i18n.default_locale = :"pt-BR"
+    config.i18n.available_locales = [:"pt-BR", :en]
+
+    # Timezone
+    config.time_zone = "America/Sao_Paulo"
+    config.active_record.default_timezone = :local
+    config.active_record.time_zone_aware_types = [:datetime, :time]
+
+    # Geração de código limpa
+    config.generators do |g|
+      g.stylesheets false
+      g.javascripts false
+      g.helper false
+      g.test_framework :rspec, fixture: false
+    end
 
     # NÃO monte Rack::Attack aqui; o initializer cuida disso.
   end
 end
+# config/routes.rb

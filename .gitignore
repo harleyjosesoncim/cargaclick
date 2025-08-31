@@ -58,3 +58,6 @@ byebug_history
 
 # Vendors
 /vendor/
+
+/app/assets/builds/*
+!/app/assets/builds/.keep

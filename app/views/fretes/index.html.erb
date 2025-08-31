@@ -1,35 +1,56 @@
-<% content_for :title, "Fretes — CargaClick" %>
-<h1 class="text-2xl font-bold mb-6">Fretes</h1>
+<div class="container mx-auto mt-8">
+  <h1 class="text-2xl font-bold mb-6 text-gray-800">🚚 Meus Fretes</h1>
 
-<div class="bg-white rounded-2xl shadow p-4 overflow-x-auto">
-  <table class="min-w-full">
-    <thead>
-      <tr class="text-left border-b">
-        <th class="py-2 pr-4">#</th>
-        <th class="py-2 pr-4">Origem</th>
-        <th class="py-2 pr-4">Destino</th>
-        <th class="py-2 pr-4">Distância</th>
-        <th class="py-2 pr-4">Preço</th>
-        <th class="py-2 pr-4">Status</th>
-        <th class="py-2 pr-4"></th>
-      </tr>
-    </thead>
-    <tbody>
-      <% if @fretes.present? %>
-        <% @fretes.each do |f| %>
-          <tr class="border-b hover:bg-gray-50">
-            <td class="py-2 pr-4"><%= f.id %></td>
-            <td class="py-2 pr-4"><%= safe_val(f.try(:origem) || f.try(:cep_origem)) %></td>
-            <td class="py-2 pr-4"><%= safe_val(f.try(:destino) || f.try(:cep_destino)) %></td>
-            <td class="py-2 pr-4"><%= f.respond_to?(:distancia_km) && f.distancia_km ? ("#{f.distancia_km} km") : "—" %></td>
-            <td class="py-2 pr-4"><%= f.respond_to?(:preco) ? money(f.preco) : (f.respond_to?(:valor_total) ? money(f.valor_total) : (f.respond_to?(:valor) ? money(f.valor) : "—")) %></td>
-            <td class="py-2 pr-4"><%= badge_status(f.try(:status)) %></td>
-            <td class="py-2 pr-4"><%= link_to "Ver", frete_path(f), class: "text-blue-600" %></td>
+  <% if @fretes.any? %>
+    <div class="overflow-x-auto bg-white shadow rounded-lg">
+      <table class="min-w-full table-auto border-collapse">
+        <thead class="bg-gray-100 text-gray-700">
+          <tr>
+            <th class="px-4 py-2 text-left">Origem</th>
+            <th class="px-4 py-2 text-left">Destino</th>
+            <th class="px-4 py-2 text-left">Descrição</th>
+            <th class="px-4 py-2 text-left">Status</th>
+            <th class="px-4 py-2 text-left">Valor Estimado</th>
+            <th class="px-4 py-2 text-left">Ações</th>
           </tr>
-        <% end %>
-      <% else %>
-        <tr><td colspan="7" class="py-4 text-gray-600">Nenhum frete encontrado.</td></tr>
-      <% end %>
-    </tbody>
-  </table>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          <% @fretes.each do |frete| %>
+            <tr>
+              <td class="px-4 py-2"><%= frete.cep_origem %></td>
+              <td class="px-4 py-2"><%= frete.cep_destino %></td>
+              <td class="px-4 py-2"><%= frete.descricao %></td>
+              <td class="px-4 py-2"><%= frete.status.humanize %></td>
+              <td class="px-4 py-2"><%= number_to_currency(frete.valor_estimado) if frete.valor_estimado %></td>
+              <td class="px-4 py-2 space-x-2">
+                <%= link_to "Detalhes", frete_path(frete),
+                            class: "bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded" %>
+
+                <%= link_to "Editar", edit_frete_path(frete),
+                            class: "bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded" %>
+
+                <%= link_to "Cotações", frete_cotacoes_path(frete),
+                            class: "bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded" %>
+
+                <%= link_to "Excluir", frete_path(frete),
+                            method: :delete,
+                            data: { confirm: "Tem certeza que deseja excluir este frete?" },
+                            class: "bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="bg-yellow-50 border border-yellow-300 text-yellow-800 rounded-lg p-4">
+      Nenhum frete cadastrado até o momento.
+    </div>
+  <% end %>
+
+  <!-- Botão Novo Frete -->
+  <div class="mt-6">
+    <%= link_to "➕ Novo Frete", new_frete_path,
+                class: "bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow" %>
+  </div>
 </div>

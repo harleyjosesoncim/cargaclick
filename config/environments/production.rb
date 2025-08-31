@@ -1,3 +1,4 @@
+# config/environments/production.rb
 # frozen_string_literal: true
 
 require "active_support/core_ext/integer/time"
@@ -23,13 +24,11 @@ Rails.application.configure do
       "Surrogate-Control" => "max-age=#{max}"
     }
   end
-# config/environments/production.rb
-Rails.application.configure do
-  # …
-  config.assets.css_compressor = nil   # evita SassC quebrar com CSS4 (rgb/…)
-  # opcional: config.assets.js_compressor = nil
-  # …
-end
+
+  # Assets
+  config.assets.css_compressor = nil   # evita SassC quebrar com CSS4
+  config.assets.js_compressor  = :uglifier if ENV["JS_COMPRESS"] == "1"
+  config.assets.compile        = false
 
   # SSL opcional via ENV
   config.force_ssl = ENV["FORCE_SSL"] == "1"
@@ -50,7 +49,7 @@ end
   # Active Storage (ajuste se usar S3/GCS)
   config.active_storage.service = ENV.fetch("ACTIVE_STORAGE_SERVICE", "local").to_sym
 
-  # Mailer (só configura se tiver host)
+  # Mailer
   mail_host = ENV["MAILER_HOST"]
   if mail_host.present?
     proto = ENV["MAILER_PROTOCOL"] || "https"
@@ -58,7 +57,7 @@ end
     config.action_mailer.asset_host          = "#{proto}://#{mail_host}"
   end
   config.action_mailer.perform_caching       = false
-  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = Rails.env.production?
 
   # Hosts permitidos
   app_host = ENV["APP_HOST"]
@@ -75,17 +74,15 @@ end
     config.lograge.enabled   = true
     config.lograge.formatter = Lograge::Formatters::Json.new
 
-    # Campos extras por request
     config.lograge.custom_payload do |controller|
       {
         request_id: controller.request.request_id,
-        user_id:    (controller.respond_to?(:current_user) ? controller.current_user&.id : nil),
+        user_id:    (controller.respond_to?(:current_cliente) ? controller.current_cliente&.id : nil),
         remote_ip:  controller.request.remote_ip,
-        params:     controller.request.filtered_parameters.except("controller", "action")
+        params:     controller.request.filtered_parameters.except("controller", "action", "password")
       }
     end
 
-    # Campos extras por evento
     config.lograge.custom_options = lambda do |event|
       {
         time:      (event.time.respond_to?(:iso8601) ? event.time.iso8601 : event.time),
@@ -102,6 +99,8 @@ end
   # Deprecações
   config.active_support.report_deprecations = false
 
-  # Não dumpa schema após migrações
+  # ActiveRecord
   config.active_record.dump_schema_after_migration = false
+  config.active_record.default_timezone = :utc
 end
+# vim: set ft=ruby et sw=2 ts=2 sts=2:

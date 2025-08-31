@@ -1,26 +1,4 @@
-<div class="max-w-2xl mx-auto bg-white mt-12 p-8 rounded-3xl shadow-xl">
-  <h1 class="text-3xl font-bold text-center mb-6 flex items-center gap-3">
-    📄 Detalhes do Cliente
-  </h1>
-
-  <div class="space-y-4 text-lg text-gray-700">
-    <p><strong>👤 Nome:</strong> <%= @cliente.nome %></p>
-    <p><strong>📞 Telefone:</strong> <%= @cliente.telefone %></p>
-    <p><strong>🏠 Endereço:</strong> <%= @cliente.endereco %></p>
-    <p><strong>📮 CEP:</strong> <%= @cliente.cep %></p>
-
-    <% if @cliente.cpf.present? %>
-      <p><strong>🧾 CPF:</strong> <%= @cliente.cpf %></p>
-    <% elsif @cliente.cnpj.present? %>
-      <p><strong>🏢 CNPJ:</strong> <%= @cliente.cnpj %></p>
-    <% else %>
-      <p><strong>📇 Documento:</strong> <span class="italic text-gray-400">não informado</span></p>
-    <% end %>
-  </div>
-
-  <div class="mt-8 flex gap-4 justify-center">
-    <%= link_to '✏️ Editar Cliente', edit_cliente_path(@cliente), class: "bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
-    <%= link_to '↩️ Voltar para Clientes', clientes_path, class: "bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" %>
-  </div>
-</div>
-
+<h1 class="text-2xl font-bold">Cliente</h1>
+<p><strong>Nome:</strong> <%= @cliente.nome %></p>
+<p><strong>Email:</strong> <%= @cliente.email %></p>
+<p><strong>Criado em:</strong> <%= l(@cliente.created_at, format: :short) %></p>

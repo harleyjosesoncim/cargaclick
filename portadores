@@ -1,0 +1,32 @@
+                                                Table "public.clientes"
+         Column         |              Type              | Collation | Nullable |               Default                
+------------------------+--------------------------------+-----------+----------+--------------------------------------
+ id                     | bigint                         |           | not null | nextval('clientes_id_seq'::regclass)
+ nome                   | character varying              |           |          | 
+ email                  | character varying              |           |          | 
+ telefone               | character varying              |           |          | 
+ created_at             | timestamp(6) without time zone |           | not null | 
+ updated_at             | timestamp(6) without time zone |           | not null | 
+ endereco               | character varying              |           |          | 
+ cep                    | character varying              |           |          | 
+ largura                | double precision               |           |          | 
+ altura                 | double precision               |           |          | 
+ profundidade           | double precision               |           |          | 
+ peso_aproximado        | double precision               |           |          | 
+ observacoes            | character varying(50)          |           |          | 
+ alba_numero            | integer                        |           |          | 
+ whatsapp               | character varying              |           |          | 
+ cpf                    | character varying              |           |          | 
+ cnpj                   | character varying              |           |          | 
+ encrypted_password     | character varying              |           | not null | ''::character varying
+ reset_password_token   | character varying              |           |          | 
+ reset_password_sent_at | timestamp(6) without time zone |           |          | 
+ remember_created_at    | timestamp(6) without time zone |           |          | 
+ campo                  | character varying              |           |          | 
+Indexes:
+    "clientes_pkey" PRIMARY KEY, btree (id)
+    "index_clientes_on_email" UNIQUE, btree (email)
+    "index_clientes_on_reset_password_token" UNIQUE, btree (reset_password_token)
+Referenced by:
+    TABLE "cotacoes" CONSTRAINT "fk_rails_fa6bc8c9ee" FOREIGN KEY (cliente_id) REFERENCES clientes(id)
+
