@@ -7,27 +7,46 @@ databases:
 services:
   - type: web
     name: cargaclick
-    runtime: docker             # usa o Dockerfile da raiz
-    plan: starter               # pode trocar pra free ou paid
+    runtime: docker            # usa o Dockerfile da raiz
+    plan: starter
     dockerfilePath: ./Dockerfile
     autoDeploy: true
     healthCheckPath: /up
 
-    # Executa migrations antes de liberar o deploy
+    # Build customizado (instala gems + assets)
+    buildCommand: "./bin/render-build.sh"
+
+    # Executa migrações ANTES de iniciar o app
     preDeployCommand: "bundle exec rails db:migrate"
 
     envVars:
       - key: RAILS_ENV
         value: production
+
       - key: RAILS_LOG_TO_STDOUT
         value: "true"
+
       - key: RAILS_SERVE_STATIC_FILES
         value: "true"
+
       - key: RAILS_MASTER_KEY
-        sync: false   # você cola manualmente no painel da Render
+        sync: false   # ⚠️ Defina manualmente no painel da Render
+
       - key: DATABASE_URL
         fromDatabase:
           name: cargaclick-db
           property: connectionString
+
+      # Timeout padrão em produção (pode ajustar conforme necessidade)
+      - key: DB_STATEMENT_TIMEOUT_MS
+        value: "15000"
+
+      - key: DB_LOCK_TIMEOUT_MS
+        value: "5000"
+
+      - key: DB_POOL
+        value: "12"   # ajuste conforme WEB_CONCURRENCY e RAILS_MAX_THREADS
+
+
 
 
