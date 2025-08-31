@@ -9,7 +9,8 @@ gem "rails", "~> 7.1.5", ">= 7.1.5.1"
 gem "pg", ">= 1.5", "< 2.0"            # PostgreSQL
 gem "puma", "~> 6.6"                   # servidor web (última 6.6.x mais estável)
 gem "bootsnap", ">= 1.17", require: false # acelera boot da app
-gem "mercadopago_sdk", "~> 2.0"
+gem "mercadopago", "~> 2.0"
+
 
 
 # --- Frontend / Hotwire ---
