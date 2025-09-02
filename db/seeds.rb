@@ -1,17 +1,31 @@
-# Usuário master Cliente
+# db/seeds.rb
+
+# === Usuário master Cliente ===================================
 Cliente.find_or_create_by!(email: "master.cliente@cargaclick.com") do |c|
   c.nome = "Master Cliente"
-  c.password = "123456"
-  c.password_confirmation = "123456"
-  c.confirmed_at = Time.now
+  c.password = "12345678"
+  c.password_confirmation = "12345678"
+  c.confirmed_at = Time.current
 end
+puts "✅ Cliente Master criado ou já existia"
 
-# Usuário master Transportador
+# === Usuário master Transportador ============================
 Transportador.find_or_create_by!(email: "master.transportador@cargaclick.com") do |t|
   t.nome = "Master Transportador"
-  t.password = "123456"
-  t.password_confirmation = "123456"
+  t.cpf = "12345678901" # CPF válido de exemplo (11 dígitos numéricos)
   t.tipo_veiculo = "Caminhão"
-  t.confirmed_at = Time.now
+  t.password = "12345678"
+  t.password_confirmation = "12345678"
+  t.confirmed_at = Time.current
 end
-# Usuário master Admin
+puts "✅ Transportador Master criado ou já existia"
+
+# === Usuário master Admin ====================================
+AdminUser.find_or_create_by!(email: "master.admin@cargaclick.com") do |a|
+  a.nome = "Master Admin"
+  a.password = "Admin123!"
+  a.password_confirmation = "Admin123!"
+  a.confirmed_at = Time.current if a.respond_to?(:confirmed_at)
+end
+puts "✅ Admin Master criado ou já existia"
+
