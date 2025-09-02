@@ -1,0 +1,20 @@
+class ChangeStatusToIntegerInFretes < ActiveRecord::Migration[7.1]
+  def up
+    # 🔹 Se já existirem status como texto (ex: "pendente", "em_andamento", "concluido")
+    # você pode mapear aqui para números:
+    execute <<-SQL
+      UPDATE fretes SET status = '0' WHERE status = 'pendente';
+      UPDATE fretes SET status = '1' WHERE status = 'em_andamento';
+      UPDATE fretes SET status = '2' WHERE status = 'concluido';
+    SQL
+
+    # 🔹 Agora altera a coluna para integer de forma segura
+    change_column :fretes, :status, 'integer USING CAST(status AS integer)', default: 0
+  end
+
+  def down
+    # Reverte para string se precisar rollback
+    change_column :fretes, :status, :string
+  end
+end
+

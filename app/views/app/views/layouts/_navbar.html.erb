@@ -1,3 +1,4 @@
+<%# app/views/layouts/_navbar.html.erb %>
 <nav class="bg-gradient-to-r from-blue-600 to-blue-800 shadow-lg mb-8 px-6 py-4 rounded-b-lg">
   <div class="container mx-auto flex justify-between items-center">
     <!-- Logo -->
@@ -26,9 +27,9 @@
       </li>
 
       <li>
-        <%= link_to "Simular Frete", calcular_fretes_path,
-          class: "text-white hover:text-blue-200 transition duration-300 #{active_link_class(calcular_fretes_path)}",
-          aria: { current: current_page?(calcular_fretes_path) ? "page" : nil } %>
+        <%= link_to "Simular Frete", novo_frete_path,
+          class: "text-white hover:text-blue-200 transition duration-300 #{active_link_class(novo_frete_path)}",
+          aria: { current: current_page?(novo_frete_path) ? "page" : nil } %>
       </li>
 
       <li>
@@ -44,15 +45,15 @@
       </li>
 
       <li>
-        <%= link_to "Sobre", about_path,
-          class: "text-white hover:text-blue-200 transition duration-300 #{active_link_class(about_path)}",
-          aria: { current: current_page?(about_path) ? "page" : nil } %>
+        <%= link_to "Sobre", sobre_path,
+          class: "text-white hover:text-blue-200 transition duration-300 #{active_link_class(sobre_path)}",
+          aria: { current: current_page?(sobre_path) ? "page" : nil } %>
       </li>
 
       <li>
-        <%= link_to "Contato", contact_path,
-          class: "text-white hover:text-blue-200 transition duration-300 #{active_link_class(contact_path)}",
-          aria: { current: current_page?(contact_path) ? "page" : nil } %>
+        <%= link_to "Contato", contato_path,
+          class: "text-white hover:text-blue-200 transition duration-300 #{active_link_class(contato_path)}",
+          aria: { current: current_page?(contato_path) ? "page" : nil } %>
       </li>
     </ul>
   </div>

@@ -54,4 +54,11 @@ module ApplicationHelper
     Rails.logger.error("[simple_pagination] #{e.class}: #{e.message}")
     "".html_safe
   end
+
+  # Marca o link ativo na navbar
+  # Exemplo de uso:
+  #   <%= link_to "Início", root_path, class: "nav-link #{active_link_class(root_path)}" %>
+  def active_link_class(path, active_class: "border-b-2 border-yellow-300 pb-1", inactive_class: "")
+    current_page?(path) ? active_class : inactive_class
+  end
 end

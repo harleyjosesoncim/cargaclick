@@ -1,47 +1,42 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
   <head>
-    <title><%= content_for?(:title) ? yield(:title) : "CargaClick App" %></title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!-- SEO & Social Tags -->
+    <%= render_meta_tags(
+          title: content_for?(:title) ? yield(:title) : nil,
+          description: content_for?(:description) ? yield(:description) : nil,
+          image: asset_url("cargaclick_og.png"),
+          url: request.original_url
+        ) %>
+
+    <!-- Segurança -->
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <!-- Estilos e scripts -->
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
   </head>
 
   <body class="bg-gray-100 dark:bg-gray-900 min-h-screen font-sans antialiased flex flex-col">
 
-    <!-- Navbar global (protege contra erro se não existir o partial) -->
-    <% if lookup_context.exists?("shared/navbar") %>
-      <%= render "shared/navbar" %>
-    <% end %>
-
-    <!-- Botões globais de navegação (Inicio, Voltar etc.) -->
-    <% if lookup_context.exists?("shared/navigation_buttons") %>
-      <div class="container mx-auto px-4 mt-4">
-        <%= render "shared/navigation_buttons" %>
-      </div>
-    <% end %>
+    <!-- Navbar global -->
+    <%= render "layouts/navbar" %>
 
     <!-- Flash messages -->
-    <% if lookup_context.exists?("shared/flash") %>
-      <%= render "shared/flash" %>
-    <% end %>
+    <%= render("shared/flash") if lookup_context.exists?("shared/flash") %>
 
     <!-- Conteúdo principal -->
     <main class="container mx-auto flex-1 px-4 py-8">
       <%= yield %>
     </main>
 
-    <!-- Rodapé opcional -->
-    <footer class="bg-gray-200 dark:bg-gray-800 text-center text-sm py-4 mt-8">
-      <p class="text-gray-600 dark:text-gray-400">© <%= Date.current.year %> CargaClick. Todos os direitos reservados.</p>
-    </footer>
+    <!-- Rodapé global -->
+    <%= render "layouts/footer" %>
 
   </body>
 </html>
-
 

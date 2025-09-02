@@ -1,8 +1,10 @@
 <%# app/views/home/_card.html.erb %>
-<div class="bg-white dark:bg-gray-800 shadow-md rounded-2xl p-8 flex flex-col items-center justify-between hover:shadow-xl transition">
-  <h2 class="text-xl font-semibold mb-6 text-gray-700 dark:text-gray-200">
-    <%= icon %> <%= title %>
+<div class="bg-white dark:bg-gray-800 shadow-md rounded-2xl p-8 flex flex-col items-center justify-between hover:shadow-xl transition transform hover:-translate-y-1">
+  <h2 class="text-xl font-semibold mb-6 text-gray-700 dark:text-gray-200 text-center">
+    <span class="text-3xl mr-2"><%= icon %></span> <%= title %>
   </h2>
+
   <%= link_to label, path,
-              class: "bg-#{color}-600 hover:bg-#{color}-700 text-white px-6 py-3 rounded-lg w-full text-center font-medium transition-colors" %>
+    class: "bg-#{color}-600 hover:bg-#{color}-700 text-white px-6 py-3 rounded-lg w-full text-center font-medium transition" %>
 </div>
+

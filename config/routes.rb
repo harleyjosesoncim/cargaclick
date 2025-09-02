@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
+  devise_for :transportadores
+  devise_for :admin_users
   # === HEALTHCHECK =============================================
   get "up", to: "rails/health#show", as: :rails_health_check
 
@@ -12,9 +16,11 @@ Rails.application.routes.draw do
              }
 
   # === PÁGINAS PÚBLICAS ========================================
-  get "home",    to: "home#index"
-  get "sobre",   to: "home#about",   as: :about
-  get "contato", to: "home#contact", as: :contact         
+  get "home",       to: "home#index"
+  get "sobre",      to: "home#about",      as: :sobre
+  get "contato",    to: "home#contact",    as: :contato
+  get "fidelidade", to: "home#fidelidade", as: :fidelidade
+  get "relatorios", to: "home#relatorios", as: :relatorios
 
   # === ROOTS ===================================================
   authenticated :cliente do
@@ -35,6 +41,9 @@ Rails.application.routes.draw do
   # 🚚 Fretes + Cotações
   resources :fretes do
     resources :cotacoes, only: [:index, :new, :create]
+    member do
+      get :pagar   # /fretes/:id/pagar
+    end
   end
 
   resources :cotacoes, only: [:index, :show, :edit, :update, :destroy]
@@ -57,7 +66,12 @@ Rails.application.routes.draw do
   get "fretes/novo", to: "fretes#new",   as: :novo_frete
   get "bolsao",      to: "fretes#queue", as: :bolsao_solicitacoes
 
-  # === PAINEL ADMIN ============================================
+  # === PAGAMENTOS (Mercado Pago) ================================
+  get "/pagamento/sucesso",  to: "pagamentos#sucesso"
+  get "/pagamento/falha",    to: "pagamentos#falha"
+  get "/pagamento/pendente", to: "pagamentos#pendente"
+
+  # === PAINEL ADMIN =============================================
   namespace :admin do
     root to: "dashboard#index"   # cria admin_root_path
   end

@@ -1,0 +1,26 @@
+<% content_for :title, "Contato — CargaClick" %>
+
+<div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-6 py-12">
+  <div class="bg-white dark:bg-gray-800 shadow-md rounded-2xl p-10 max-w-lg w-full">
+    <h1 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">Fale Conosco 📩</h1>
+
+    <%= form_with url: "#", method: :post, local: true, class: "space-y-6" do |f| %>
+      <div>
+        <%= f.label :nome, "Nome", class: "block text-gray-700 dark:text-gray-300 mb-2" %>
+        <%= f.text_field :nome, class: "w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white" %>
+      </div>
+
+      <div>
+        <%= f.label :email, "E-mail", class: "block text-gray-700 dark:text-gray-300 mb-2" %>
+        <%= f.email_field :email, class: "w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white" %>
+      </div>
+
+      <div>
+        <%= f.label :mensagem, "Mensagem", class: "block text-gray-700 dark:text-gray-300 mb-2" %>
+        <%= f.text_area :mensagem, rows: 4, class: "w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white" %>
+      </div>
+
+      <%= f.submit "Enviar", class: "w-full bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700 transition" %>
+    <% end %>
+  </div>
+</div>

@@ -374,7 +374,7 @@ DEPENDENCIES
   json (>= 2.6)
   listen (~> 3.9)
   lograge (~> 0.14)
-  mercadopago-sdk (~> 2.0)
+  mercadopago-sdk
   pg (>= 1.5, < 2.0)
   puma (~> 6.6)
   puma_worker_killer (~> 0.3)
