@@ -1,4 +1,5 @@
 # config/database.yml
+
 default: &default
   adapter: postgresql
   encoding: unicode
@@ -13,22 +14,19 @@ default: &default
 
 development:
   <<: *default
-  # Usa DATABASE_URL se existir, senão fallback local
-  url: <%= ENV["DATABASE_URL"] || "postgres://postgres:1234@localhost:5432/cargaclick_development" %>
+  url: <%= ENV["DATABASE_URL"].presence || "postgres://postgres:1234@localhost:5432/cargaclick_development" %>
 
 test:
   <<: *default
-  url: <%= ENV["DATABASE_URL"] || "postgres://postgres:1234@localhost:5432/cargaclick_test" %>
+  url: <%= ENV["DATABASE_URL"].presence || "postgres://postgres:1234@localhost:5432/cargaclick_test" %>
 
 production:
   <<: *default
-  # No Render, o DATABASE_URL já vem configurado (use ?sslmode=require)
-  url: <%= ENV["DATABASE_URL"] || ENV["RENDER_DATABASE_URL"] || "postgres://postgres:1234@localhost:5432/cargaclick_production" %>
+  # Render injeta DATABASE_URL automaticamente (com sslmode=require)
+  url: <%= ENV.fetch("DATABASE_URL") %>
 
   # Evita conexões zumbis em containers
   reaping_frequency: <%= ENV.fetch("DB_REAPING_FREQUENCY", "10") %>
 
-  # Prepared statements melhoram performance, mas podem travar em PG antigos
+  # Prepared statements melhoram performance (pode ser desativado se necessário)
   prepared_statements: <%= ENV.fetch("DB_PREPARED_STATEMENTS", "true") == "true" %>
-
-  
