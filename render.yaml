@@ -3,22 +3,23 @@ databases:
     plan: free
     databaseName: cargaclick_production
     user: cargaclick
+    # Executa migrations automáticas ao criar/atualizar DB
     releaseCommand: "bundle exec rails db:migrate"
 
-
 services:
-
   - type: web
     name: cargaclick
     runtime: docker
     plan: starter
     dockerfilePath: ./Dockerfile
     autoDeploy: true
+
     healthCheckPath: /up
 
+    # Build (usa Dockerfile)
     buildCommand: "./bin/render-build.sh"
 
-    # Executa migrations antes de subir
+    # Release (migrations e ajustes antes de rodar)
     releaseCommand: "./bin/render-release.sh"
 
     envVars:
@@ -28,10 +29,11 @@ services:
         value: "true"
       - key: RAILS_SERVE_STATIC_FILES
         value: "true"
+      - key: SECRET_KEY_BASE
+        generateValue: true
       - key: RAILS_MASTER_KEY
         sync: false
       - key: DATABASE_URL
         fromDatabase:
           name: cargaclick-db
           property: connectionString
-
