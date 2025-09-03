@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_29_121500) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_29_123000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -126,6 +126,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_29_121500) do
     t.string "channel"
   end
 
+  create_table "messages", force: :cascade do |t|
+    t.bigint "frete_id", null: false
+    t.string "sender_type", null: false
+    t.bigint "sender_id", null: false
+    t.text "content", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["frete_id"], name: "index_messages_on_frete_id"
+  end
+
   create_table "modal_transportadores", force: :cascade do |t|
     t.bigint "modal_id"
     t.bigint "transportador_id"
@@ -182,6 +193,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_29_121500) do
   add_foreign_key "historico_posts", "clientes"
   add_foreign_key "historico_propostas", "clientes"
   add_foreign_key "historico_propostas", "propostas"
+  add_foreign_key "messages", "fretes"
   add_foreign_key "modal_transportadores", "modals"
   add_foreign_key "modal_transportadores", "transportadores"
   add_foreign_key "propostas", "clientes"
