@@ -3,9 +3,7 @@ require_relative "boot"
 require "rails/all"
 
 Bundler.require(*Rails.groups)
-require 'dotenv/load' if defined?(Dotenv)
-
-
+require "dotenv/load" if defined?(Dotenv)
 
 module Cargaclick
   class Application < Rails::Application
@@ -18,10 +16,13 @@ module Cargaclick
     # CI/Render sem master key (Render injeta secrets em runtime)
     config.require_master_key = false
 
-    # Assets
+    # === Assets =====================================================
     config.assets.enabled = true
     config.assets.version = "1.0"
     config.assets.initialize_on_precompile = false
+
+    # ⚡ Importante: evita erro com rgb() no Tailwind + SassC
+    config.assets.css_compressor = nil
 
     # Encoding padrão
     config.encoding = "utf-8"
@@ -46,4 +47,3 @@ module Cargaclick
     # NÃO monte Rack::Attack aqui; o initializer cuida disso.
   end
 end
-# config/routes.rb
