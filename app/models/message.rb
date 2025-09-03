@@ -1,24 +1,43 @@
+# app/models/message.rb
 class Message < ApplicationRecord
   # === ASSOCIAÇÕES ==================================
   belongs_to :frete
   belongs_to :sender, polymorphic: true   # Cliente ou Transportador
 
   # === VALIDAÇÕES ===================================
-  validates :content, presence: true
+  validates :content, presence: true, length: { minimum: 1, maximum: 2000 }
+  validates :sender_type, presence: true
+  validates :sender_id, presence: true
 
   # === STATUS (enum) ================================
-  enum status: { unread: 0, read: 1 }, _default: :unread
+  enum status: {
+    normal: 0,    # mensagem comum
+    lido: 1,      # já visualizada
+    importante: 2 # destaque
+  }, _default: :normal
 
   # === BROADCAST (Turbo Streams) ====================
-  # Isso permite atualização em tempo real no chat
+  # Atualização em tempo real no chat
   after_create_commit -> { broadcast_append_to "frete_#{frete_id}_messages" }
 
-  # === SCOPOS ÚTEIS ================================
+  # === SCOPES ÚTEIS ================================
   scope :recent, -> { order(created_at: :asc) }
-  scope :unread, -> { where(status: :unread) }
+  scope :do_cliente, -> { where(sender_type: "Cliente") }
+  scope :do_transportador, -> { where(sender_type: "Transportador") }
+  scope :nao_lidas, -> { where(status: :normal) }
 
   # === MÉTODOS ======================================
   def mark_as_read!
-    update!(status: :read)
+    update!(status: :lido)
+  end
+
+  def mark_as_important!
+    update!(status: :importante)
+  end
+
+  # === VISUALIZAÇÃO AMIGÁVEL ========================
+  def to_s
+    "[#{created_at.strftime('%d/%m %H:%M')}] #{sender_type}##{sender_id}: #{content.truncate(40)}"
   end
 end
+
