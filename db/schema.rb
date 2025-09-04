@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_29_123000) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_04_211420) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -26,41 +26,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_29_123000) do
     t.float "altura"
     t.float "profundidade"
     t.float "peso_aproximado"
-    t.string "observacoes", limit: 200
+    t.string "observacoes", limit: 50
     t.integer "alba_numero"
     t.string "whatsapp"
-    t.string "cpf", limit: 11
-    t.string "cnpj", limit: 14
-    t.string "encrypted_password", default: "", null: false
-    t.string "confirmation_token"
-    t.string "campo_extra"
-    t.index ["cnpj"], name: "index_clientes_on_cnpj", unique: true, where: "(cnpj IS NOT NULL)"
-    t.index ["cpf"], name: "index_clientes_on_cpf", unique: true, where: "(cpf IS NOT NULL)"
-  end
-
-  create_table "configs", force: :cascade do |t|
-    t.decimal "comissao_padrao"
-    t.decimal "comissao_assinante"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "configuracaos", force: :cascade do |t|
-    t.string "chave"
-    t.string "valor"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "cotacoes", force: :cascade do |t|
-    t.bigint "cliente_id"
-    t.bigint "frete_id"
-    t.decimal "valor", precision: 10, scale: 2
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.decimal "comissao"
-    t.index ["cliente_id"], name: "index_cotacoes_on_cliente_id"
-    t.index ["frete_id"], name: "index_cotacoes_on_frete_id"
   end
 
   create_table "fretes", force: :cascade do |t|
@@ -72,82 +40,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_29_123000) do
     t.string "previsao_chegada"
     t.float "previsao_km"
     t.float "valor_total"
+    t.string "status"
     t.boolean "aceite_responsabilidade"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.decimal "latitude", precision: 10, scale: 6
-    t.decimal "longitude", precision: 10, scale: 6
-    t.string "cep_atual"
-    t.string "localizacao_atual"
-    t.boolean "entregue", default: false
-    t.string "descricao"
-    t.decimal "valor", precision: 10, scale: 2
-    t.decimal "largura", precision: 10, scale: 2
-    t.decimal "altura", precision: 10, scale: 2
-    t.decimal "profundidade", precision: 10, scale: 2
-    t.integer "status", default: 0
-    t.boolean "contatos_liberados", default: false
-    t.string "cliente_nome"
-  end
-
-  create_table "historico_emails", force: :cascade do |t|
-    t.bigint "cliente_id"
-    t.text "conteudo"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["cliente_id"], name: "index_historico_emails_on_cliente_id"
-  end
-
-  create_table "historico_posts", force: :cascade do |t|
-    t.bigint "cliente_id"
-    t.text "conteudo"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["cliente_id"], name: "index_historico_posts_on_cliente_id"
-  end
-
-  create_table "historico_propostas", force: :cascade do |t|
-    t.bigint "cliente_id"
-    t.bigint "proposta_id"
-    t.text "observacao"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["cliente_id"], name: "index_historico_propostas_on_cliente_id"
-    t.index ["proposta_id"], name: "index_historico_propostas_on_proposta_id"
-  end
-
-  create_table "leads", force: :cascade do |t|
-    t.string "nome"
-    t.string "email"
-    t.string "telefone"
-    t.string "canal"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "channel"
-  end
-
-  create_table "messages", force: :cascade do |t|
-    t.bigint "frete_id", null: false
-    t.string "sender_type", null: false
-    t.bigint "sender_id", null: false
-    t.text "content", null: false
-    t.integer "status", default: 0, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["frete_id"], name: "index_messages_on_frete_id"
-  end
-
-  create_table "modal_transportadores", force: :cascade do |t|
-    t.bigint "modal_id"
-    t.bigint "transportador_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["modal_id"], name: "index_modal_transportadores_on_modal_id"
-    t.index ["transportador_id"], name: "index_modal_transportadores_on_transportador_id"
-  end
-
-  create_table "modals", force: :cascade do |t|
-    t.string "nome"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -158,19 +52,18 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_29_123000) do
     t.decimal "valor", precision: 10, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.decimal "bolsa", precision: 10, scale: 2
     t.index ["cliente_id"], name: "index_propostas_on_cliente_id"
     t.index ["frete_id"], name: "index_propostas_on_frete_id"
   end
 
   create_table "transportadores", force: :cascade do |t|
     t.string "nome"
-    t.string "cpf", limit: 11
+    t.string "cpf"
     t.string "telefone"
     t.string "endereco"
     t.string "cep"
     t.string "tipo_veiculo"
-    t.decimal "carga_maxima", precision: 10, scale: 2
+    t.string "carga_maxima"
     t.decimal "valor_km"
     t.decimal "largura"
     t.decimal "altura"
@@ -178,24 +71,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_29_123000) do
     t.decimal "peso_aproximado"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "fidelidade_pontos", default: 0
-    t.string "cidade"
-    t.string "email"
-    t.string "confirmation_token"
-    t.string "pix_key"
-    t.string "mercado_pago_link"
-    t.index ["email"], name: "index_transportadores_on_email", unique: true, where: "(email IS NOT NULL)"
   end
 
-  add_foreign_key "cotacoes", "clientes"
-  add_foreign_key "cotacoes", "fretes"
-  add_foreign_key "historico_emails", "clientes"
-  add_foreign_key "historico_posts", "clientes"
-  add_foreign_key "historico_propostas", "clientes"
-  add_foreign_key "historico_propostas", "propostas"
-  add_foreign_key "messages", "fretes"
-  add_foreign_key "modal_transportadores", "modals"
-  add_foreign_key "modal_transportadores", "transportadores"
   add_foreign_key "propostas", "clientes"
   add_foreign_key "propostas", "fretes"
 end

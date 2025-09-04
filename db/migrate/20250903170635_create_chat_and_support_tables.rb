@@ -1,14 +1,9 @@
 # db/migrate/20250903170635_create_chat_and_support_tables.rb
 class CreateChatAndSupportTables < ActiveRecord::Migration[7.1]
   def change
-    # === COTAÇÕES ===================================
-    create_table :cotacoes, if_not_exists: true do |t|
-      t.references :frete, null: false, foreign_key: { to_table: :fretes }
-      t.bigint :transportador_id, null: false   # garante a coluna manualmente
-      t.decimal :valor, precision: 10, scale: 2
-      t.integer :status, default: 0, null: false
-      t.decimal :comissao, precision: 10, scale: 2
-      t.timestamps
+    # === AJUSTE COTAÇÕES ===================================
+    unless column_exists?(:cotacoes, :transportador_id)
+      add_column :cotacoes, :transportador_id, :bigint, null: false
     end
 
     add_foreign_key :cotacoes, :transportadores, column: :transportador_id
@@ -57,22 +52,4 @@ class CreateChatAndSupportTables < ActiveRecord::Migration[7.1]
       t.string :status, default: "pendente", null: false
       t.timestamps
     end
-    add_foreign_key :pagamentos, :transportadores, column: :transportador_id
-    add_index :pagamentos, [:frete_id, :transportador_id], name: "idx_pagamentos_frete_transportador"
-
-    # === ADMIN USERS ===============================
-    create_table :admin_users, if_not_exists: true do |t|
-      t.string :email,              null: false, default: ""
-      t.string :encrypted_password, null: false, default: ""
-      t.string :reset_password_token
-      t.datetime :reset_password_sent_at
-      t.datetime :remember_created_at
-      t.timestamps
-    end
-    add_index :admin_users, :email, unique: true
-    add_index :admin_users, :reset_password_token, unique: true
-  end
-end
-# frozen_string_literal: true
-# config/application.rb
-
+    add_foreign_key :pagamentos, :tra
