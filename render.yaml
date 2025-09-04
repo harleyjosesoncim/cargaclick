@@ -3,8 +3,6 @@ databases:
     plan: free
     databaseName: cargaclick_production
     user: cargaclick
-    # Executa migrations automáticas ao criar/atualizar DB
-    releaseCommand: "bundle exec rails db:migrate"
 
 services:
   - type: web
@@ -13,13 +11,9 @@ services:
     plan: starter
     dockerfilePath: ./Dockerfile
     autoDeploy: true
-
     healthCheckPath: /up
 
-    # Build (usa Dockerfile)
     buildCommand: "./bin/render-build.sh"
-
-    # Release (migrations e ajustes antes de rodar)
     releaseCommand: "./bin/render-release.sh"
 
     envVars:
