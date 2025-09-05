@@ -13,17 +13,17 @@ Rails.application.routes.draw do
                passwords:     "clientes/passwords"
              }
 
-  # === HEALTHCHECK ==============================================
+  # === HEALTHCHECK =============================================
   get "up", to: "rails/health#show", as: :rails_health_check
 
-  # === PÁGINAS PÚBLICAS =========================================
+  # === PÁGINAS PÚBLICAS ========================================
   get "home",       to: "home#index"
   get "sobre",      to: "home#about",      as: :about
   get "contato",    to: "home#contact",    as: :contact
   get "fidelidade", to: "home#fidelidade", as: :fidelidade
   get "relatorios", to: "home#relatorios", as: :relatorios
 
-  # === ROOTS ====================================================
+  # === ROOTS ===================================================
   authenticated :cliente do
     root "fretes#index", as: :authenticated_root
   end
@@ -32,12 +32,12 @@ Rails.application.routes.draw do
     root "home#index", as: :unauthenticated_root
   end
 
-  # 🔑 Root global (fallback)
+  # 🔑 Root global (sempre funcional)
   root "home#index"
 
-  # === CLIENTES & TRANSPORTADORES ===============================
+  # === CLIENTES & TRANSPORTADORES ==============================
   resources :clientes do
-    resources :fretes, only: [:index] # cliente pode ver seus fretes
+    resources :fretes, only: [:index] # cliente vê seus fretes
   end
 
   resources :transportadores do
@@ -47,7 +47,7 @@ Rails.application.routes.draw do
     resources :cotacoes, only: [:index] # transportador vê cotações
   end
 
-  # === FRETES & COTAÇÕES ========================================
+  # === FRETES & COTAÇÕES =======================================
   resources :fretes do
     resources :cotacoes, only: [:index, :new, :create]
 
@@ -55,9 +55,6 @@ Rails.application.routes.draw do
       get :pagar   # /fretes/:id/pagar
       get :status  # /fretes/:id/status
     end
-
-    # 🔹 CHAT dentro de um frete (cliente x transportador)
-    resources :messages, only: [:index, :create]
   end
 
   resources :cotacoes, only: [:index, :show, :edit, :update, :destroy] do
@@ -67,27 +64,32 @@ Rails.application.routes.draw do
     end
   end
 
-  # === PROPOSTAS ================================================
+  # === CHAT (Cliente x Transportador) ==========================
+  resources :chats, only: [:index, :show] do
+    resources :messages, only: [:create]
+  end
+
+  # === PROPOSTAS ===============================================
   resources :propostas do
     member do
       get :gerar_proposta_inteligente
-      get :bolsa # se tiver campo bolsa nas propostas
+      get :bolsa
     end
   end
 
-  # === OUTROS MÓDULOS ===========================================
+  # === OUTROS MÓDULOS ==========================================
   resources :modals
   resources :veiculos
   resources :cargas
   resources :tipos_cargas
   resources :unidades_medidas
 
-  # === ATALHOS / ALIASES ========================================
-  get "fretes/novo",      to: "fretes#new",   as: :novo_frete
-  get "bolsao",           to: "fretes#queue", as: :bolsao_solicitacoes
-  get "calcular_fretes",  to: "fretes#new",   as: :calcular_fretes
+  # === ATALHOS / ALIASES =======================================
+  get "fretes/novo",     to: "fretes#new",   as: :novo_frete
+  get "bolsao",          to: "fretes#queue", as: :bolsao_solicitacoes
+  get "calcular_fretes", to: "fretes#new",   as: :calcular_fretes
 
-  # === PAGAMENTOS (Mercado Pago) ================================
+  # === PAGAMENTOS (Mercado Pago) ===============================
   resources :pagamentos, only: [:create] do
     collection do
       get :sucesso
@@ -96,9 +98,9 @@ Rails.application.routes.draw do
     end
   end
 
-  # === PAINEL ADMIN =============================================
+  # === PAINEL ADMIN ============================================
   namespace :admin do
-    root to: "dashboard#index"   # cria admin_root_path
+    root to: "dashboard#index"   # admin_root_path
     resources :clientes
     resources :transportadores
     resources :fretes
