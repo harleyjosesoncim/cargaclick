@@ -13,9 +13,6 @@ services:
     autoDeploy: true
     healthCheckPath: /up
 
-    buildCommand: "./bin/render-build.sh"
-    releaseCommand: "./bin/render-release.sh"
-
     envVars:
       - key: RAILS_ENV
         value: production

@@ -1,20 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <title>Cargaclick App</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-  </body>
-</html>
+<%# app/views/home/index.html.erb %>
+
+<div class="container mx-auto px-4 py-6">
+  <h1 class="text-2xl font-bold mb-6">Bem-vindo ao CargaClick 🚚</h1>
+
+  <%# ============================================================
+      Card do Chat aparece só se logado e com negociação ativa
+      ============================================================ %>
+  <% if (cliente_signed_in? && current_cliente.fretes.where(status: "em_negociacao").exists?) ||
+        (transportador_signed_in? && current_transportador.fretes.where(status: "em_negociacao").exists?) %>
+    <%= render "card",
+          icon: "💬",
+          title: "Chat",
+          label: "Conversar",
+          path: chats_path,
+          color: "indigo" %>
+  <% end %>
+
+  <%# ============================================================
+      Outros cards / atalhos (exemplo)
+      ============================================================ %>
+  <%= render "card",
+        icon: "📝",
+        title: "Novo Frete",
+        label: "Solicitar",
+        path: new_frete_path,
+        color: "emerald" %>
+
+  <%= render "card",
+        icon: "🚛",
+        title: "Transportadores",
+        label: "Listar",
+        path: transportadores_path,
+        color: "blue" %>
+
+  <%= render "card",
+        icon: "📊",
+        title: "Relatórios",
+        label: "Ver",
+        path: relatorios_path,
+        color: "amber" %>
+</div>

@@ -6,7 +6,6 @@ ENV RAILS_MASTER_KEY=$RAILS_MASTER_KEY
 
 ENV RAILS_ENV=production \
     NODE_ENV=production \
-    BUNDLE_WITHOUT=development:test \
     BUNDLE_DEPLOYMENT=1 \
     BUNDLE_PATH=/usr/local/bundle
 
@@ -24,17 +23,17 @@ RUN apt-get update -qq && apt-get install -y \
 WORKDIR /app
 
 # Dependências Ruby
-COPY Gemfile Gemfile.lock ./
-RUN bundle install --jobs 4 --retry 5
+COPY Gemfile Gemfile.lock ./ 
+RUN bundle install --without development test --jobs 4 --retry 5
 
 # Dependências JS
-COPY package.json yarn.lock* ./
+COPY package.json yarn.lock* ./ 
 RUN yarn install --frozen-lockfile || true
 
 # Copiar a aplicação
 COPY . .
 
-# Precompile de assets (com dummy key)
+# Precompile de assets (dummy key)
 ENV SECRET_KEY_BASE=dummy_key
 RUN bundle exec rake assets:precompile || echo "⚠️ Precompile falhou, prosseguindo..."
 
@@ -61,11 +60,12 @@ WORKDIR /app
 COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY --from=build /app /app
 
+# Ajustar permissões para não-root
+RUN adduser --disabled-login --gecos '' appuser && chown -R appuser:appuser /app
+USER appuser
+
 # Porta padrão
 EXPOSE 3000
-
-# User não-root (opcional, mais seguro)
-USER nobody
 
 # Iniciar Puma
 CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
