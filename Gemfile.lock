@@ -334,6 +334,8 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
+    sitemap_generator (6.3.0)
+      builder (~> 3.0)
     sprockets (4.2.2)
       concurrent-ruby (~> 1.0)
       logger
@@ -417,6 +419,7 @@ DEPENDENCIES
   sassc-rails (~> 2.1)
   secure_headers (~> 6.5)
   selenium-webdriver
+  sitemap_generator
   sprockets-rails (~> 3.4)
   tailwindcss-rails (~> 4.1)
   turbo-rails (~> 2.0)

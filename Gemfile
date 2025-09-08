@@ -23,6 +23,8 @@ gem "tailwindcss-rails", "~> 4.1"
 gem "sprockets-rails", "~> 3.4"             # Suporte a assets legado
 gem "sassc-rails", "~> 2.1"                 # Compilação SCSS
 gem "uglifier", ">= 4.2"                    # Minificação JS legado
+gem 'sitemap_generator'
+
 
 # === Uploads / ActiveStorage =================================================
 gem "image_processing", "~> 1.2"
