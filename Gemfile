@@ -23,8 +23,7 @@ gem "tailwindcss-rails", "~> 4.1"
 gem "sprockets-rails", "~> 3.4"             # Suporte a assets legado
 gem "sassc-rails", "~> 2.1"                 # Compilação SCSS
 gem "uglifier", ">= 4.2"                    # Minificação JS legado
-gem 'sitemap_generator'
-
+gem "sitemap_generator"
 
 # === Uploads / ActiveStorage =================================================
 gem "image_processing", "~> 1.2"
@@ -32,13 +31,15 @@ gem "image_processing", "~> 1.2"
 # === Internacionalização =====================================================
 gem "rails-i18n", "~> 7.0"
 
+# === Segurança ===============================================================
+gem "secure_headers", "~> 6.5"              # Cabeçalhos de segurança
+
 # === Produção ================================================================
 group :production do
   gem "lograge", "~> 0.14"                  # Logs mais limpos
   gem "puma_worker_killer", "~> 0.3"        # Protege contra memory leaks
   gem "rack-attack", "~> 6.7"               # Rate limiting / segurança
   gem "rack-timeout", "~> 0.7"              # Timeout de requisições
-  gem "secure_headers", "~> 6.5"            # Cabeçalhos de segurança
 end
 
 # === Desenvolvimento & Teste =================================================
