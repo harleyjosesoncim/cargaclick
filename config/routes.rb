@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 Rails.application.routes.draw do
-  # === AUTENTICAÇÃO ==============================================
+  # ===============================================================
+  # AUTENTICAÇÃO (Devise + ActiveAdmin)
+  # ===============================================================
   devise_for :transportadores
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
@@ -13,17 +15,23 @@ Rails.application.routes.draw do
                passwords:     "clientes/passwords"
              }
 
-  # === HEALTHCHECK ===============================================
+  # ===============================================================
+  # HEALTHCHECK
+  # ===============================================================
   get "up", to: "rails/health#show", as: :rails_health_check
 
-  # === PÁGINAS PÚBLICAS ==========================================
+  # ===============================================================
+  # PÁGINAS PÚBLICAS
+  # ===============================================================
   get "home",       to: "home#index"
   get "sobre",      to: "home#about",      as: :about
   get "contato",    to: "home#contact",    as: :contact
   get "fidelidade", to: "home#fidelidade", as: :fidelidade
   get "relatorios", to: "home#relatorios", as: :relatorios
 
-  # === ROOTS =====================================================
+  # ===============================================================
+  # ROOTS
+  # ===============================================================
   authenticated :cliente do
     root "fretes#index", as: :authenticated_root
   end
@@ -32,10 +40,12 @@ Rails.application.routes.draw do
     root "home#index", as: :unauthenticated_root
   end
 
-  # fallback
+  # fallback genérico
   root "home#index"
 
-  # === CLIENTES & TRANSPORTADORES ================================
+  # ===============================================================
+  # CLIENTES & TRANSPORTADORES
+  # ===============================================================
   resources :clientes do
     resources :fretes, only: [:index]
   end
@@ -44,14 +54,19 @@ Rails.application.routes.draw do
     member do
       get :fidelidade
     end
+
     resources :cotacoes, only: [:index]
     resources :pagamentos, only: [:index]
   end
 
-  # === FRETES & COTAÇÕES =========================================
+  # ===============================================================
+  # FRETES & COTAÇÕES
+  # ===============================================================
   resources :fretes do
     resources :cotacoes, only: [:index, :new, :create]
-    resources :messages, only: [:index, :create] # chat vinculado ao frete
+
+    # Chat vinculado ao frete (retrocompatibilidade)
+    resources :messages, only: [:index, :create]
 
     member do
       get :pagar
@@ -66,7 +81,16 @@ Rails.application.routes.draw do
     end
   end
 
-  # === PROPOSTAS =================================================
+  # ===============================================================
+  # CHATS (Nova versão: independente de Frete)
+  # ===============================================================
+  resources :chats, only: [:index, :show] do
+    resources :messages, only: [:create]
+  end
+
+  # ===============================================================
+  # PROPOSTAS
+  # ===============================================================
   resources :propostas do
     member do
       get :gerar_proposta_inteligente
@@ -74,19 +98,25 @@ Rails.application.routes.draw do
     end
   end
 
-  # === OUTROS MÓDULOS ============================================
+  # ===============================================================
+  # OUTROS MÓDULOS
+  # ===============================================================
   resources :modals
   resources :veiculos
   resources :cargas
   resources :tipos_cargas
   resources :unidades_medidas
 
-  # === ATALHOS ===================================================
+  # ===============================================================
+  # ATALHOS
+  # ===============================================================
   get "fretes/novo",     to: "fretes#new",   as: :novo_frete
   get "bolsao",          to: "fretes#queue", as: :bolsao_solicitacoes
   get "calcular_fretes", to: "fretes#new",   as: :calcular_fretes
 
-  # === PAGAMENTOS ================================================
+  # ===============================================================
+  # PAGAMENTOS
+  # ===============================================================
   resources :pagamentos, only: [:index, :show, :create] do
     collection do
       post :checkout
@@ -99,4 +129,3 @@ Rails.application.routes.draw do
     end
   end
 end
-# frozen_string_literal: true

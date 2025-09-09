@@ -1,0 +1,31 @@
+<h2 class="text-2xl font-bold mb-6">Meus Chats</h2>
+
+<% if @chats.any? %>
+  <ul class="space-y-4">
+    <% @chats.each do |chat| %>
+      <li class="flex items-center justify-between border rounded-lg p-4 
+                 bg-white dark:bg-gray-900 shadow-sm hover:shadow-md transition">
+        <div>
+          <p class="font-semibold text-gray-800 dark:text-gray-100">
+            Frete #<%= chat.frete.id %> — 
+            Cliente: <%= chat.cliente.nome %> x Transportador: <%= chat.transportador.nome %>
+          </p>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            <% if chat.last_message.present? %>
+              Última mensagem: <%= chat.last_message.short_preview %> 
+              • <%= l(chat.last_message.created_at, format: :short) %>
+            <% else %>
+              Nenhuma mensagem ainda
+            <% end %>
+          </p>
+        </div>
+        <%= link_to "Entrar",
+                    chat_path(chat),
+                    class: "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p class="text-gray-600 dark:text-gray-400">Você não possui chats no momento.</p>
+<% end %>
+

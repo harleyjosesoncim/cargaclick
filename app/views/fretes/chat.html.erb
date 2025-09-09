@@ -1,0 +1,14 @@
+<h2 class="text-xl font-bold mb-4">
+  Chat do Frete <%= @frete.id %> — <%= @frete.cliente.nome %> x <%= @frete.transportador.nome %>
+</h2>
+
+<!-- Container de mensagens -->
+<div id="messages" 
+     class="space-y-2 border p-3 rounded h-96 overflow-y-auto bg-white dark:bg-gray-800">
+  <%= render @messages %>
+</div>
+
+<!-- Formulário de envio -->
+<%= turbo_frame_tag "new_message" do %>
+  <%= render "messages/form", message: @message, frete: @frete %>
+<% end %>
