@@ -1,9 +1,9 @@
 # frozen_string_literal: true
-
 Rails.application.routes.draw do
-  # === AUTENTICAÇÃO (Devise) ===================================
+  # === AUTENTICAÇÃO ==============================================
   devise_for :transportadores
-  devise_for :admin_users
+  devise_for :admin_users, ActiveAdmin::Devise.config
+  ActiveAdmin.routes(self)
 
   devise_for :clientes,
              path: "clientes",
@@ -13,17 +13,17 @@ Rails.application.routes.draw do
                passwords:     "clientes/passwords"
              }
 
-  # === HEALTHCHECK =============================================
+  # === HEALTHCHECK ===============================================
   get "up", to: "rails/health#show", as: :rails_health_check
 
-  # === PÁGINAS PÚBLICAS ========================================
+  # === PÁGINAS PÚBLICAS ==========================================
   get "home",       to: "home#index"
   get "sobre",      to: "home#about",      as: :about
   get "contato",    to: "home#contact",    as: :contact
   get "fidelidade", to: "home#fidelidade", as: :fidelidade
   get "relatorios", to: "home#relatorios", as: :relatorios
 
-  # === ROOTS ===================================================
+  # === ROOTS =====================================================
   authenticated :cliente do
     root "fretes#index", as: :authenticated_root
   end
@@ -32,28 +32,30 @@ Rails.application.routes.draw do
     root "home#index", as: :unauthenticated_root
   end
 
-  # 🔑 Root global (sempre funcional)
+  # fallback
   root "home#index"
 
-  # === CLIENTES & TRANSPORTADORES ==============================
+  # === CLIENTES & TRANSPORTADORES ================================
   resources :clientes do
-    resources :fretes, only: [:index] # cliente vê seus fretes
+    resources :fretes, only: [:index]
   end
 
   resources :transportadores do
     member do
-      get :fidelidade # pontos acumulados
+      get :fidelidade
     end
-    resources :cotacoes, only: [:index] # transportador vê cotações
+    resources :cotacoes, only: [:index]
+    resources :pagamentos, only: [:index]
   end
 
-  # === FRETES & COTAÇÕES =======================================
+  # === FRETES & COTAÇÕES =========================================
   resources :fretes do
     resources :cotacoes, only: [:index, :new, :create]
+    resources :messages, only: [:index, :create] # chat vinculado ao frete
 
     member do
-      get :pagar   # /fretes/:id/pagar
-      get :status  # /fretes/:id/status
+      get :pagar
+      get :status
     end
   end
 
@@ -64,12 +66,7 @@ Rails.application.routes.draw do
     end
   end
 
-  # === CHAT (Cliente x Transportador) ==========================
-  resources :chats, only: [:index, :show] do
-    resources :messages, only: [:create]
-  end
-
-  # === PROPOSTAS ===============================================
+  # === PROPOSTAS =================================================
   resources :propostas do
     member do
       get :gerar_proposta_inteligente
@@ -77,34 +74,29 @@ Rails.application.routes.draw do
     end
   end
 
-  # === OUTROS MÓDULOS ==========================================
+  # === OUTROS MÓDULOS ============================================
   resources :modals
   resources :veiculos
   resources :cargas
   resources :tipos_cargas
   resources :unidades_medidas
 
-  # === ATALHOS / ALIASES =======================================
+  # === ATALHOS ===================================================
   get "fretes/novo",     to: "fretes#new",   as: :novo_frete
   get "bolsao",          to: "fretes#queue", as: :bolsao_solicitacoes
   get "calcular_fretes", to: "fretes#new",   as: :calcular_fretes
 
-  # === PAGAMENTOS (Mercado Pago) ===============================
-  resources :pagamentos, only: [:create] do
+  # === PAGAMENTOS ================================================
+  resources :pagamentos, only: [:index, :show, :create] do
     collection do
+      post :checkout
+      get  :retorno
+      post :webhook
+      head :webhook, action: :ping
       get :sucesso
       get :falha
       get :pendente
     end
   end
-
-  # === PAINEL ADMIN ============================================
-  namespace :admin do
-    root to: "dashboard#index"   # admin_root_path
-    resources :clientes
-    resources :transportadores
-    resources :fretes
-    resources :cotacoes
-    resources :propostas
-  end
 end
+# frozen_string_literal: true

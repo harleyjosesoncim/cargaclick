@@ -1,0 +1,22 @@
+<div class="container mx-auto p-4">
+  <div class="bg-white shadow rounded-lg p-6">
+    <h1 class="text-xl font-bold mb-4">Pagamento <%= @pagamento.id %></h1>
+
+    <p><strong>Frete:</strong> <%= @pagamento.frete_id %></p>
+    <p><strong>Transportador:</strong> <%= @pagamento.transportador_id %></p>
+    <p><strong>Valor:</strong> R$ <%= number_to_currency(@pagamento.valor, unit: "") %></p>
+    <p><strong>Status:</strong>
+      <span class="px-2 py-1 rounded text-sm font-bold
+        <%= @pagamento.status == "confirmado" ? "bg-green-200 text-green-800" :
+            @pagamento.status == "pendente" ? "bg-yellow-200 text-yellow-800" :
+            "bg-red-200 text-red-800" %>">
+        <%= @pagamento.status.capitalize %>
+      </span>
+    </p>
+    <p><strong>TXID:</strong> <%= @pagamento.txid %></p>
+    <p><strong>Criado em:</strong> <%= l(@pagamento.created_at, format: :short) %></p>
+  </div>
+
+  <%= link_to "Voltar", pagamentos_path,
+              class: "mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" %>
+</div>

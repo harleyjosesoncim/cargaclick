@@ -6,54 +6,39 @@
     <% end %>
 
     <!-- Links -->
-    <ul class="flex space-x-8 font-semibold text-lg">
-      <li>
-        <%= link_to "Início", root_path,
-          class: "text-white hover:text-blue-200 transition duration-300 #{active_link_class(root_path)}",
-          aria: { current: current_page?(root_path) ? "page" : nil } %>
-      </li>
+    <ul class="flex flex-wrap space-x-6 font-semibold text-lg text-white">
+      <!-- Público -->
+      <li><%= nav_link_to "Início", root_path %></li>
+      <li><%= nav_link_to "Simular Frete", calcular_fretes_path %></li>
+      <li><%= nav_link_to "Fidelidade", fidelidade_path %></li>
+      <li><%= nav_link_to "Relatórios", relatorios_path %></li>
+      <li><%= nav_link_to "Sobre", about_path %></li>
+      <li><%= nav_link_to "Contato", contact_path %></li>
 
-      <li>
-        <%= link_to "Clientes", clientes_path,
-          class: "text-white hover:text-blue-200 transition duration-300 #{active_link_class(clientes_path)}",
-          aria: { current: current_page?(clientes_path) ? "page" : nil } %>
-      </li>
+      <!-- Acesso Cliente -->
+      <% if defined?(current_cliente) && current_cliente.present? %>
+        <li><%= nav_link_to "Área do Cliente", cliente_path(current_cliente) %></li>
+        <li><%= chat_nav_link %></li>
+      <% else %>
+        <li><%= nav_link_to "Login Cliente", new_cliente_session_path %></li>
+      <% end %>
 
-      <li>
-        <%= link_to "Transportadores", transportadores_path,
-          class: "text-white hover:text-blue-200 transition duration-300 #{active_link_class(transportadores_path)}",
-          aria: { current: current_page?(transportadores_path) ? "page" : nil } %>
-      </li>
+      <!-- Acesso Transportador -->
+      <% if defined?(current_transportador) && current_transportador.present? %>
+        <li><%= nav_link_to "Área do Transportador", transportador_path(current_transportador) %></li>
+      <% else %>
+        <li><%= nav_link_to "Login Transportador", new_transportador_session_path %></li>
+      <% end %>
 
-      <li>
-        <%= link_to "Simular Frete", calcular_fretes_path,
-          class: "text-white hover:text-blue-200 transition duration-300 #{active_link_class(calcular_fretes_path)}",
-          aria: { current: current_page?(calcular_fretes_path) ? "page" : nil } %>
-      </li>
+      <!-- Pagamentos (link global, só se a rota existir) -->
+      <% if respond_to?(:pagamentos_path) %>
+        <li><%= pagamentos_nav_link %></li>
+      <% end %>
 
-      <li>
-        <%= link_to "Fidelidade", fidelidade_path,
-          class: "text-white hover:text-blue-200 transition duration-300 #{active_link_class(fidelidade_path)}",
-          aria: { current: current_page?(fidelidade_path) ? "page" : nil } %>
-      </li>
-
-      <li>
-        <%= link_to "Relatórios", relatorios_path,
-          class: "text-white hover:text-blue-200 transition duration-300 #{active_link_class(relatorios_path)}",
-          aria: { current: current_page?(relatorios_path) ? "page" : nil } %>
-      </li>
-
-      <li>
-        <%= link_to "Sobre", about_path,
-          class: "text-white hover:text-blue-200 transition duration-300 #{active_link_class(about_path)}",
-          aria: { current: current_page?(about_path) ? "page" : nil } %>
-      </li>
-
-      <li>
-        <%= link_to "Contato", contact_path,
-          class: "text-white hover:text-blue-200 transition duration-300 #{active_link_class(contact_path)}",
-          aria: { current: current_page?(contact_path) ? "page" : nil } %>
-      </li>
+      <!-- Admin (apenas se logado como admin_user) -->
+      <% if defined?(current_admin_user) && current_admin_user.present? %>
+        <li><%= admin_nav_link %></li>
+      <% end %>
     </ul>
   </div>
 </nav>

@@ -11,6 +11,9 @@ gem "puma", "~> 6.6"                        # Servidor web
 gem "bootsnap", ">= 1.17", require: false   # Cache para acelerar boot da app
 gem "json", ">= 2.6"
 
+# Gemfile
+gem "activeadmin"
+
 # === Autenticação ============================================================
 gem "devise", "~> 4.9"                      # Clientes, Transportadores e Admins
 

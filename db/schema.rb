@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_09_03_170635) do
+ActiveRecord::Schema[7.1].define(version: 2025_09_09_180200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -48,6 +48,25 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_03_170635) do
     t.string "campo_extra"
     t.index ["cnpj"], name: "index_clientes_on_cnpj", unique: true, where: "(cnpj IS NOT NULL)"
     t.index ["cpf"], name: "index_clientes_on_cpf", unique: true, where: "(cpf IS NOT NULL)"
+  end
+
+  create_table "clientes_cnpjs", force: :cascade do |t|
+    t.string "nome_fantasia", null: false
+    t.string "razao_social"
+    t.string "cnpj", null: false
+    t.string "email", null: false
+    t.string "telefone"
+    t.string "endereco"
+    t.string "cep"
+    t.string "cidade"
+    t.string "estado"
+    t.boolean "ativo", default: true
+    t.decimal "desconto_cliente", precision: 5, scale: 2, default: "0.0"
+    t.decimal "bonus_entregador", precision: 5, scale: 2, default: "0.0"
+    t.decimal "taxa_cargaclick", precision: 5, scale: 2, default: "8.0"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cnpj"], name: "index_clientes_cnpjs_on_cnpj", unique: true
   end
 
   create_table "configs", force: :cascade do |t|
@@ -218,6 +237,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_03_170635) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
+    t.string "chave_pix"
     t.index ["confirmation_token"], name: "index_transportadores_on_confirmation_token", unique: true
     t.index ["email"], name: "index_transportadores_on_email", unique: true, where: "(email IS NOT NULL)"
     t.index ["reset_password_token"], name: "index_transportadores_on_reset_password_token", unique: true
