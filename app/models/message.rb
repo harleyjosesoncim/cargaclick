@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 class Message < ApplicationRecord
   # === ASSOCIAÇÕES ==================================
-  belongs_to :frete
-  belongs_to :sender, polymorphic: true   # Cliente ou Transportador
+  belongs_to :chat
+  belongs_to :sender, polymorphic: true   # Cliente, Transportador ou Admin
 
   # === VALIDAÇÕES ===================================
   validates :content, presence: true, length: { minimum: 1, maximum: 2000 }
@@ -16,13 +16,14 @@ class Message < ApplicationRecord
   }, _default: :normal
 
   # === BROADCAST (Turbo Streams) ====================
-  after_create_commit -> { broadcast_append_to "frete_#{frete_id}_messages" }
+  after_create_commit -> { broadcast_append_to "chat_#{chat_id}_messages" }
 
   # === SCOPES =======================================
-  scope :recent,          -> { order(created_at: :asc) }
-  scope :do_cliente,      -> { where(sender_type: "Cliente") }
-  scope :do_transportador -> { where(sender_type: "Transportador") }
-  scope :nao_lidas,       -> { where(status: :normal) }
+  scope :recent,           -> { order(created_at: :asc) }
+  scope :do_cliente,       -> { where(sender_type: "Cliente") }
+  scope :do_transportador, -> { where(sender_type: "Transportador") }
+  scope :do_admin,         -> { where(sender_type: "AdminUser") }
+  scope :nao_lidas,        -> { where(status: :normal) }
 
   # === MÉTODOS ======================================
   def mark_as_read!

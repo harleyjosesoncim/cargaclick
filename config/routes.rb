@@ -121,11 +121,11 @@ Rails.application.routes.draw do
     collection do
       post :checkout
       get  :retorno
-      post :webhook
-      head :webhook, action: :ping
-      get :sucesso
-      get :falha
-      get :pendente
+      post :webhook      # para receber notificações
+      get  :ping         # rota simples para teste de disponibilidade
+      get  :sucesso
+      get  :falha
+      get  :pendente
     end
   end
 end
