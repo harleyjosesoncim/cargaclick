@@ -65,8 +65,13 @@ Rails.application.routes.draw do
   resources :fretes do
     resources :cotacoes, only: [:index, :new, :create]
 
-    # Chat vinculado ao frete (retrocompatibilidade)
-    resources :messages, only: [:index, :create]
+    # Chat vinculado ao frete (modelo Uber/OLX)
+    resources :messages, only: [:index, :create] do
+      member do
+        patch :mark_as_read
+        patch :mark_as_important
+      end
+    end
 
     member do
       get :pagar
@@ -79,13 +84,6 @@ Rails.application.routes.draw do
       post :aceitar
       post :recusar
     end
-  end
-
-  # ===============================================================
-  # CHATS (Nova versão: independente de Frete)
-  # ===============================================================
-  resources :chats, only: [:index, :show] do
-    resources :messages, only: [:create]
   end
 
   # ===============================================================
@@ -121,11 +119,13 @@ Rails.application.routes.draw do
     collection do
       post :checkout
       get  :retorno
-      post :webhook      # para receber notificações
-      get  :ping         # rota simples para teste de disponibilidade
+      post :webhook
+      get  :ping
       get  :sucesso
       get  :falha
       get  :pendente
     end
   end
 end
+# == Route Map
+# Generated on 2024-10-11T14:20:00-03:00

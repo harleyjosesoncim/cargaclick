@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class Message < ApplicationRecord
   # === ASSOCIAÇÕES ==================================
-  belongs_to :chat
+  belongs_to :frete
   belongs_to :sender, polymorphic: true   # Cliente, Transportador ou Admin
 
   # === VALIDAÇÕES ===================================
@@ -16,7 +16,7 @@ class Message < ApplicationRecord
   }, _default: :normal
 
   # === BROADCAST (Turbo Streams) ====================
-  after_create_commit -> { broadcast_append_to "chat_#{chat_id}_messages" }
+  after_create_commit -> { broadcast_append_to "frete_#{frete_id}_messages" }
 
   # === SCOPES =======================================
   scope :recent,           -> { order(created_at: :asc) }
@@ -25,7 +25,7 @@ class Message < ApplicationRecord
   scope :do_admin,         -> { where(sender_type: "AdminUser") }
   scope :nao_lidas,        -> { where(status: :normal) }
 
-  # === MÉTODOS ======================================
+  # === MÉTODOS DE AÇÃO (BOTÕES) =====================
   def mark_as_read!
     update!(status: :lido)
   end
@@ -34,6 +34,7 @@ class Message < ApplicationRecord
     update!(status: :importante)
   end
 
+  # === MÉTODOS AUXILIARES ==========================
   def short_preview
     content.truncate(40)
   end

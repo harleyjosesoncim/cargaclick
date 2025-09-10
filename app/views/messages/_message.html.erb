@@ -20,8 +20,8 @@
     <p class="whitespace-pre-wrap break-words"><%= message.content %></p>
   </div>
 
-  <!-- Rodapé com status e hora -->
-  <span class="text-xs text-gray-500 dark:text-gray-400 mt-1 flex items-center space-x-1">
+  <!-- Rodapé com status, hora e botões -->
+  <span class="text-xs text-gray-500 dark:text-gray-400 mt-1 flex items-center space-x-2">
     <span><%= message.sender_type %></span>
     <span>•</span>
     <span><%= l(message.created_at, format: :short) %></span>
@@ -30,6 +30,23 @@
       <span class="ml-1 text-green-400">✔</span>
     <% elsif message.importante? %>
       <span class="ml-1 text-yellow-400 font-bold">★</span>
+    <% end %>
+
+    <!-- Botões de ação (apenas para usuários autenticados) -->
+    <% if current_cliente || current_transportador || current_admin_user %>
+      <% if message.normal? %>
+        <%= button_to "Marcar como lida",
+            mark_as_read_frete_message_path(@frete, message),
+            method: :patch,
+            class: "ml-2 text-green-600 hover:underline" %>
+      <% end %>
+
+      <% unless message.importante? %>
+        <%= button_to "Destacar",
+            mark_as_important_frete_message_path(@frete, message),
+            method: :patch,
+            class: "ml-2 text-yellow-600 hover:underline" %>
+      <% end %>
     <% end %>
   </span>
 </div>

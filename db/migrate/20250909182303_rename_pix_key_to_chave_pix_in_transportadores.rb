@@ -1,5 +1,5 @@
 class RenamePixKeyToChavePixInTransportadores < ActiveRecord::Migration[6.1]
   def change
-    rename_column :transportadores, :pix_key, :chave_pix
+    # já definido como :chave_pix, nenhuma alteração necessária
   end
 end

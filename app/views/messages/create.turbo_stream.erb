@@ -4,8 +4,8 @@
 
 <%= turbo_stream.replace "new_message" do %>
   <%= turbo_frame_tag "new_message" do %>
-    <%= form_with(model: [@chat, @chat.messages.new],
-                  data: { turbo_frame: "new_message" },
+    <%= form_with(model: [@frete, @frete.messages.new],
+                  data: { turbo_frame: "messages" },
                   class: "flex gap-2") do |f| %>
       <%= f.text_field :content,
             placeholder: "Digite sua mensagem...",
@@ -15,4 +15,5 @@
     <% end %>
   <% end %>
 <% end %>
+
 
