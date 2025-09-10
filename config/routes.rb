@@ -73,6 +73,9 @@ Rails.application.routes.draw do
       end
     end
 
+    # Pagamentos vinculados ao frete
+    resources :pagamentos, only: [:index, :create]
+
     member do
       get :pagar
       get :status
@@ -113,7 +116,7 @@ Rails.application.routes.draw do
   get "calcular_fretes", to: "fretes#new",   as: :calcular_fretes
 
   # ===============================================================
-  # PAGAMENTOS
+  # PAGAMENTOS GLOBAIS
   # ===============================================================
   resources :pagamentos, only: [:index, :show, :create] do
     collection do
@@ -127,5 +130,3 @@ Rails.application.routes.draw do
     end
   end
 end
-# == Route Map
-# Generated on 2024-10-11T14:20:00-03:00

@@ -12,7 +12,7 @@
      end %>
 
 <div id="message_<%= message.id %>" 
-     class="flex flex-col mb-2 <%= sender_type == 'Transportador' ? 'items-end' : 'items-start' %>">
+     class="flex flex-col mb-3 <%= sender_type == 'Transportador' ? 'items-end' : 'items-start' %>">
 
   <!-- Balão da mensagem -->
   <div class="max-w-xs md:max-w-md px-4 py-2 rounded-lg shadow <%= bubble_class %> 
@@ -21,13 +21,13 @@
   </div>
 
   <!-- Rodapé com status, hora e botões -->
-  <span class="text-xs text-gray-500 dark:text-gray-400 mt-1 flex items-center space-x-2">
+  <div class="flex items-center gap-2 mt-1 text-xs text-gray-500 dark:text-gray-400">
     <span><%= message.sender_type %></span>
     <span>•</span>
     <span><%= l(message.created_at, format: :short) %></span>
 
     <% if message.lido? %>
-      <span class="ml-1 text-green-400">✔</span>
+      <span class="ml-1 text-green-500">✔</span>
     <% elsif message.importante? %>
       <span class="ml-1 text-yellow-400 font-bold">★</span>
     <% end %>
@@ -38,6 +38,7 @@
         <%= button_to "Marcar como lida",
             mark_as_read_frete_message_path(@frete, message),
             method: :patch,
+            data: { turbo_stream: true },
             class: "ml-2 text-green-600 hover:underline" %>
       <% end %>
 
@@ -45,8 +46,14 @@
         <%= button_to "Destacar",
             mark_as_important_frete_message_path(@frete, message),
             method: :patch,
+            data: { turbo_stream: true },
             class: "ml-2 text-yellow-600 hover:underline" %>
       <% end %>
     <% end %>
-  </span>
+  </div>
 </div>
+
+<%# 
+  Este partial renderiza uma única mensagem dentro de um sistema de mensagens.
+  Ele ajusta o estilo do balão de mensagem e os botões de ação com base no tipo de remetente
+  (Cliente, Transportador, AdminUser) e no estado da mensagem (normal, lida, importante).

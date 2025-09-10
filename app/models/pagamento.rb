@@ -1,81 +1,52 @@
-# app/models/pagamento.rb
-class Pagamento < ApplicationRecord
-  # === ASSOCIAÇÕES ==================================
-  belongs_to :frete
-  belongs_to :transportador
+<div id="pagamento_<%= pagamento.id %>" 
+     class="bg-white dark:bg-gray-900 shadow rounded-lg p-4 mb-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
 
-  # Delegações para facilitar uso em relatórios e views
-  delegate :descricao, to: :frete, prefix: true, allow_nil: true
-  delegate :nome, :email, to: :transportador, prefix: true, allow_nil: true
+  <!-- Informações principais -->
+  <div>
+    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
+      💸 Pagamento ##<%= pagamento.id %>
+    </h3>
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      Frete: <%= link_to "##{pagamento.frete_id}", frete_path(pagamento.frete), class: "underline" %><br>
+      Cliente: <%= pagamento.cliente_nome || "N/A" %><br>
+      Transportador: <%= pagamento.transportador_nome || "N/A" %>
+    </p>
+  </div>
 
-  # === VALIDAÇÕES ===================================
-  validates :valor,
-            presence: true,
-            numericality: {
-              greater_than_or_equal_to: 0,
-              less_than: 1_000_000
-            }
+  <!-- Status + valores -->
+  <div class="flex flex-col text-sm text-gray-700 dark:text-gray-300">
+    <span class="px-2 py-1 rounded text-xs font-medium
+      <%= case pagamento.status
+          when "pendente" then "bg-yellow-100 text-yellow-800"
+          when "confirmado" then "bg-green-100 text-green-800"
+          when "cancelado" then "bg-red-100 text-red-800"
+          else "bg-gray-100 text-gray-800" end %>">
+      <%= pagamento.status_label %>
+    </span>
 
-  validates :status, presence: true
+    <span>Total: <%= number_to_currency(pagamento.valor_total) %></span>
+    <span>Transportador: <%= number_to_currency(pagamento.valor_liquido) %></span>
+    <span>Comissão CargaClick: <%= number_to_currency(pagamento.comissao_cargaclick) %></span>
+  </div>
 
-  # === STATUS (enum) ================================
-  # Usando string como valor, para maior clareza
-  enum status: {
-    pendente:   "pendente",
-    confirmado: "confirmado",
-    cancelado:  "cancelado"
-  }, _default: "pendente"
+  <!-- Botões de ação -->
+  <div class="flex gap-2">
+    <% if pagamento.pendente? %>
+      <%= button_to "Confirmar",
+          pagamento_path(pagamento, status: "confirmado"),
+          method: :patch,
+          data: { turbo_stream: true },
+          class: "px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700" %>
 
-  # === SCOPES ÚTEIS ================================
-  scope :recentes,    -> { order(created_at: :desc) }
-  scope :pendentes,   -> { where(status: "pendente") }
-  scope :confirmados, -> { where(status: "confirmado") }
-  scope :cancelados,  -> { where(status: "cancelado") }
+      <%= button_to "Cancelar",
+          pagamento_path(pagamento, status: "cancelado"),
+          method: :patch,
+          data: { turbo_stream: true, confirm: "Deseja realmente cancelar este pagamento?" },
+          class: "px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700" %>
+    <% end %>
 
-  # === CALLBACKS ====================================
-  before_validation :set_default_status, on: :create
-
-  # === MÉTODOS DE NEGÓCIO ===========================
-  def confirmar!
-    update!(status: "confirmado")
-  end
-
-  def cancelar!
-    update!(status: "cancelado")
-  end
-
-  def pendente?
-    status == "pendente"
-  end
-
-  # === TRANSIÇÕES DE STATUS =========================
-  validate :status_transition_valid?, on: :update
-
-  def status_transition_valid?
-    if status_changed?
-      if status_was == "confirmado" && status == "pendente"
-        errors.add(:status, "não pode voltar para pendente após confirmação")
-      end
-      if status_was == "cancelado" && status == "confirmado"
-        errors.add(:status, "não pode ser confirmado após cancelado")
-      end
-    end
-  end
-
-  # === VISUALIZAÇÃO AMIGÁVEL ========================
-  def to_s
-    "💸 Pagamento ##{id} | Frete ##{frete_id} | Transportador ##{transportador_id} | " \
-    "#{status_label} | R$ #{'%.2f' % valor}"
-  end
-
-  def status_label
-    I18n.t("pagamentos.status.#{status}", default: status.titleize)
-  end
-
-  private
-
-  def set_default_status
-    self.status ||= "pendente"
-  end
-end
-# frozen_string_literal: true
+    <%= link_to "Detalhes",
+        pagamento_path(pagamento),
+        class: "px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700" %>
+  </div>
+</div>

@@ -88,6 +88,28 @@
                   method: :delete,
                   data: { confirm: "Tem certeza que deseja excluir este frete?" },
                   class: "bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow" %>
+
+      <% if @frete.valor_total.present? && @frete.transportador.present? %>
+        <!-- Botão de pagamento (chama checkout PIX/MP) -->
+        <%= button_to "💳 Pagar agora",
+            checkout_pagamentos_path(frete_id: @frete.id),
+            method: :post,
+            class: "bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow" %>
+
+        <!-- Botão de status do pagamento -->
+        <% if (pagamento = @frete.pagamentos.last) %>
+          <span class="px-3 py-2 rounded-lg text-sm
+                       <%= pagamento.confirmado? ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' %>">
+            💸 Pagamento: <%= pagamento.status.humanize %>
+          </span>
+        <% end %>
+      <% end %>
+
+      <% if @frete.persisted? %>
+        <!-- Botão para abrir chat vinculado ao frete -->
+        <%= link_to "💬 Abrir Chat", frete_messages_path(@frete),
+                    class: "bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg shadow" %>
+      <% end %>
     </div>
   </div>
 
@@ -115,5 +137,4 @@
       </div>
     <% end %>
   </div>
-
 </div>
