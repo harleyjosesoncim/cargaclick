@@ -1,52 +1,81 @@
-<div id="pagamento_<%= pagamento.id %>" 
-     class="bg-white dark:bg-gray-900 shadow rounded-lg p-4 mb-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+# app/models/pagamento.rb
+# frozen_string_literal: true
 
-  <!-- Informações principais -->
-  <div>
-    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
-      💸 Pagamento ##<%= pagamento.id %>
-    </h3>
-    <p class="text-sm text-gray-600 dark:text-gray-400">
-      Frete: <%= link_to "##{pagamento.frete_id}", frete_path(pagamento.frete), class: "underline" %><br>
-      Cliente: <%= pagamento.cliente_nome || "N/A" %><br>
-      Transportador: <%= pagamento.transportador_nome || "N/A" %>
-    </p>
-  </div>
+class Pagamento < ApplicationRecord
+  # === ASSOCIAÇÕES ==================================
+  belongs_to :frete
+  belongs_to :transportador
+  belongs_to :cliente, optional: true # Pode ser PF, PJ ou avulso
 
-  <!-- Status + valores -->
-  <div class="flex flex-col text-sm text-gray-700 dark:text-gray-300">
-    <span class="px-2 py-1 rounded text-xs font-medium
-      <%= case pagamento.status
-          when "pendente" then "bg-yellow-100 text-yellow-800"
-          when "confirmado" then "bg-green-100 text-green-800"
-          when "cancelado" then "bg-red-100 text-red-800"
-          else "bg-gray-100 text-gray-800" end %>">
-      <%= pagamento.status_label %>
-    </span>
+  # Delegações
+  delegate :descricao, to: :frete, prefix: true, allow_nil: true
+  delegate :nome, :email, to: :transportador, prefix: true, allow_nil: true
+  delegate :nome, to: :cliente, prefix: true, allow_nil: true
 
-    <span>Total: <%= number_to_currency(pagamento.valor_total) %></span>
-    <span>Transportador: <%= number_to_currency(pagamento.valor_liquido) %></span>
-    <span>Comissão CargaClick: <%= number_to_currency(pagamento.comissao_cargaclick) %></span>
-  </div>
+  # === VALIDAÇÕES ===================================
+  validates :valor,
+            presence: true,
+            numericality: {
+              greater_than_or_equal_to: 0,
+              less_than: 1_000_000
+            }
 
-  <!-- Botões de ação -->
-  <div class="flex gap-2">
-    <% if pagamento.pendente? %>
-      <%= button_to "Confirmar",
-          pagamento_path(pagamento, status: "confirmado"),
-          method: :patch,
-          data: { turbo_stream: true },
-          class: "px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700" %>
+  validates :status, presence: true
 
-      <%= button_to "Cancelar",
-          pagamento_path(pagamento, status: "cancelado"),
-          method: :patch,
-          data: { turbo_stream: true, confirm: "Deseja realmente cancelar este pagamento?" },
-          class: "px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700" %>
-    <% end %>
+  validates :valor_total, :valor_liquido, :comissao_cargaclick,
+            numericality: { greater_than_or_equal_to: 0 },
+            allow_nil: true
 
-    <%= link_to "Detalhes",
-        pagamento_path(pagamento),
-        class: "px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700" %>
-  </div>
-</div>
+  # === STATUS ========================================
+  enum status: {
+    pendente:   "pendente",
+    confirmado: "confirmado",
+    cancelado:  "cancelado"
+  }, _default: "pendente"
+
+  # === CALLBACKS =====================================
+  before_validation :set_default_status, on: :create
+
+  # === SCOPES ========================================
+  scope :recentes,    -> { order(created_at: :desc) }
+  scope :pendentes,   -> { where(status: "pendente") }
+  scope :confirmados, -> { where(status: "confirmado") }
+  scope :cancelados,  -> { where(status: "cancelado") }
+
+  # === LÓGICA DE NEGÓCIO =============================
+  def confirmar!
+    update!(status: "confirmado")
+  end
+
+  def cancelar!
+    update!(status: "cancelado")
+  end
+
+  def pendente?
+    status == "pendente"
+  end
+
+  def aplicar_comissao!(taxa)
+    self.valor_total ||= valor
+    self.comissao_cargaclick = (valor_total * taxa).round(2)
+    self.valor_liquido = valor_total - comissao_cargaclick
+    save!
+  end
+
+  # === LABELS ========================================
+  def to_s
+    "💸 Pagamento ##{id} | Frete ##{frete_id} | Cliente ##{cliente_id} | " \
+    "Transportador ##{transportador_id} | #{status_label} | " \
+    "Total: R$ #{'%.2f' % valor_total} | Líquido: R$ #{'%.2f' % valor_liquido}"
+  end
+
+  def status_label
+    I18n.t("pagamentos.status.#{status}", default: status.titleize)
+  end
+
+  private
+
+  def set_default_status
+    self.status ||= "pendente"
+  end
+end
