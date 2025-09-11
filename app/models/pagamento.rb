@@ -43,12 +43,10 @@ class Pagamento < ApplicationRecord
   scope :cancelados,  -> { where(status: "cancelado") }
 
   # === LÓGICA DE NEGÓCIO =============================
-  # Confirma o pagamento (ex: callback do Mercado Pago)
   def confirmar!
     update!(status: "confirmado")
   end
 
-  # Cancela o pagamento (ex: falha, desistência ou estorno)
   def cancelar!
     update!(status: "cancelado")
   end
@@ -57,7 +55,6 @@ class Pagamento < ApplicationRecord
     status == "pendente"
   end
 
-  # Aplica comissão da CargaClick e calcula valor líquido do transportador
   def aplicar_comissao!(taxa)
     self.valor_total ||= valor
     self.comissao_cargaclick = (valor_total * taxa).round(2)
@@ -77,13 +74,12 @@ class Pagamento < ApplicationRecord
   end
 
   # === BOTÕES (para views) ===========================
-  # Helpers para gerar botões no painel (cliente/admin)
   def checkout_button(view_context)
     return unless pendente?
 
     view_context.button_to(
       "Pagar com Mercado Pago",
-      view_context.checkout_pagamento_path(self),
+      view_context.checkout_pagamentos_path(frete_id: frete_id), # ✅ alinhado com controller
       method: :post,
       class: "bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700"
     )
@@ -94,7 +90,7 @@ class Pagamento < ApplicationRecord
 
     view_context.button_to(
       "Cancelar Pagamento",
-      view_context.cancelar_pagamento_path(self),
+      view_context.cancelar_pagamento_path(self), # usa rota member definida no routes.rb
       method: :patch,
       class: "bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700",
       data: { confirm: "Tem certeza que deseja cancelar este pagamento?" }

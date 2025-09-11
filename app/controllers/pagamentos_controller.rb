@@ -1,9 +1,22 @@
-# app/controllers/pagamentos_controller.rb
-# frozen_string_literal: true
+## frozen_string_literal: true
 
 class PagamentosController < ApplicationController
   skip_before_action :verify_authenticity_token, only: %i[webhook ping]
 
+  before_action :set_pagamento, only: [:show, :cancelar]
+
+  # ===============================================================
+  # LISTAGEM / VISUALIZAÇÃO
+  # ===============================================================
+  def index
+    @pagamentos = Pagamento.includes(:frete, :transportador, :cliente).recentes
+  end
+
+  def show; end
+
+  # ===============================================================
+  # CHECKOUT
+  # ===============================================================
   # POST /pagamentos/checkout?frete_id=123
   def checkout
     frete = Frete.find(params[:frete_id])
@@ -14,7 +27,6 @@ class PagamentosController < ApplicationController
       return render json: { error: "Cliente ou transportador não definido" }, status: :unprocessable_entity
     end
 
-    # Cria/atualiza pagamento vinculado ao frete
     pagamento = Pagamento.find_or_initialize_by(frete: frete, transportador: transportador)
     pagamento.cliente = cliente
     pagamento.valor_total = calcular_valor_final(frete, cliente)
@@ -23,7 +35,6 @@ class PagamentosController < ApplicationController
     pagamento.status ||= "pendente"
     pagamento.save!
 
-    # Decide modelo de checkout conforme tipo de cliente
     service = PagamentoPixService.new
     result =
       if cliente.respond_to?(:assinante?) && cliente.assinante?
@@ -46,46 +57,41 @@ class PagamentosController < ApplicationController
     end
   end
 
-  # Callback de retorno simples (usuário redirecionado após pagamento)
+  # ===============================================================
+  # CANCELAR
+  # ===============================================================
+  def cancelar
+    if @pagamento.pendente?
+      @pagamento.cancelar!
+      redirect_to @pagamento, notice: "❌ Pagamento cancelado com sucesso."
+    else
+      redirect_to @pagamento, alert: "⚠️ Não é possível cancelar um pagamento #{@pagamento.status}."
+    end
+  end
+
+  # ===============================================================
+  # CALLBACKS DO GATEWAY
+  # ===============================================================
   def retorno
     PagamentoPixService.new.retorno(params)
     redirect_to root_path, notice: "Pagamento processado. Se aprovado, os contatos foram liberados."
   end
 
-  # Webhook assíncrono → Mercado Pago chama a plataforma
   def webhook
     PagamentoPixService.new.webhook(params)
     head :ok
   end
 
-  # Rota simples para healthcheck de pagamentos
   def ping
     head :ok
   end
 
   private
 
-  # Decide se cliente é PF, PJ fidelizado ou avulso
+  def set_pagamento
+    @pagamento = Pagamento.find(params[:id])
+  end
+
   def identificar_cliente(frete)
     return frete.cliente if frete.cliente.present?
-    return frete.cliente_cnpj if frete.respond_to?(:cliente_cnpj) && frete.cliente_cnpj.present?
-    nil
-  end
-
-  # Busca o transportador (cotação aceita ou vinculado direto)
-  def identificar_transportador(frete)
-    frete.transportador || frete.cotacoes.aceitas.first&.transportador
-  end
-
-  # Calcula valor base considerando fidelidade e desconto
-  def calcular_valor_final(frete, cliente)
-    valor_base = frete.valor_total
-
-    if cliente.respond_to?(:assinante?) && cliente.assinante?
-      # Exemplo: PJ fidelizado tem 5% desconto
-      valor_base - (valor_base * 0.05)
-    else
-      valor_base
-    end
-  end
-end
+    return frete.cliente_cnp_

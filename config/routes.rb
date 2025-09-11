@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 Rails.application.routes.draw do
   # ===============================================================
   # AUTENTICAÇÃO (Devise + ActiveAdmin)
@@ -119,8 +120,12 @@ Rails.application.routes.draw do
   # PAGAMENTOS GLOBAIS
   # ===============================================================
   resources :pagamentos, only: [:index, :show, :create] do
+    member do
+      post  :checkout   # -> checkout_pagamento_path(@pagamento)
+      patch :cancelar   # -> cancelar_pagamento_path(@pagamento)
+    end
+
     collection do
-      post :checkout
       get  :retorno
       post :webhook
       get  :ping
