@@ -11,14 +11,14 @@ gem "puma", "~> 6.6"                        # Servidor web
 gem "bootsnap", ">= 1.17", require: false   # Cache para acelerar boot da app
 gem "json", ">= 2.6"
 
-# Gemfile
+# Admin
 gem "activeadmin"
 
 # === Autenticação ============================================================
 gem "devise", "~> 4.9"                      # Clientes, Transportadores e Admins
 
 # === Integração Mercado Pago =================================================
-gem "mercadopago-sdk", "~> 2.3", require: "mercadopago"
+gem "mercadopago", "~> 0.20.1"
 
 # === Frontend / Hotwire + Tailwind ===========================================
 gem "turbo-rails", "~> 2.0"
