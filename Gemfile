@@ -18,7 +18,7 @@ gem "activeadmin"
 gem "devise", "~> 4.9"                      # Clientes, Transportadores e Admins
 
 # === Integração Mercado Pago =================================================
-gem "mercadopago", "~> 0.20.1"
+gem "mercadopago"
 
 # === Frontend / Hotwire + Tailwind ===========================================
 gem "turbo-rails", "~> 2.0"

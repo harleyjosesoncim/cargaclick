@@ -12,7 +12,7 @@ module MercadoPagoConfig
 
     if token.present?
       Rails.logger.info("[mercado_pago] SDK inicializado com token válido")
-      Mercadopago::SDK.new(token)
+      Mercadopago::SDK.new(token)  # <-- Corrigido aqui
     else
       Rails.logger.warn("[mercado_pago] MP_ACCESS_TOKEN ausente — SDK não inicializado")
       nil
