@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "mercadopago"
+
 module MercadoPagoConfig
   def self.sdk
     token =
@@ -11,8 +13,8 @@ module MercadoPagoConfig
       end
 
     if token.present?
-      Rails.logger.info("[mercado_pago] SDK inicializado com token válido")
-      Mercadopago::SDK.new(token)  # <-- Corrigido aqui
+      Rails.logger.info("[mercado_pago] SDK oficial inicializado com token válido")
+      Mercadopago::SDK.new(token) # <-- nome certo da constante
     else
       Rails.logger.warn("[mercado_pago] MP_ACCESS_TOKEN ausente — SDK não inicializado")
       nil
@@ -21,3 +23,6 @@ module MercadoPagoConfig
 end
 
 Rails.configuration.x.mercadopago_sdk = MercadoPagoConfig.sdk
+
+
+

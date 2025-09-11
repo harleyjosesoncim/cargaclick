@@ -17,10 +17,10 @@ gem "activeadmin"
 # === Autenticação ============================================================
 gem "devise", "~> 4.9"                      # Clientes, Transportadores e Admins
 
-# === Integração Mercado Pago =================================================
-gem "mercadopago"
+# === Integração Mercado Pago (SDK oficial) ==================================
+gem "mercadopago-sdk", "~> 2.3", require: "mercadopago"
 
-# === Frontend / Hotwire + Tailwind ===========================================
+# === Frontend / Hotwire + Tailwind ==========================================
 gem "turbo-rails", "~> 2.0"
 gem "tailwindcss-rails", "~> 4.1"
 gem "sprockets-rails", "~> 3.4"             # Suporte a assets legado
@@ -28,16 +28,16 @@ gem "sassc-rails", "~> 2.1"                 # Compilação SCSS
 gem "uglifier", ">= 4.2"                    # Minificação JS legado
 gem "sitemap_generator"
 
-# === Uploads / ActiveStorage =================================================
+# === Uploads / ActiveStorage ================================================
 gem "image_processing", "~> 1.2"
 
-# === Internacionalização =====================================================
+# === Internacionalização ====================================================
 gem "rails-i18n", "~> 7.0"
 
-# === Segurança ===============================================================
+# === Segurança ==============================================================
 gem "secure_headers", "~> 6.5"              # Cabeçalhos de segurança
 
-# === Produção ================================================================
+# === Produção ===============================================================
 group :production do
   gem "lograge", "~> 0.14"                  # Logs mais limpos
   gem "puma_worker_killer", "~> 0.3"        # Protege contra memory leaks
@@ -45,7 +45,7 @@ group :production do
   gem "rack-timeout", "~> 0.7"              # Timeout de requisições
 end
 
-# === Desenvolvimento & Teste =================================================
+# === Desenvolvimento & Teste ================================================
 group :development, :test do
   gem "dotenv-rails", "~> 3.1"              # Carrega variáveis do .env
   gem "debug", "~> 1.11"                    # Debugger
@@ -61,7 +61,7 @@ group :development, :test do
   gem "selenium-webdriver"                  # Navegador para testes
 end
 
-# === Desenvolvimento específico de SO =======================================
+# === Desenvolvimento específico de SO ======================================
 group :development do
   gem "rb-fsevent", "~> 0.11", require: false # macOS
   gem "rb-inotify", "~> 0.11", require: false # Linux
