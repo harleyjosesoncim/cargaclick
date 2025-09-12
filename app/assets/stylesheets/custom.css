@@ -1,4 +1,74 @@
-/* Estilos adicionais para cards premium */
-.card-hover {
-  @apply hover:scale-105 transition-all duration-300;
+/* ================================================================
+   ESTILOS CUSTOMIZADOS CARGACLICK
+   ================================================================
+   Este arquivo complementa o Tailwind com ajustes específicos
+   de tema (claro/escuro), componentes e interações.
+   ================================================================= */
+
+/* === BASE GERAL ================================================== */
+
+/* Tema claro padrão */
+body {
+  @apply bg-white text-gray-900;
+}
+
+/* Tema escuro ativado via .dark */
+.dark body {
+  @apply bg-gray-900 text-white;
+}
+
+/* === COMPONENTES ================================================= */
+
+/* Cartões no modo escuro */
+.dark .card {
+  @apply bg-gray-800 text-white border-gray-700;
+}
+
+/* Campos de formulário no modo escuro */
+.dark .form-input {
+  @apply bg-gray-800 text-white border-gray-600;
+}
+
+/* === INTERAÇÕES ================================================== */
+
+/* Botão/ícone de toggle do Dark Mode */
+#dark-toggle {
+  @apply hover:scale-110 transition-transform;
+}
+
+/* === BOTÕES PADRÃO (opcional) ==================================== */
+/* Use estas classes se quiser padronizar sem repetir Tailwind longo */
+
+/* Botão primário (ações principais: salvar, enviar, login) */
+.btn-primary {
+  @apply bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg transition;
+}
+
+/* Botão secundário (ações neutras: voltar, cancelar) */
+.btn-secondary {
+  @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium px-4 py-2 rounded-lg transition;
+}
+
+/* Botão de perigo (ações críticas: excluir, cancelar frete) */
+.btn-danger {
+  @apply bg-red-600 hover:bg-red-700 text-white font-medium px-4 py-2 rounded-lg transition;
+}
+
+/* === ALERTAS / FLASH MESSAGES ==================================== */
+/* Exemplo: <div class="alert-success">Cadastro realizado!</div> */
+
+.alert-success {
+  @apply bg-green-600 text-white px-4 py-2 rounded-lg shadow;
+}
+
+.alert-error {
+  @apply bg-red-600 text-white px-4 py-2 rounded-lg shadow;
+}
+
+.alert-warning {
+  @apply bg-yellow-500 text-black px-4 py-2 rounded-lg shadow;
+}
+
+.alert-info {
+  @apply bg-blue-600 text-white px-4 py-2 rounded-lg shadow;
 }

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_09_10_203001) do
+ActiveRecord::Schema[7.1].define(version: 2025_09_11_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -66,6 +66,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_10_203001) do
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
     t.string "campo"
+    t.integer "tipo", default: 0, null: false
     t.index ["cnpj"], name: "index_clientes_on_cnpj", unique: true, where: "(cnpj IS NOT NULL)"
     t.index ["confirmation_token"], name: "index_clientes_on_confirmation_token", unique: true
     t.index ["cpf"], name: "index_clientes_on_cpf", unique: true, where: "(cpf IS NOT NULL)"

@@ -1,17 +1,14 @@
-<div>
-  <%= form.label :telefone %>
-  <%= form.text_field :telefone %>
+<<div>
+  <%= form.label :telefone, "Telefone" %>
+  <%= form.text_field :telefone, class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm" %>
 </div>
-<div>
-  <%= form.label :endereco %>
-  <%= form.text_field :endereco %>
-</div>
-<div>
-  <%= form.label :cep %>
-  <%= form.text_field :cep %>
-  def cliente_params
-    params.require(:cliente).permit(:nome, :email, :telefone, :endereco, :cep)
-    pp/views/transportadores/new.html.erb
-  end
 
+<div>
+  <%= form.label :endereco, "Endereço" %>
+  <%= form.text_field :endereco, class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm" %>
+</div>
+
+<div>
+  <%= form.label :cep, "CEP" %>
+  <%= form.text_field :cep, class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm" %>
 </div>

@@ -1,44 +1,59 @@
-<nav class="bg-gradient-to-r from-blue-600 to-blue-800 shadow-lg mb-8 px-6 py-4 rounded-b-lg">
-  <div class="container mx-auto flex justify-between items-center">
+<!-- app/views/layouts/_navbar.html.erb -->
+<nav x-data="{ open: false }" class="bg-purple-800 p-4 shadow-lg">
+  <div class="container mx-auto flex items-center justify-between">
     <!-- Logo -->
-    <%= link_to root_path, class: "text-white text-2xl font-extrabold tracking-wider hover:text-blue-200 transition duration-300" do %>
-      CargaClick 🚛
+    <%= link_to root_path, class: "text-white text-2xl font-bold flex items-center hover:text-purple-200 transition" do %>
+      CargaClick <span class="ml-2 text-lg">🚚</span>
     <% end %>
 
-    <!-- Links -->
-    <ul class="flex flex-wrap space-x-6 font-semibold text-lg text-white">
-      <!-- Público -->
-      <li><%= nav_link_to "Início", root_path %></li>
+    <!-- Links Desktop -->
+    <ul class="hidden md:flex space-x-6 font-medium">
       <li><%= nav_link_to "Simular Frete", calcular_fretes_path %></li>
       <li><%= nav_link_to "Fidelidade", fidelidade_path %></li>
       <li><%= nav_link_to "Relatórios", relatorios_path %></li>
       <li><%= nav_link_to "Sobre", about_path %></li>
       <li><%= nav_link_to "Contato", contact_path %></li>
+    </ul>
 
-      <!-- Acesso Cliente -->
+    <!-- Botões Desktop -->
+    <ul class="hidden md:flex space-x-4 items-center">
       <% if defined?(current_cliente) && current_cliente.present? %>
-        <li><%= nav_link_to "Área do Cliente", cliente_path(current_cliente) %></li>
-        <li><%= chat_nav_link %></li>
+        <li><%= nav_link_to "Área do Cliente", cliente_path(current_cliente), extra_class: "bg-white text-purple-800 font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition" %></li>
       <% else %>
-        <li><%= nav_link_to "Login Cliente", new_cliente_session_path %></li>
+        <li><%= nav_link_to "Login Cliente", new_cliente_session_path, extra_class: "bg-white text-purple-800 font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition" %></li>
       <% end %>
 
-      <!-- Acesso Transportador -->
       <% if defined?(current_transportador) && current_transportador.present? %>
-        <li><%= nav_link_to "Área do Transportador", transportador_path(current_transportador) %></li>
+        <li><%= nav_link_to "Área do Transportador", transportador_path(current_transportador), extra_class: "bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-500 transition" %></li>
       <% else %>
-        <li><%= nav_link_to "Login Transportador", new_transportador_session_path %></li>
-      <% end %>
-
-      <!-- Pagamentos (link global, só se a rota existir) -->
-      <% if respond_to?(:pagamentos_path) %>
-        <li><%= pagamentos_nav_link %></li>
-      <% end %>
-
-      <!-- Admin (apenas se logado como admin_user) -->
-      <% if defined?(current_admin_user) && current_admin_user.present? %>
-        <li><%= admin_nav_link %></li>
+        <li><%= nav_link_to "Login Transportador", new_transportador_session_path, extra_class: "bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-500 transition" %></li>
       <% end %>
     </ul>
+
+    <!-- Botão mobile -->
+    <button @click="open = !open" class="md:hidden text-white text-3xl focus:outline-none">
+      ☰
+    </button>
+  </div>
+
+  <!-- Menu Mobile -->
+  <div x-show="open" class="md:hidden mt-4 space-y-3 font-semibold text-white flex flex-col px-4">
+    <%= nav_link_to "Simular Frete", calcular_fretes_path, extra_class: "block hover:text-purple-200" %>
+    <%= nav_link_to "Fidelidade", fidelidade_path, extra_class: "block hover:text-purple-200" %>
+    <%= nav_link_to "Relatórios", relatorios_path, extra_class: "block hover:text-purple-200" %>
+    <%= nav_link_to "Sobre", about_path, extra_class: "block hover:text-purple-200" %>
+    <%= nav_link_to "Contato", contact_path, extra_class: "block hover:text-purple-200" %>
+
+    <% if defined?(current_cliente) && current_cliente.present? %>
+      <%= nav_link_to "Área do Cliente", cliente_path(current_cliente), extra_class: "block bg-white text-purple-800 py-2 px-4 rounded-lg" %>
+    <% else %>
+      <%= nav_link_to "Login Cliente", new_cliente_session_path, extra_class: "block bg-white text-purple-800 py-2 px-4 rounded-lg" %>
+    <% end %>
+
+    <% if defined?(current_transportador) && current_transportador.present? %>
+      <%= nav_link_to "Área do Transportador", transportador_path(current_transportador), extra_class: "block bg-purple-600 text-white py-2 px-4 rounded-lg" %>
+    <% else %>
+      <%= nav_link_to "Login Transportador", new_transportador_session_path, extra_class: "block bg-purple-600 text-white py-2 px-4 rounded-lg" %>
+    <% end %>
   </div>
 </nav>

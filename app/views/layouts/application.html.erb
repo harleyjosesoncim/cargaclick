@@ -16,9 +16,20 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <!-- Estilos e scripts -->
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <!-- Estilos -->
+    <%# Primeiro tenta carregar o compilado do Tailwind (tailwind.css).
+        Se no futuro gerar application.css, também estará pronto. %>
+    <% if Rails.application.assets_manifest.assets["tailwind.css"].present? %>
+      <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <% else %>
+      <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <% end %>
+
+    <!-- Scripts -->
     <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+
+    <!-- Alpine.js (necessário para navbar e interações dinâmicas) -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
   </head>
 
   <body class="bg-gray-100 dark:bg-gray-900 min-h-screen font-sans antialiased flex flex-col">
@@ -39,4 +50,3 @@
 
   </body>
 </html>
-

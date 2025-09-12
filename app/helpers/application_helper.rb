@@ -1,14 +1,11 @@
-# app/helpers/application_helper.rb
 module ApplicationHelper
   # === VALORES SEGUROS ============================================
-  # Exibe string sanitizada ou placeholder
   def safe_val(value, placeholder: "—")
     s = value.to_s.strip
     s.present? ? sanitize(s) : placeholder
   end
 
   # === PAGINAÇÃO SIMPLES =========================================
-  # Usa hash @pager vindo do controller (ou Kaminari/WillPaginate)
   def simple_pagination(base_params, pager)
     return "".html_safe if pager.blank?
 
@@ -56,36 +53,35 @@ module ApplicationHelper
   end
 
   # === NAVBAR LINKS ==============================================
-  # Marca link ativo na navbar
   def active_link_class(path, active_class: "border-b-2 border-yellow-300 pb-1", inactive_class: "")
     current_page?(path) ? active_class : inactive_class
   end
 
-  # Helper central para links da navbar
-  def nav_link_to(name, path)
+  def nav_link_to(name, path, extra_class: "")
     link_to name, path,
-      class: "text-white hover:text-blue-200 transition duration-300 #{active_link_class(path)}",
+      class: "text-white hover:text-blue-200 transition duration-300 #{active_link_class(path)} #{extra_class}",
       aria: { current: current_page?(path) ? "page" : nil }
   end
 
-  # Exibe botão Admin apenas para admin logado
-  def admin_nav_link
-    return unless defined?(current_admin_user) && current_admin_user.present?
-    nav_link_to "Admin", admin_root_path
+  # === LINKS CONDICIONAIS ========================================
+  def conditional_nav_link(name, path, condition)
+    return unless condition
+    nav_link_to(name, path)
   end
 
-  # === ACESSOS ESPECIAIS (NOVOS) =================================
+  def admin_nav_link
+    conditional_nav_link("Administração", admin_root_path, defined?(current_admin_user) && current_admin_user.present?)
+  end
+
   def chat_nav_link
-    return unless defined?(current_cliente) && current_cliente.present?
-    nav_link_to "Chat", chats_path
+    conditional_nav_link("Chat", chats_path, defined?(current_cliente) && current_cliente.present?)
   end
 
   def pagamentos_nav_link
-    nav_link_to "Pagamentos", pagamentos_path if defined?(pagamentos_path)
+    conditional_nav_link("Pagamentos", pagamentos_path, respond_to?(:pagamentos_path))
   end
 
   def fidelidade_nav_link
-    nav_link_to "Fidelidade", fidelidade_path if defined?(fidelidade_path)
+    conditional_nav_link("Fidelidade", fidelidade_path, respond_to?(:fidelidade_path))
   end
 end
-# === FIM ========================================================
