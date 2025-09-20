@@ -1,0 +1,37 @@
+<%= form_with model: @transportador, local: true do |form| %>
+  <div>
+    <%= form.label :nome %>
+    <%= form.text_field :nome %>
+  </div>
+  <div>
+    <%= form.label :cpf %>
+    <%= form.text_field :cpf %>
+  </div>
+  <div>
+    <%= form.label :telefone %>
+    <%= form.text_field :telefone %>
+  </div>
+  <div>
+    <%= form.label :endereco %>
+    <%= form.text_field :endereco %>
+  </div>
+  <div>
+    <%= form.label :cep %>
+    <%= form.text_field :cep %>
+  </div>
+  <div>
+    <%= form.label :tipo_veiculo %>
+    <%= form.text_field :tipo_veiculo %>
+  </div>
+  <div>
+    <%= form.label :carga_maxima %>
+    <%= form.text_field :carga_maxima %>
+  </div>
+  <div>
+    <%= form.label :valor_km %>
+    <%= form.text_field :valor_km %>
+  </div>
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

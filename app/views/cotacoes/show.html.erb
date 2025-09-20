@@ -1,0 +1,77 @@
+<h2 class="text-2xl font-bold mb-4">📄 Detalhes da Cotação</h2>
+
+<div class="bg-white shadow-md rounded-lg p-6 space-y-6">
+  <!-- Transportador -->
+  <div>
+    <h3 class="text-lg font-semibold text-gray-700">Transportador</h3>
+    <p class="text-gray-800">
+      <%= @cotacao.transportador&.nome || "Não informado" %>
+      <% if @cotacao.transportador&.cpf.present? %>
+        (CPF: <%= @cotacao.transportador.cpf %>)
+      <% end %>
+    </p>
+  </div>
+
+  <!-- Frete associado -->
+  <div>
+    <h3 class="text-lg font-semibold text-gray-700">Frete</h3>
+    <p class="text-gray-800">
+      Origem: <%= @cotacao.frete.cep_origem %> →
+      Destino: <%= @cotacao.frete.cep_destino %>
+    </p>
+    <p class="text-gray-600">Status do frete: <%= @cotacao.frete.status.humanize %></p>
+  </div>
+
+  <!-- Valores -->
+  <div>
+    <h3 class="text-lg font-semibold text-gray-700">Valores</h3>
+    <ul class="space-y-1">
+      <li>Valor da Cotação:
+        <span class="font-medium text-blue-600">
+          <%= number_to_currency(@cotacao.valor, unit: "R$") %>
+        </span>
+      </li>
+      <li>Comissão da CargaClick:
+        <span class="font-medium text-red-600">
+          <%= number_to_currency(@cotacao.comissao, unit: "R$") %>
+        </span>
+      </li>
+      <li>Valor Líquido ao Transportador:
+        <span class="font-medium text-green-600">
+          <%= number_to_currency(@cotacao.valor_liquido, unit: "R$") %>
+        </span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Status -->
+  <div>
+    <h3 class="text-lg font-semibold text-gray-700">Status da Cotação</h3>
+    <% case @cotacao.status %>
+      <% when "pendente" %>
+        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded">Pendente</span>
+      <% when "aprovado" %>
+        <span class="px-3 py-1 bg-green-100 text-green-800 rounded">Aprovado</span>
+      <% when "rejeitado" %>
+        <span class="px-3 py-1 bg-red-100 text-red-800 rounded">Rejeitado</span>
+      <% else %>
+        <span class="px-3 py-1 bg-gray-200 text-gray-700 rounded">Indefinido</span>
+    <% end %>
+  </div>
+</div>
+
+<!-- Botões de ação -->
+<div class="mt-6 flex space-x-3">
+  <%= link_to "Editar",
+              edit_frete_cotacao_path(@cotacao.frete, @cotacao),
+              class: "px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600" %>
+
+  <%= link_to "Voltar para Cotações",
+              frete_cotacoes_path(@cotacao.frete),
+              class: "px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600" %>
+
+  <%= link_to "Excluir",
+              frete_cotacao_path(@cotacao.frete, @cotacao),
+              data: { turbo_method: :delete, turbo_confirm: "Deseja realmente excluir esta cotação?" },
+              class: "px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700" %>
+</div>

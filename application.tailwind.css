@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+/* === Estilos base globais === */
+body {
+  @apply bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100;
+}
+
+h1, h2, h3, h4 {
+  @apply font-bold text-gray-800 dark:text-gray-200;
+}
+
+/* === Botões === */
+.btn {
+  @apply inline-block px-4 py-2 rounded-lg font-semibold transition duration-200;
+}
+
+.btn-blue   { @apply bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-400; }
+.btn-green  { @apply bg-green-600 text-white hover:bg-green-700 focus:ring-2 focus:ring-green-400; }
+.btn-yellow { @apply bg-yellow-500 text-white hover:bg-yellow-600 focus:ring-2 focus:ring-yellow-300; }
+.btn-red    { @apply bg-red-600 text-white hover:bg-red-700 focus:ring-2 focus:ring-red-400; }
+.btn-purple { @apply bg-purple-600 text-white hover:bg-purple-700 focus:ring-2 focus:ring-purple-400; }
+.btn-indigo { @apply bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-400; }
+
+/* === Cards === */
+.card {
+  @apply bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 text-center transition transform hover:scale-105 hover:shadow-2xl duration-300;
+}
+.card-title {
+  @apply text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2;
+}
+
+/* === Formulários === */
+.form-input {
+  @apply bg-gray-50 dark:bg-gray-700 dark:text-gray-200 border rounded-lg px-3 py-2 w-full;
+}

@@ -1,0 +1,11 @@
+<h1 class="text-xl font-bold mb-4">Ganhos</h1>
+
+<p>Total de ganhos com fretes concluídos: <strong><%= number_to_currency(@total_ganhos, unit: "R$") %></strong></p>
+
+<ul class="mt-4 space-y-2">
+  <% @fretes_concluidos.each do |frete| %>
+    <li class="border p-2 rounded bg-gray-100">
+      Frete #<%= frete.id %> — <%= number_to_currency(frete.valor_total, unit: "R$") %>
+    </li>
+  <% end %>
+</ul>

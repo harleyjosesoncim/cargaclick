@@ -1,0 +1,25 @@
+<tr id="<%= dom_id(cotacao) %>" class="border-b hover:bg-gray-50">
+  <td class="px-4 py-2 text-sm text-gray-800"><%= cotacao.transportador.nome %></td>
+  <td class="px-4 py-2 text-sm font-medium text-blue-600"><%= number_to_currency(cotacao.valor, unit: "R$") %></td>
+  <td class="px-4 py-2 text-sm text-red-600"><%= number_to_currency(cotacao.comissao, unit: "R$") %></td>
+  <td class="px-4 py-2 text-sm text-green-600"><%= number_to_currency(cotacao.valor_liquido, unit: "R$") %></td>
+  <td class="px-4 py-2 text-sm">
+    <% case cotacao.status %>
+    <% when "pendente" %>
+      <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded">Pendente</span>
+    <% when "aprovado" %>
+      <span class="px-2 py-1 bg-green-100 text-green-800 rounded">Aprovado</span>
+    <% when "rejeitado" %>
+      <span class="px-2 py-1 bg-red-100 text-red-800 rounded">Rejeitado</span>
+    <% end %>
+  </td>
+  <td class="px-4 py-2 text-center">
+    <%= link_to "Ver", cotacao_path(cotacao),
+                class: "text-blue-600 hover:text-blue-800 font-medium" %> |
+    <%= link_to "Editar", edit_cotacao_path(cotacao),
+                class: "text-yellow-600 hover:text-yellow-800 font-medium" %> |
+    <%= link_to "Excluir", cotacao_path(cotacao),
+                data: { turbo_method: :delete, turbo_confirm: "Deseja excluir esta cotação?" },
+                class: "text-red-600 hover:text-red-800 font-medium" %>
+  </td>
+</tr>

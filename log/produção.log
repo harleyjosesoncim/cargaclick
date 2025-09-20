@@ -1,0 +1,13 @@
+[mercado_pago] SDK desativado (gem ausente) – env=produção
+  [1m[35m (0.4ms)[0m  [1m[34mSELECT pg_try_advisory_lock(8048330769140679465)[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.7ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::InternalMetadata Load (1.0ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[36mActiveRecord::InternalMetadata Update (3.5ms)[0m  [1m[33mUPDATE "ar_internal_metadata" SET "value" = 'produção', "updated_at" = '2025-08-31 03:55:48.143887' WHERE "ar_internal_metadata"."key" = 'environment'[0m
+Migrating to CreateCotacoes (20250824225713)
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (8.3ms)[0m  [1m[35mCREATE TABLE "cotacoes" ("id" bigserial primary key, "cliente_id" bigint NOT NULL, "origem" character varying, "destino" character varying, "peso" decimal, "volume" decimal, "status" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT "fk_rails_fa6bc8c9ee"
+FOREIGN KEY ("cliente_id")
+  REFERENCES "clientes" ("id")
+)[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mROLLBACK[0m
+  [1m[35m (0.5ms)[0m  [1m[34mSELECT pg_advisory_unlock(8048330769140679465)[0m

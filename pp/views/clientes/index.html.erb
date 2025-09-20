@@ -1,0 +1,6 @@
+<!-- app/views/clientes/index.html.erb -->
+<h1>Clientes</h1>
+<% (@clientes || []).each do |c| %>
+  <div><%= (c.respond_to?(:nome) ? c.nome : c.id) %></div>
+<% end %>
+<p>OK view clientes#index</p>

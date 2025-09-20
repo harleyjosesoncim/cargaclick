@@ -1,0 +1,489 @@
+# Logfile created on 2025-08-17 22:33:18 -0300 by logger.rb/v1.7.0
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : Starting the New Relic agent version 9.20.0 in "production" environment.
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : To prevent agent startup add a NEW_RELIC_AGENT_ENABLED=false environment variable or modify the "production" section of your newrelic.yml.
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] WARN : No configuration file found. Working directory = /home/harley/projects/Cargaclick
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] WARN : Looked in these locations (based on defaults): /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/.newrelic/newrelic.yml, /home/harley/newrelic.yml, /home/harley/.newrelic/newrelic.yml.erb, /home/harley/newrelic.yml.erb
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : Environment: production
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : No known dispatcher detected.
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : Application: production
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] WARN : No license key found. This often means your newrelic.yml file was not found, or it lacks a section for the running environment, 'production'. You may also want to try linting your newrelic.yml to ensure it is valid YML.
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : Installing ActionMailbox instrumentation
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : Installing ActionMailer instrumentation
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : Installing base ActiveJob instrumentation
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : Installing notifications based ActiveJob instrumentation
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : Installing notifications based Active Record instrumentation
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : Installing ActiveStorage instrumentation
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : Installing ActiveSupport instrumentation
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : Installing New Relic supported ActiveSupportBroadcastLogger instrumentation using Prepend
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : Installing New Relic supported ConcurrentRuby instrumentation using Prepend
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : Installing New Relic supported MonitoredFiber instrumentation using Prepend
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : Installing New Relic supported Logger instrumentation using Prepend
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : Installing Net:HTTP Wrappers
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : Installing New Relic supported NetHTTP instrumentation using Prepend
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : Installing New Relic supported Rack instrumentation using Prepend
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : Installing New Relic supported URLMap instrumentation using Prepend
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : Installing Rails 3+ middleware instrumentation
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : Installing New Relic supported MonitoredThread instrumentation using Prepend
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : Installing notifications based Action Cable instrumentation
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : Installing notifications based Action Controller instrumentation
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : Installing notification based Action View instrumentation
+[2025-08-17 22:33:18 -0300 DESKTOP-1K9J1HI (62740)] INFO : Finished instrumentation
+[2025-08-18 14:53:20 -0300 DESKTOP-1K9J1HI (11968)] INFO : Starting the New Relic agent version 9.20.0 in "production" environment.
+[2025-08-18 14:53:20 -0300 DESKTOP-1K9J1HI (11968)] INFO : To prevent agent startup add a NEW_RELIC_AGENT_ENABLED=false environment variable or modify the "production" section of your newrelic.yml.
+[2025-08-18 14:53:20 -0300 DESKTOP-1K9J1HI (11968)] WARN : No configuration file found. Working directory = /home/harley/projects/Cargaclick
+[2025-08-18 14:53:20 -0300 DESKTOP-1K9J1HI (11968)] WARN : Looked in these locations (based on defaults): /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/.newrelic/newrelic.yml, /home/harley/newrelic.yml, /home/harley/.newrelic/newrelic.yml.erb, /home/harley/newrelic.yml.erb
+[2025-08-18 14:53:20 -0300 DESKTOP-1K9J1HI (11968)] INFO : Environment: production
+[2025-08-18 14:53:20 -0300 DESKTOP-1K9J1HI (11968)] INFO : No known dispatcher detected.
+[2025-08-18 14:53:20 -0300 DESKTOP-1K9J1HI (11968)] INFO : Application: production
+[2025-08-18 14:53:20 -0300 DESKTOP-1K9J1HI (11968)] WARN : No license key found. This often means your newrelic.yml file was not found, or it lacks a section for the running environment, 'production'. You may also want to try linting your newrelic.yml to ensure it is valid YML.
+[2025-08-18 14:53:21 -0300 DESKTOP-1K9J1HI (11968)] INFO : Installing ActionMailbox instrumentation
+[2025-08-18 14:53:21 -0300 DESKTOP-1K9J1HI (11968)] INFO : Installing ActionMailer instrumentation
+[2025-08-18 14:53:21 -0300 DESKTOP-1K9J1HI (11968)] INFO : Installing base ActiveJob instrumentation
+[2025-08-18 14:53:21 -0300 DESKTOP-1K9J1HI (11968)] INFO : Installing notifications based ActiveJob instrumentation
+[2025-08-18 14:53:21 -0300 DESKTOP-1K9J1HI (11968)] INFO : Installing notifications based Active Record instrumentation
+[2025-08-18 14:53:21 -0300 DESKTOP-1K9J1HI (11968)] INFO : Installing ActiveStorage instrumentation
+[2025-08-18 14:53:21 -0300 DESKTOP-1K9J1HI (11968)] INFO : Installing ActiveSupport instrumentation
+[2025-08-18 14:53:21 -0300 DESKTOP-1K9J1HI (11968)] INFO : Installing New Relic supported ActiveSupportBroadcastLogger instrumentation using Prepend
+[2025-08-18 14:53:21 -0300 DESKTOP-1K9J1HI (11968)] INFO : Installing New Relic supported ConcurrentRuby instrumentation using Prepend
+[2025-08-18 14:53:21 -0300 DESKTOP-1K9J1HI (11968)] INFO : Installing New Relic supported MonitoredFiber instrumentation using Prepend
+[2025-08-18 14:53:21 -0300 DESKTOP-1K9J1HI (11968)] INFO : Installing New Relic supported Logger instrumentation using Prepend
+[2025-08-18 14:53:21 -0300 DESKTOP-1K9J1HI (11968)] INFO : Installing Net:HTTP Wrappers
+[2025-08-18 14:53:21 -0300 DESKTOP-1K9J1HI (11968)] INFO : Installing New Relic supported NetHTTP instrumentation using Prepend
+[2025-08-18 14:53:21 -0300 DESKTOP-1K9J1HI (11968)] INFO : Installing New Relic supported Rack instrumentation using Prepend
+[2025-08-18 14:53:21 -0300 DESKTOP-1K9J1HI (11968)] INFO : Installing New Relic supported URLMap instrumentation using Prepend
+[2025-08-18 14:53:21 -0300 DESKTOP-1K9J1HI (11968)] INFO : Installing Rails 3+ middleware instrumentation
+[2025-08-18 14:53:21 -0300 DESKTOP-1K9J1HI (11968)] INFO : Installing New Relic supported MonitoredThread instrumentation using Prepend
+[2025-08-18 14:53:21 -0300 DESKTOP-1K9J1HI (11968)] INFO : Installing notifications based Action Cable instrumentation
+[2025-08-18 14:53:21 -0300 DESKTOP-1K9J1HI (11968)] INFO : Installing notifications based Action Controller instrumentation
+[2025-08-18 14:53:21 -0300 DESKTOP-1K9J1HI (11968)] INFO : Installing notification based Action View instrumentation
+[2025-08-18 14:53:21 -0300 DESKTOP-1K9J1HI (11968)] INFO : Finished instrumentation
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : Starting the New Relic agent version 9.20.0 in "production" environment.
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : To prevent agent startup add a NEW_RELIC_AGENT_ENABLED=false environment variable or modify the "production" section of your newrelic.yml.
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] WARN : No configuration file found. Working directory = /home/harley/projects/Cargaclick
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] WARN : Looked in these locations (based on defaults): /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/.newrelic/newrelic.yml, /home/harley/newrelic.yml, /home/harley/.newrelic/newrelic.yml.erb, /home/harley/newrelic.yml.erb
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : Environment: production
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : No known dispatcher detected.
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : Application: production
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] WARN : No license key found. This often means your newrelic.yml file was not found, or it lacks a section for the running environment, 'production'. You may also want to try linting your newrelic.yml to ensure it is valid YML.
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : Installing ActionMailbox instrumentation
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : Installing ActionMailer instrumentation
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : Installing base ActiveJob instrumentation
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : Installing notifications based ActiveJob instrumentation
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : Installing notifications based Active Record instrumentation
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : Installing ActiveStorage instrumentation
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : Installing ActiveSupport instrumentation
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : Installing New Relic supported ActiveSupportBroadcastLogger instrumentation using Prepend
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : Installing New Relic supported ConcurrentRuby instrumentation using Prepend
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : Installing New Relic supported MonitoredFiber instrumentation using Prepend
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : Installing New Relic supported Logger instrumentation using Prepend
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : Installing Net:HTTP Wrappers
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : Installing New Relic supported NetHTTP instrumentation using Prepend
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : Installing New Relic supported Rack instrumentation using Prepend
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : Installing New Relic supported URLMap instrumentation using Prepend
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : Installing Rails 3+ middleware instrumentation
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : Installing New Relic supported MonitoredThread instrumentation using Prepend
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : Installing notifications based Action Cable instrumentation
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : Installing notifications based Action Controller instrumentation
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : Installing notification based Action View instrumentation
+[2025-08-18 14:55:21 -0300 DESKTOP-1K9J1HI (12024)] INFO : Finished instrumentation
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : Starting the New Relic agent version 9.20.0 in "production" environment.
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : To prevent agent startup add a NEW_RELIC_AGENT_ENABLED=false environment variable or modify the "production" section of your newrelic.yml.
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] WARN : No configuration file found. Working directory = /home/harley/projects/Cargaclick
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] WARN : Looked in these locations (based on defaults): /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/.newrelic/newrelic.yml, /home/harley/newrelic.yml, /home/harley/.newrelic/newrelic.yml.erb, /home/harley/newrelic.yml.erb
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : Environment: production
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : No known dispatcher detected.
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : Application: production
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] WARN : No license key found. This often means your newrelic.yml file was not found, or it lacks a section for the running environment, 'production'. You may also want to try linting your newrelic.yml to ensure it is valid YML.
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : Installing ActionMailbox instrumentation
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : Installing ActionMailer instrumentation
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : Installing base ActiveJob instrumentation
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : Installing notifications based ActiveJob instrumentation
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : Installing notifications based Active Record instrumentation
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : Installing ActiveStorage instrumentation
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : Installing ActiveSupport instrumentation
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : Installing New Relic supported ActiveSupportBroadcastLogger instrumentation using Prepend
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : Installing New Relic supported ConcurrentRuby instrumentation using Prepend
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : Installing New Relic supported MonitoredFiber instrumentation using Prepend
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : Installing New Relic supported Logger instrumentation using Prepend
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : Installing Net:HTTP Wrappers
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : Installing New Relic supported NetHTTP instrumentation using Prepend
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : Installing New Relic supported Rack instrumentation using Prepend
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : Installing New Relic supported URLMap instrumentation using Prepend
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : Installing Rails 3+ middleware instrumentation
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : Installing New Relic supported MonitoredThread instrumentation using Prepend
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : Installing notifications based Action Cable instrumentation
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : Installing notifications based Action Controller instrumentation
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : Installing notification based Action View instrumentation
+[2025-08-18 15:04:50 -0300 DESKTOP-1K9J1HI (13695)] INFO : Finished instrumentation
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : Starting the New Relic agent version 9.20.0 in "production" environment.
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : To prevent agent startup add a NEW_RELIC_AGENT_ENABLED=false environment variable or modify the "production" section of your newrelic.yml.
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] WARN : No configuration file found. Working directory = /home/harley/projects/Cargaclick
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] WARN : Looked in these locations (based on defaults): /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/.newrelic/newrelic.yml, /home/harley/newrelic.yml, /home/harley/.newrelic/newrelic.yml.erb, /home/harley/newrelic.yml.erb
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : Environment: production
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : No known dispatcher detected.
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : Application: production
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] WARN : No license key found. This often means your newrelic.yml file was not found, or it lacks a section for the running environment, 'production'. You may also want to try linting your newrelic.yml to ensure it is valid YML.
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : Installing ActionMailbox instrumentation
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : Installing ActionMailer instrumentation
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : Installing base ActiveJob instrumentation
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : Installing notifications based ActiveJob instrumentation
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : Installing notifications based Active Record instrumentation
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : Installing ActiveStorage instrumentation
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : Installing ActiveSupport instrumentation
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : Installing New Relic supported ActiveSupportBroadcastLogger instrumentation using Prepend
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : Installing New Relic supported ConcurrentRuby instrumentation using Prepend
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : Installing New Relic supported MonitoredFiber instrumentation using Prepend
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : Installing New Relic supported Logger instrumentation using Prepend
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : Installing Net:HTTP Wrappers
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : Installing New Relic supported NetHTTP instrumentation using Prepend
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : Installing New Relic supported Rack instrumentation using Prepend
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : Installing New Relic supported URLMap instrumentation using Prepend
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : Installing Rails 3+ middleware instrumentation
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : Installing New Relic supported MonitoredThread instrumentation using Prepend
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : Installing notifications based Action Cable instrumentation
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : Installing notifications based Action Controller instrumentation
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : Installing notification based Action View instrumentation
+[2025-08-18 15:07:51 -0300 DESKTOP-1K9J1HI (13709)] INFO : Finished instrumentation
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : Starting the New Relic agent version 9.20.0 in "production" environment.
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : To prevent agent startup add a NEW_RELIC_AGENT_ENABLED=false environment variable or modify the "production" section of your newrelic.yml.
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] WARN : No configuration file found. Working directory = /home/harley/projects/Cargaclick
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] WARN : Looked in these locations (based on defaults): /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/.newrelic/newrelic.yml, /home/harley/newrelic.yml, /home/harley/.newrelic/newrelic.yml.erb, /home/harley/newrelic.yml.erb
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : Environment: production
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : No known dispatcher detected.
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : Application: production
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] WARN : No license key found. This often means your newrelic.yml file was not found, or it lacks a section for the running environment, 'production'. You may also want to try linting your newrelic.yml to ensure it is valid YML.
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : Installing ActionMailbox instrumentation
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : Installing ActionMailer instrumentation
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : Installing base ActiveJob instrumentation
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : Installing notifications based ActiveJob instrumentation
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : Installing notifications based Active Record instrumentation
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : Installing ActiveStorage instrumentation
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : Installing ActiveSupport instrumentation
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : Installing New Relic supported ActiveSupportBroadcastLogger instrumentation using Prepend
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : Installing New Relic supported ConcurrentRuby instrumentation using Prepend
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : Installing New Relic supported MonitoredFiber instrumentation using Prepend
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : Installing New Relic supported Logger instrumentation using Prepend
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : Installing Net:HTTP Wrappers
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : Installing New Relic supported NetHTTP instrumentation using Prepend
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : Installing New Relic supported Rack instrumentation using Prepend
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : Installing New Relic supported URLMap instrumentation using Prepend
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : Installing Rails 3+ middleware instrumentation
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : Installing New Relic supported MonitoredThread instrumentation using Prepend
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : Installing notifications based Action Cable instrumentation
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : Installing notifications based Action Controller instrumentation
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : Installing notification based Action View instrumentation
+[2025-08-18 15:12:05 -0300 DESKTOP-1K9J1HI (15124)] INFO : Finished instrumentation
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : Starting the New Relic agent version 9.20.0 in "production" environment.
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : To prevent agent startup add a NEW_RELIC_AGENT_ENABLED=false environment variable or modify the "production" section of your newrelic.yml.
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] WARN : No configuration file found. Working directory = /home/harley/projects/Cargaclick
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] WARN : Looked in these locations (based on defaults): /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/.newrelic/newrelic.yml, /home/harley/newrelic.yml, /home/harley/.newrelic/newrelic.yml.erb, /home/harley/newrelic.yml.erb
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : Environment: production
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : No known dispatcher detected.
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : Application: production
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] WARN : No license key found. This often means your newrelic.yml file was not found, or it lacks a section for the running environment, 'production'. You may also want to try linting your newrelic.yml to ensure it is valid YML.
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : Installing ActionMailbox instrumentation
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : Installing ActionMailer instrumentation
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : Installing base ActiveJob instrumentation
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : Installing notifications based ActiveJob instrumentation
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : Installing notifications based Active Record instrumentation
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : Installing ActiveStorage instrumentation
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : Installing ActiveSupport instrumentation
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : Installing New Relic supported ActiveSupportBroadcastLogger instrumentation using Prepend
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : Installing New Relic supported ConcurrentRuby instrumentation using Prepend
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : Installing New Relic supported MonitoredFiber instrumentation using Prepend
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : Installing New Relic supported Logger instrumentation using Prepend
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : Installing Net:HTTP Wrappers
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : Installing New Relic supported NetHTTP instrumentation using Prepend
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : Installing New Relic supported Rack instrumentation using Prepend
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : Installing New Relic supported URLMap instrumentation using Prepend
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : Installing Rails 3+ middleware instrumentation
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : Installing New Relic supported MonitoredThread instrumentation using Prepend
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : Installing notifications based Action Cable instrumentation
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : Installing notifications based Action Controller instrumentation
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : Installing notification based Action View instrumentation
+[2025-08-18 15:20:29 -0300 DESKTOP-1K9J1HI (18760)] INFO : Finished instrumentation
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : Starting the New Relic agent version 9.20.0 in "production" environment.
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : To prevent agent startup add a NEW_RELIC_AGENT_ENABLED=false environment variable or modify the "production" section of your newrelic.yml.
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] WARN : No configuration file found. Working directory = /home/harley/projects/Cargaclick
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] WARN : Looked in these locations (based on defaults): /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/.newrelic/newrelic.yml, /home/harley/newrelic.yml, /home/harley/.newrelic/newrelic.yml.erb, /home/harley/newrelic.yml.erb
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : Environment: production
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : No known dispatcher detected.
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : Application: production
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] WARN : No license key found. This often means your newrelic.yml file was not found, or it lacks a section for the running environment, 'production'. You may also want to try linting your newrelic.yml to ensure it is valid YML.
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : Installing ActionMailbox instrumentation
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : Installing ActionMailer instrumentation
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : Installing base ActiveJob instrumentation
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : Installing notifications based ActiveJob instrumentation
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : Installing notifications based Active Record instrumentation
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : Installing ActiveStorage instrumentation
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : Installing ActiveSupport instrumentation
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : Installing New Relic supported ActiveSupportBroadcastLogger instrumentation using Prepend
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : Installing New Relic supported ConcurrentRuby instrumentation using Prepend
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : Installing New Relic supported MonitoredFiber instrumentation using Prepend
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : Installing New Relic supported Logger instrumentation using Prepend
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : Installing Net:HTTP Wrappers
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : Installing New Relic supported NetHTTP instrumentation using Prepend
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : Installing New Relic supported Rack instrumentation using Prepend
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : Installing New Relic supported URLMap instrumentation using Prepend
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : Installing Rails 3+ middleware instrumentation
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : Installing New Relic supported MonitoredThread instrumentation using Prepend
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : Installing notifications based Action Cable instrumentation
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : Installing notifications based Action Controller instrumentation
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : Installing notification based Action View instrumentation
+[2025-08-18 15:21:05 -0300 DESKTOP-1K9J1HI (18776)] INFO : Finished instrumentation
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : Starting the New Relic agent version 9.20.0 in "production" environment.
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : To prevent agent startup add a NEW_RELIC_AGENT_ENABLED=false environment variable or modify the "production" section of your newrelic.yml.
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] WARN : No configuration file found. Working directory = /home/harley/projects/Cargaclick
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] WARN : Looked in these locations (based on defaults): /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/.newrelic/newrelic.yml, /home/harley/newrelic.yml, /home/harley/.newrelic/newrelic.yml.erb, /home/harley/newrelic.yml.erb
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : Environment: production
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : No known dispatcher detected.
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : Application: production
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] WARN : No license key found. This often means your newrelic.yml file was not found, or it lacks a section for the running environment, 'production'. You may also want to try linting your newrelic.yml to ensure it is valid YML.
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : Installing ActionMailbox instrumentation
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : Installing ActionMailer instrumentation
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : Installing base ActiveJob instrumentation
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : Installing notifications based ActiveJob instrumentation
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : Installing notifications based Active Record instrumentation
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : Installing ActiveStorage instrumentation
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : Installing ActiveSupport instrumentation
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : Installing New Relic supported ActiveSupportBroadcastLogger instrumentation using Prepend
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : Installing New Relic supported ConcurrentRuby instrumentation using Prepend
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : Installing New Relic supported MonitoredFiber instrumentation using Prepend
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : Installing New Relic supported Logger instrumentation using Prepend
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : Installing Net:HTTP Wrappers
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : Installing New Relic supported NetHTTP instrumentation using Prepend
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : Installing New Relic supported Rack instrumentation using Prepend
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : Installing New Relic supported URLMap instrumentation using Prepend
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : Installing Rails 3+ middleware instrumentation
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : Installing New Relic supported MonitoredThread instrumentation using Prepend
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : Installing notifications based Action Cable instrumentation
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : Installing notifications based Action Controller instrumentation
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : Installing notification based Action View instrumentation
+[2025-08-18 15:53:04 -0300 DESKTOP-1K9J1HI (28612)] INFO : Finished instrumentation
+[2025-08-18 15:53:05 -0300 DESKTOP-1K9J1HI (28612)] INFO : Doing deferred dependency-detection before Rack startup
+[2025-08-18 15:53:05 -0300 DESKTOP-1K9J1HI (28612)] INFO : New Relic Security is completely disabled by one of the user-provided configurations: `security.agent.enabled` or `high_security`. Not loading security capabilities.
+[2025-08-18 15:53:05 -0300 DESKTOP-1K9J1HI (28612)] INFO : high_security = false
+[2025-08-18 15:53:05 -0300 DESKTOP-1K9J1HI (28612)] INFO : security.agent.enabled = false
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : Starting the New Relic agent version 9.20.0 in "production" environment.
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : To prevent agent startup add a NEW_RELIC_AGENT_ENABLED=false environment variable or modify the "production" section of your newrelic.yml.
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] WARN : No configuration file found. Working directory = /home/harley/projects/Cargaclick
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] WARN : Looked in these locations (based on defaults): /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/.newrelic/newrelic.yml, /home/harley/newrelic.yml, /home/harley/.newrelic/newrelic.yml.erb, /home/harley/newrelic.yml.erb
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : Environment: production
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : No known dispatcher detected.
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : Application: production
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] WARN : No license key found. This often means your newrelic.yml file was not found, or it lacks a section for the running environment, 'production'. You may also want to try linting your newrelic.yml to ensure it is valid YML.
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : Installing ActionMailbox instrumentation
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : Installing ActionMailer instrumentation
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : Installing base ActiveJob instrumentation
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : Installing notifications based ActiveJob instrumentation
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : Installing notifications based Active Record instrumentation
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : Installing ActiveStorage instrumentation
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : Installing ActiveSupport instrumentation
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : Installing New Relic supported ActiveSupportBroadcastLogger instrumentation using Prepend
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : Installing New Relic supported ConcurrentRuby instrumentation using Prepend
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : Installing New Relic supported MonitoredFiber instrumentation using Prepend
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : Installing New Relic supported Logger instrumentation using Prepend
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : Installing Net:HTTP Wrappers
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : Installing New Relic supported NetHTTP instrumentation using Prepend
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : Installing New Relic supported Rack instrumentation using Prepend
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : Installing New Relic supported URLMap instrumentation using Prepend
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : Installing Rails 3+ middleware instrumentation
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : Installing New Relic supported MonitoredThread instrumentation using Prepend
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : Installing notifications based Action Cable instrumentation
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : Installing notifications based Action Controller instrumentation
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : Installing notification based Action View instrumentation
+[2025-08-18 16:18:31 -0300 DESKTOP-1K9J1HI (39329)] INFO : Finished instrumentation
+[2025-08-18 16:18:32 -0300 DESKTOP-1K9J1HI (39329)] INFO : Doing deferred dependency-detection before Rack startup
+[2025-08-18 16:18:32 -0300 DESKTOP-1K9J1HI (39329)] INFO : New Relic Security is completely disabled by one of the user-provided configurations: `security.agent.enabled` or `high_security`. Not loading security capabilities.
+[2025-08-18 16:18:32 -0300 DESKTOP-1K9J1HI (39329)] INFO : high_security = false
+[2025-08-18 16:18:32 -0300 DESKTOP-1K9J1HI (39329)] INFO : security.agent.enabled = false
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : Starting the New Relic agent version 9.20.0 in "production" environment.
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : To prevent agent startup add a NEW_RELIC_AGENT_ENABLED=false environment variable or modify the "production" section of your newrelic.yml.
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] WARN : No configuration file found. Working directory = /home/harley/projects/Cargaclick
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] WARN : Looked in these locations (based on defaults): /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/.newrelic/newrelic.yml, /home/harley/newrelic.yml, /home/harley/.newrelic/newrelic.yml.erb, /home/harley/newrelic.yml.erb
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : Environment: production
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : No known dispatcher detected.
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : Application: production
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] WARN : No license key found. This often means your newrelic.yml file was not found, or it lacks a section for the running environment, 'production'. You may also want to try linting your newrelic.yml to ensure it is valid YML.
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : Installing ActionMailbox instrumentation
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : Installing ActionMailer instrumentation
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : Installing base ActiveJob instrumentation
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : Installing notifications based ActiveJob instrumentation
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : Installing notifications based Active Record instrumentation
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : Installing ActiveStorage instrumentation
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : Installing ActiveSupport instrumentation
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : Installing New Relic supported ActiveSupportBroadcastLogger instrumentation using Prepend
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : Installing New Relic supported ConcurrentRuby instrumentation using Prepend
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : Installing New Relic supported MonitoredFiber instrumentation using Prepend
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : Installing New Relic supported Logger instrumentation using Prepend
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : Installing Net:HTTP Wrappers
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : Installing New Relic supported NetHTTP instrumentation using Prepend
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : Installing New Relic supported Rack instrumentation using Prepend
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : Installing New Relic supported URLMap instrumentation using Prepend
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : Installing Rails 3+ middleware instrumentation
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : Installing New Relic supported MonitoredThread instrumentation using Prepend
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : Installing notifications based Action Cable instrumentation
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : Installing notifications based Action Controller instrumentation
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : Installing notification based Action View instrumentation
+[2025-08-18 16:51:32 -0300 DESKTOP-1K9J1HI (50239)] INFO : Finished instrumentation
+[2025-08-18 16:51:33 -0300 DESKTOP-1K9J1HI (50239)] INFO : Doing deferred dependency-detection before Rack startup
+[2025-08-18 16:51:33 -0300 DESKTOP-1K9J1HI (50239)] INFO : New Relic Security is completely disabled by one of the user-provided configurations: `security.agent.enabled` or `high_security`. Not loading security capabilities.
+[2025-08-18 16:51:33 -0300 DESKTOP-1K9J1HI (50239)] INFO : high_security = false
+[2025-08-18 16:51:33 -0300 DESKTOP-1K9J1HI (50239)] INFO : security.agent.enabled = false
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Starting the New Relic agent version 9.20.0 in "production" environment.
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : To prevent agent startup add a NEW_RELIC_AGENT_ENABLED=false environment variable or modify the "production" section of your newrelic.yml.
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] WARN : No configuration file found. Working directory = /home/harley/projects/Cargaclick
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] WARN : Looked in these locations (based on defaults): /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/.newrelic/newrelic.yml, /home/harley/newrelic.yml, /home/harley/.newrelic/newrelic.yml.erb, /home/harley/newrelic.yml.erb
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Environment: production
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Dispatcher: puma
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Application: production
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] WARN : No license key found. This often means your newrelic.yml file was not found, or it lacks a section for the running environment, 'production'. You may also want to try linting your newrelic.yml to ensure it is valid YML.
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Installing ActionMailbox instrumentation
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Installing ActionMailer instrumentation
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Installing base ActiveJob instrumentation
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Installing notifications based ActiveJob instrumentation
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Installing notifications based Active Record instrumentation
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Installing ActiveStorage instrumentation
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Installing ActiveSupport instrumentation
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Installing New Relic supported ActiveSupportBroadcastLogger instrumentation using Prepend
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Installing New Relic supported ConcurrentRuby instrumentation using Prepend
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Installing New Relic supported MonitoredFiber instrumentation using Prepend
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Installing New Relic supported Logger instrumentation using Prepend
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Installing Net:HTTP Wrappers
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Installing New Relic supported NetHTTP instrumentation using Prepend
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Installing New Relic supported Rack instrumentation using Prepend
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Installing New Relic supported URLMap instrumentation using Prepend
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Installing Rails 3+ middleware instrumentation
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Installing New Relic supported MonitoredThread instrumentation using Prepend
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Installing notifications based Action Cable instrumentation
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Installing notifications based Action Controller instrumentation
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Installing notification based Action View instrumentation
+[2025-08-18 17:44:23 -0300 DESKTOP-1K9J1HI (65197)] INFO : Finished instrumentation
+[2025-08-18 17:44:24 -0300 DESKTOP-1K9J1HI (65197)] INFO : Doing deferred dependency-detection before Rack startup
+[2025-08-18 17:44:24 -0300 DESKTOP-1K9J1HI (65197)] INFO : New Relic Security is completely disabled by one of the user-provided configurations: `security.agent.enabled` or `high_security`. Not loading security capabilities.
+[2025-08-18 17:44:24 -0300 DESKTOP-1K9J1HI (65197)] INFO : high_security = false
+[2025-08-18 17:44:24 -0300 DESKTOP-1K9J1HI (65197)] INFO : security.agent.enabled = false
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Starting the New Relic agent version 9.20.0 in "production" environment.
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : To prevent agent startup add a NEW_RELIC_AGENT_ENABLED=false environment variable or modify the "production" section of your newrelic.yml.
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] WARN : No configuration file found. Working directory = /home/harley/projects/Cargaclick
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] WARN : Looked in these locations (based on defaults): /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/.newrelic/newrelic.yml, /home/harley/newrelic.yml, /home/harley/.newrelic/newrelic.yml.erb, /home/harley/newrelic.yml.erb
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Environment: production
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Dispatcher: puma
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Application: production
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] WARN : No license key found. This often means your newrelic.yml file was not found, or it lacks a section for the running environment, 'production'. You may also want to try linting your newrelic.yml to ensure it is valid YML.
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Installing ActionMailbox instrumentation
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Installing ActionMailer instrumentation
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Installing base ActiveJob instrumentation
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Installing notifications based ActiveJob instrumentation
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Installing notifications based Active Record instrumentation
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Installing ActiveStorage instrumentation
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Installing ActiveSupport instrumentation
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Installing New Relic supported ActiveSupportBroadcastLogger instrumentation using Prepend
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Installing New Relic supported ConcurrentRuby instrumentation using Prepend
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Installing New Relic supported MonitoredFiber instrumentation using Prepend
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Installing New Relic supported Logger instrumentation using Prepend
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Installing Net:HTTP Wrappers
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Installing New Relic supported NetHTTP instrumentation using Prepend
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Installing New Relic supported Rack instrumentation using Prepend
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Installing New Relic supported URLMap instrumentation using Prepend
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Installing Rails 3+ middleware instrumentation
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Installing New Relic supported MonitoredThread instrumentation using Prepend
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Installing notifications based Action Cable instrumentation
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Installing notifications based Action Controller instrumentation
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Installing notification based Action View instrumentation
+[2025-08-18 17:51:48 -0300 DESKTOP-1K9J1HI (65261)] INFO : Finished instrumentation
+[2025-08-18 17:51:49 -0300 DESKTOP-1K9J1HI (65261)] INFO : Doing deferred dependency-detection before Rack startup
+[2025-08-18 17:51:49 -0300 DESKTOP-1K9J1HI (65261)] INFO : New Relic Security is completely disabled by one of the user-provided configurations: `security.agent.enabled` or `high_security`. Not loading security capabilities.
+[2025-08-18 17:51:49 -0300 DESKTOP-1K9J1HI (65261)] INFO : high_security = false
+[2025-08-18 17:51:49 -0300 DESKTOP-1K9J1HI (65261)] INFO : security.agent.enabled = false
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Starting the New Relic agent version 9.20.0 in "production" environment.
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : To prevent agent startup add a NEW_RELIC_AGENT_ENABLED=false environment variable or modify the "production" section of your newrelic.yml.
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] WARN : No configuration file found. Working directory = /home/harley/projects/Cargaclick
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] WARN : Looked in these locations (based on defaults): /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/.newrelic/newrelic.yml, /home/harley/newrelic.yml, /home/harley/.newrelic/newrelic.yml.erb, /home/harley/newrelic.yml.erb
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Environment: production
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Dispatcher: puma
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Application: production
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] WARN : No license key found. This often means your newrelic.yml file was not found, or it lacks a section for the running environment, 'production'. You may also want to try linting your newrelic.yml to ensure it is valid YML.
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Installing ActionMailbox instrumentation
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Installing ActionMailer instrumentation
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Installing base ActiveJob instrumentation
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Installing notifications based ActiveJob instrumentation
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Installing notifications based Active Record instrumentation
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Installing ActiveStorage instrumentation
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Installing ActiveSupport instrumentation
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Installing New Relic supported ActiveSupportBroadcastLogger instrumentation using Prepend
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Installing New Relic supported ConcurrentRuby instrumentation using Prepend
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Installing New Relic supported MonitoredFiber instrumentation using Prepend
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Installing New Relic supported Logger instrumentation using Prepend
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Installing Net:HTTP Wrappers
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Installing New Relic supported NetHTTP instrumentation using Prepend
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Installing New Relic supported Rack instrumentation using Prepend
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Installing New Relic supported URLMap instrumentation using Prepend
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Installing Rails 3+ middleware instrumentation
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Installing New Relic supported MonitoredThread instrumentation using Prepend
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Installing notifications based Action Cable instrumentation
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Installing notifications based Action Controller instrumentation
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Installing notification based Action View instrumentation
+[2025-08-18 17:53:17 -0300 DESKTOP-1K9J1HI (65303)] INFO : Finished instrumentation
+[2025-08-18 17:53:18 -0300 DESKTOP-1K9J1HI (65303)] INFO : Doing deferred dependency-detection before Rack startup
+[2025-08-18 17:53:18 -0300 DESKTOP-1K9J1HI (65303)] INFO : New Relic Security is completely disabled by one of the user-provided configurations: `security.agent.enabled` or `high_security`. Not loading security capabilities.
+[2025-08-18 17:53:18 -0300 DESKTOP-1K9J1HI (65303)] INFO : high_security = false
+[2025-08-18 17:53:18 -0300 DESKTOP-1K9J1HI (65303)] INFO : security.agent.enabled = false
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : Starting the New Relic agent version 9.20.0 in "production" environment.
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : To prevent agent startup add a NEW_RELIC_AGENT_ENABLED=false environment variable or modify the "production" section of your newrelic.yml.
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] WARN : No configuration file found. Working directory = /home/harley/projects/Cargaclick
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] WARN : Looked in these locations (based on defaults): /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/.newrelic/newrelic.yml, /home/harley/newrelic.yml, /home/harley/.newrelic/newrelic.yml.erb, /home/harley/newrelic.yml.erb
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : Environment: production
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : No known dispatcher detected.
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : Application: production
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] WARN : No license key found. This often means your newrelic.yml file was not found, or it lacks a section for the running environment, 'production'. You may also want to try linting your newrelic.yml to ensure it is valid YML.
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : Installing ActionMailbox instrumentation
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : Installing ActionMailer instrumentation
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : Installing base ActiveJob instrumentation
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : Installing notifications based ActiveJob instrumentation
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : Installing notifications based Active Record instrumentation
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : Installing ActiveStorage instrumentation
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : Installing ActiveSupport instrumentation
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : Installing New Relic supported ActiveSupportBroadcastLogger instrumentation using Prepend
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : Installing New Relic supported ConcurrentRuby instrumentation using Prepend
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : Installing New Relic supported MonitoredFiber instrumentation using Prepend
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : Installing New Relic supported Logger instrumentation using Prepend
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : Installing Net:HTTP Wrappers
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : Installing New Relic supported NetHTTP instrumentation using Prepend
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : Installing New Relic supported Rack instrumentation using Prepend
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : Installing New Relic supported URLMap instrumentation using Prepend
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : Installing Rails 3+ middleware instrumentation
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : Installing New Relic supported MonitoredThread instrumentation using Prepend
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : Installing notifications based Action Cable instrumentation
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : Installing notifications based Action Controller instrumentation
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : Installing notification based Action View instrumentation
+[2025-08-18 19:21:34 -0300 DESKTOP-1K9J1HI (101873)] INFO : Finished instrumentation
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : Starting the New Relic agent version 9.20.0 in "production" environment.
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : To prevent agent startup add a NEW_RELIC_AGENT_ENABLED=false environment variable or modify the "production" section of your newrelic.yml.
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] WARN : No configuration file found. Working directory = /home/harley/projects/Cargaclick
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] WARN : Looked in these locations (based on defaults): /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/projects/Cargaclick/config/newrelic.yml, /home/harley/projects/Cargaclick/newrelic.yml, /home/harley/projects/Cargaclick/config/newrelic.yml.erb, /home/harley/projects/Cargaclick/newrelic.yml.erb, /home/harley/.newrelic/newrelic.yml, /home/harley/newrelic.yml, /home/harley/.newrelic/newrelic.yml.erb, /home/harley/newrelic.yml.erb
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : Environment: production
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : No known dispatcher detected.
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : Application: production
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] WARN : No license key found. This often means your newrelic.yml file was not found, or it lacks a section for the running environment, 'production'. You may also want to try linting your newrelic.yml to ensure it is valid YML.
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : Installing ActionMailbox instrumentation
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : Installing ActionMailer instrumentation
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : Installing base ActiveJob instrumentation
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : Installing notifications based ActiveJob instrumentation
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : Installing notifications based Active Record instrumentation
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : Installing ActiveStorage instrumentation
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : Installing ActiveSupport instrumentation
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : Installing New Relic supported ActiveSupportBroadcastLogger instrumentation using Prepend
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : Installing New Relic supported ConcurrentRuby instrumentation using Prepend
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : Installing New Relic supported MonitoredFiber instrumentation using Prepend
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : Installing New Relic supported Logger instrumentation using Prepend
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : Installing Net:HTTP Wrappers
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : Installing New Relic supported NetHTTP instrumentation using Prepend
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : Installing New Relic supported Rack instrumentation using Prepend
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : Installing New Relic supported URLMap instrumentation using Prepend
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : Installing Rails 3+ middleware instrumentation
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : Installing New Relic supported MonitoredThread instrumentation using Prepend
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : Installing notifications based Action Cable instrumentation
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : Installing notifications based Action Controller instrumentation
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : Installing notification based Action View instrumentation
+[2025-08-18 19:23:06 -0300 DESKTOP-1K9J1HI (101902)] INFO : Finished instrumentation

@@ -1,0 +1,27 @@
+{
+  "name": "cargaclick",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Aplicativo CargaClick - Rails 7 com ESBuild e TailwindCSS",
+  "license": "MIT",
+  "packageManager": "yarn@1.22.22",
+  "engines": {
+    "node": ">=18",
+    "yarn": ">=1.22.0"
+  },
+  "scripts": {
+    "build:js": "esbuild app/javascript/application.js --bundle --sourcemap --outdir=app/assets/builds --minify",
+    "build:css": "tailwindcss -c ./config/tailwind.config.js -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css -m",
+    "build": "yarn build:js && yarn build:css",
+    "dev:js": "esbuild app/javascript/application.js --bundle --sourcemap --outdir=app/assets/builds --watch",
+    "dev:css": "tailwindcss -c ./config/tailwind.config.js -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --watch",
+    "dev": "yarn dev:js & yarn dev:css",
+    "update:browserslist": "npx update-browserslist-db@latest --update-db"
+  },
+  "dependencies": {
+    "@rails/actioncable": "^8.0.200",
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/typography": "^0.5.16",
+    "dotenv": "^17.2.1"
+  }
+}

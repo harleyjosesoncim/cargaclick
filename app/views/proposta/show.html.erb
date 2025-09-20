@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @propostum %>
+
+<div>
+  <%= link_to "Edit this proposta", edit_propostum_path(@propostum) %> |
+  <%= link_to "Back to proposta", proposta_index_path %>
+
+  <%= button_to "Destroy this proposta", @propostum, method: :delete %>
+</div>

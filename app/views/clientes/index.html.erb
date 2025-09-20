@@ -1,0 +1,19 @@
+<h1 class="text-2xl font-bold">Clientes</h1>
+<%= form_with url: clientes_path, method: :get, local: true, class: "mb-4" do %>
+  <%= text_field_tag :q, @q, placeholder: "Buscar por nome ou e-mail", class: "border rounded px-3 py-2" %>
+  <%= submit_tag "Buscar", class: "bg-blue-600 text-white px-4 py-2 rounded" %>
+<% end %>
+<table class="table-auto w-full mt-4">
+  <thead><tr><th>ID</th><th>Nome</th><th>Email</th><th>Criado em</th></tr></thead>
+  <tbody>
+    <% @clientes.each do |c| %>
+      <tr>
+        <td><%= c.id %></td>
+        <td><%= c.nome %></td>
+        <td><%= c.email %></td>
+        <td><%= l(c.created_at, format: :short) %></td>
+        <td><%= link_to "Ver", cliente_path(c), class: "text-blue-600 hover:underline" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

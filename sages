@@ -1,0 +1,29 @@
+                                             Table "public.transportadores"
+      Column       |              Type              | Collation | Nullable |                   Default                   
+-------------------+--------------------------------+-----------+----------+---------------------------------------------
+ id                | bigint                         |           | not null | nextval('transportadores_id_seq'::regclass)
+ nome              | character varying              |           |          | 
+ cpf               | character varying              |           |          | 
+ telefone          | character varying              |           |          | 
+ endereco          | character varying              |           |          | 
+ cep               | character varying              |           |          | 
+ tipo_veiculo      | character varying              |           |          | 
+ carga_maxima      | character varying              |           |          | 
+ valor_km          | numeric                        |           |          | 
+ largura           | numeric                        |           |          | 
+ altura            | numeric                        |           |          | 
+ profundidade      | numeric                        |           |          | 
+ peso_aproximado   | numeric                        |           |          | 
+ created_at        | timestamp(6) without time zone |           | not null | 
+ updated_at        | timestamp(6) without time zone |           | not null | 
+ fidelidade_pontos | integer                        |           |          | 0
+ cidade            | character varying              |           |          | 
+ email             | character varying              |           |          | 
+ pix_key           | character varying              |           |          | 
+ mercado_pago_link | character varying              |           |          | 
+Indexes:
+    "transportadores_pkey" PRIMARY KEY, btree (id)
+    "index_transportadores_on_email" btree (email)
+Referenced by:
+    TABLE "modal_transportadores" CONSTRAINT "fk_rails_35f5bc8527" FOREIGN KEY (transportador_id) REFERENCES transportadores(id)
+

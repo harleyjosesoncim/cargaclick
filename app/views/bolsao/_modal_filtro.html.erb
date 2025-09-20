@@ -1,0 +1,94 @@
+<div id="modal-filtro" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 transition-opacity duration-300 ease-in-out opacity-0 pointer-events-none">
+  <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md relative transform scale-95 transition-transform duration-300 ease-in-out">
+    <button
+      class="absolute top-4 right-4 text-gray-500 hover:text-red-600 text-3xl font-light leading-none"
+      onclick="closeModal('modal-filtro')"
+      title="Fechar">
+      &times;
+    </button>
+
+    <h3 class="text-2xl font-extrabold mb-6 text-blue-800 border-b-2 border-blue-100 pb-2">Filtrar Solicitações</h3>
+
+    <form method="get" action="<%= bolsao_path %>">
+      <div class="space-y-4 mb-6">
+        <div>
+          <label for="cep_origem" class="block text-sm font-medium text-gray-700 mb-1">CEP Origem</label>
+          <input type="text" id="cep_origem" name="cep_origem" value="<%= params[:cep_origem] %>" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" placeholder="Ex: 00000-000">
+        </div>
+
+        <div>
+          <label for="cep_destino" class="block text-sm font-medium text-gray-700 mb-1">CEP Destino</label>
+          <input type="text" id="cep_destino" name="cep_destino" value="<%= params[:cep_destino] %>" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" placeholder="Ex: 99999-999">
+        </div>
+
+        <div>
+          <label for="cliente" class="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
+          <input type="text" id="cliente" name="cliente" value="<%= params[:cliente] %>" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" placeholder="Nome do Cliente">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="peso_min" class="block text-sm font-medium text-gray-700 mb-1">Peso Mín.</label>
+            <input type="number" step="0.01" id="peso_min" name="peso_min" value="<%= params[:peso_min] %>" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" placeholder="0.00">
+          </div>
+          <div>
+            <label for="peso_max" class="block text-sm font-medium text-gray-700 mb-1">Peso Máx.</label>
+            <input type="number" step="0.01" id="peso_max" name="peso_max" value="<%= params[:peso_max] %>" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" placeholder="9999.99">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="valor_min" class="block text-sm font-medium text-gray-700 mb-1">Valor Mín.</label>
+            <input type="number" step="0.01" id="valor_min" name="valor_min" value="<%= params[:valor_min] %>" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" placeholder="0.00">
+          </div>
+          <div>
+            <label for="valor_max" class="block text-sm font-medium text-gray-700 mb-1">Valor Máx.</label>
+            <input type="number" step="0.01" id="valor_max" name="valor_max" value="<%= params[:valor_max] %>" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 text-gray-800" placeholder="9999.99">
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3 mt-8">
+        <button type="button" onclick="closeModal('modal-filtro')" class="px-5 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-semibold transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">Cancelar</button>
+        <button type="submit" class="px-5 py-2.5 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Aplicar Filtros</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Função para abrir o modal
+  function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    modal.classList.remove('opacity-0', 'pointer-events-none');
+    modal.classList.add('opacity-100');
+    modal.querySelector('.transform').classList.remove('scale-95');
+    modal.querySelector('.transform').classList.add('scale-100');
+  }
+
+  // Função para fechar o modal
+  function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    modal.classList.remove('opacity-100');
+    modal.classList.add('opacity-0');
+    modal.querySelector('.transform').classList.remove('scale-100');
+    modal.querySelector('.transform').classList.add('scale-95');
+    setTimeout(() => {
+      modal.classList.add('pointer-events-none');
+    }, 300); // Tempo igual à duração da transição
+  }
+
+  // Exemplo de como você chamaria para abrir o modal
+  // <button onclick="openModal('modal-filtro')">Abrir Filtro</button>
+
+  // Preenche os campos do formulário com os valores atuais dos parâmetros da URL
+  document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    document.querySelectorAll('#modal-filtro input[name]').forEach(input => {
+      if (urlParams.has(input.name)) {
+        input.value = urlParams.get(input.name);
+      }
+    });
+  });
+</script>

@@ -1,0 +1,59 @@
+<% sender_type = message.sender_type %>
+<% bubble_class =
+     case sender_type
+     when "Cliente"
+       "bg-blue-600 text-white self-start rounded-tr-lg"
+     when "Transportador"
+       "bg-green-600 text-white self-end rounded-tl-lg"
+     when "AdminUser"
+       "bg-gray-500 text-white self-center rounded-lg"
+     else
+       "bg-gray-200 text-gray-800"
+     end %>
+
+<div id="message_<%= message.id %>" 
+     class="flex flex-col mb-3 <%= sender_type == 'Transportador' ? 'items-end' : 'items-start' %>">
+
+  <!-- Balão da mensagem -->
+  <div class="max-w-xs md:max-w-md px-4 py-2 rounded-lg shadow <%= bubble_class %> 
+              <%= 'border-2 border-yellow-400' if message.importante? %>">
+    <p class="whitespace-pre-wrap break-words"><%= message.content %></p>
+  </div>
+
+  <!-- Rodapé com status, hora e botões -->
+  <div class="flex items-center gap-2 mt-1 text-xs text-gray-500 dark:text-gray-400">
+    <span><%= message.sender_type %></span>
+    <span>•</span>
+    <span><%= l(message.created_at, format: :short) %></span>
+
+    <% if message.lido? %>
+      <span class="ml-1 text-green-500">✔</span>
+    <% elsif message.importante? %>
+      <span class="ml-1 text-yellow-400 font-bold">★</span>
+    <% end %>
+
+    <!-- Botões de ação (apenas para usuários autenticados) -->
+    <% if current_cliente || current_transportador || current_admin_user %>
+      <% if message.normal? %>
+        <%= button_to "Marcar como lida",
+            mark_as_read_frete_message_path(@frete, message),
+            method: :patch,
+            data: { turbo_stream: true },
+            class: "ml-2 text-green-600 hover:underline" %>
+      <% end %>
+
+      <% unless message.importante? %>
+        <%= button_to "Destacar",
+            mark_as_important_frete_message_path(@frete, message),
+            method: :patch,
+            data: { turbo_stream: true },
+            class: "ml-2 text-yellow-600 hover:underline" %>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<%# 
+  Este partial renderiza uma única mensagem dentro de um sistema de mensagens.
+  Ele ajusta o estilo do balão de mensagem e os botões de ação com base no tipo de remetente
+  (Cliente, Transportador, AdminUser) e no estado da mensagem (normal, lida, importante).

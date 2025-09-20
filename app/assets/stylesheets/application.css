@@ -1,0 +1,13 @@
+// tailwind.config.js
+module.exports = {
+  content: [
+    // Seus caminhos aqui...
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [
+    require('@tailwindcss/forms'),
+    // Outros plugins aqui...
+  ],
+}

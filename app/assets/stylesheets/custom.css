@@ -1,0 +1,95 @@
+//* ================================================================
+   ESTILOS CUSTOMIZADOS — CARGACLICK
+   ================================================================
+   Complementa o Tailwind com ajustes de:
+   - Tema claro/escuro
+   - Componentes (cards, formulários, botões)
+   - Interações (dark toggle, alerts)
+   ================================================================= */
+
+/* === BASE ======================================================== */
+
+/* Tema claro */
+body {
+  @apply bg-white text-gray-900;
+}
+
+/* Tema escuro */
+.dark body {
+  @apply bg-gray-900 text-white;
+}
+
+/* === COMPONENTES ================================================= */
+
+/* Cards */
+.card {
+  @apply bg-white border border-gray-200 rounded-xl shadow-md;
+}
+
+.dark .card {
+  @apply bg-gray-800 border-gray-700 text-white;
+}
+
+/* Inputs / Forms */
+.form-input,
+.form-select,
+.form-textarea {
+  @apply border border-gray-300 rounded-lg px-3 py-2 shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400;
+}
+
+.dark .form-input,
+.dark .form-select,
+.dark .form-textarea {
+  @apply bg-gray-800 border-gray-600 text-white;
+}
+
+/* === BOTÕES ====================================================== */
+
+.btn {
+  @apply font-medium px-4 py-2 rounded-lg transition;
+}
+
+.btn-primary {
+  @apply bg-blue-600 hover:bg-blue-700 text-white;
+}
+
+.btn-secondary {
+  @apply bg-gray-200 hover:bg-gray-300 text-gray-800;
+}
+
+.dark .btn-secondary {
+  @apply bg-gray-700 hover:bg-gray-600 text-white;
+}
+
+.btn-danger {
+  @apply bg-red-600 hover:bg-red-700 text-white;
+}
+
+/* === INTERAÇÕES ================================================== */
+
+/* Toggle Dark Mode */
+#dark-toggle {
+  @apply cursor-pointer hover:scale-110 transition-transform;
+}
+
+/* === ALERTAS ===================================================== */
+
+.alert {
+  @apply px-4 py-2 rounded-lg shadow font-medium;
+}
+
+.alert-success {
+  @apply bg-green-600 text-white;
+}
+
+.alert-error {
+  @apply bg-red-600 text-white;
+}
+
+.alert-warning {
+  @apply bg-yellow-500 text-black;
+}
+
+.alert-info {
+  @apply bg-blue-600 text-white;
+}

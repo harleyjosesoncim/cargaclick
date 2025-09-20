@@ -1,0 +1,19 @@
+<%# app/views/home/index.html.erb %>
+<% content_for :title, "CargaClick — Início" %>
+
+<div class="min-h-screen flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-900 px-6 py-10 transition-colors">
+  <h1 class="text-4xl font-bold mb-10 text-gray-800 dark:text-gray-100 flex items-center gap-2">
+    Bem-vindo ao <span class="text-blue-600 dark:text-blue-400">CargaClick</span> 🚛
+  </h1>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-5xl">
+    <%= render "card", icon: "👤", title: "Cliente",         label: "Acessar",            path: clientes_path,        color: "blue" %>
+    <%= render "card", icon: "🚚", title: "Transportador",   label: "Acessar",            path: transportadores_path, color: "green" %>
+    <%= render "card", icon: "📦", title: "Solicitar Frete", label: "Simular / Solicitar", path: novo_frete_path,      color: "yellow" %>
+    <%= render "card", icon: "⚙️", title: "Administração",   label: "Entrar no Painel",   path: admin_root_path,      color: "red" %>
+    <%= render "card", icon: "⭐", title: "Fidelidade",      label: "Ver benefícios",     path: fidelidade_path,      color: "yellow" %>
+    <%= render "card", icon: "📊", title: "Relatórios",     label: "Consultar",          path: relatorios_path,      color: "purple" %>
+    <%= render "card", icon: "ℹ️", title: "Sobre",          label: "Saiba mais",         path: sobre_path,           color: "blue" %>
+    <%= render "card", icon: "📩", title: "Contato",        label: "Fale conosco",       path: contato_path,         color: "green" %>
+  </div>
+</div>

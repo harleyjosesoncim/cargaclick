@@ -1,0 +1,48 @@
+<%= form_with(model: [@frete, cotacao], local: true, class: "space-y-6") do |f| %>
+  <% if cotacao.errors.any? %>
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow">
+      <h2 class="font-bold flex items-center gap-2">
+        ⚠ <span><%= pluralize(cotacao.errors.count, "erro") %> impediram o salvamento:</span>
+      </h2>
+      <ul class="mt-2 list-disc list-inside text-sm">
+        <% cotacao.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <!-- Valor da Cotação -->
+  <div>
+    <%= f.label :valor, "Valor da Cotação (R$)", class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+    <%= f.number_field :valor,
+          step: 0.01,
+          min: 0,
+          placeholder: "Ex: 1500.00",
+          class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+  </div>
+
+  <!-- Transportador -->
+  <div>
+    <%= f.label :transportador_id, "Transportador", class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+    <%= f.collection_select :transportador_id,
+          Transportador.order(:nome), :id, :nome,
+          { prompt: "Selecione um transportador" },
+          class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+  </div>
+
+  <!-- Status -->
+  <div>
+    <%= f.label :status, "Status da Cotação", class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+    <%= f.select :status,
+          [["Pendente", "pendente"], ["Aprovado", "aprovado"], ["Rejeitado", "rejeitado"]],
+          { prompt: "Selecione o status" },
+          class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+  </div>
+
+  <!-- Botão Submit -->
+  <div>
+    <%= f.submit (cotacao.persisted? ? "Atualizar Cotação" : "Criar Cotação"),
+          class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition" %>
+  </div>
+<% end %>

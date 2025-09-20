@@ -1,0 +1,19 @@
+<h1 class="text-2xl font-bold">Transportadores</h1>
+<%= form_with url: transportadores_path, method: :get, local: true, class: "mb-4" do %>
+  <%= text_field_tag :q, @q, placeholder: "Buscar transportadores", class: "border rounded px-3 py-2" %>
+  <%= submit_tag "Buscar", class: "bg-blue-600 text-white px-4 py-2 rounded" %>
+<% end %>
+<table class="table-auto w-full mt-4">
+  <thead><tr><th>ID</th><th>Nome</th><th>Veículo</th><th>Cidade</th></tr></thead>
+  <tbody>
+    <% @transportadores.each do |t| %>
+      <tr>
+        <td><%= t.id %></td>
+        <td><%= t.nome %></td>
+        <td><%= t.try(:tipo_veiculo) %></td>
+        <td><%= t.try(:cidade) %></td>
+        <td><%= link_to "Ver", transportador_path(t), class: "text-blue-600 hover:underline" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -1,0 +1,47 @@
+<h2 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100">Editar Cotação</h2>
+
+<!-- Botão Voltar -->
+<div class="mb-6">
+  <%= link_to cotacoes_path,
+        class: "inline-flex items-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-4 py-2 rounded-lg transition" do %>
+    <!-- Ícone seta -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+    </svg>
+    Voltar para Minhas Cotações
+  <% end %>
+</div>
+
+<!-- Formulário -->
+<div class="bg-white dark:bg-gray-800 shadow-md rounded-2xl p-6">
+  <%= form_with model: @cotacao, local: true, class: "space-y-6" do |f| %>
+    
+    <!-- Valor -->
+    <div>
+      <%= f.label :valor, "Valor da Cotação",
+                  class: "block text-gray-700 dark:text-gray-200 font-medium" %>
+      <%= f.number_field :valor,
+                         step: 0.01,
+                         placeholder: "Ex: 1500.00",
+                         class: "w-full border rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
+    </div>
+
+    <!-- Observações -->
+    <div>
+      <%= f.label :observacoes, "Observações",
+                  class: "block text-gray-700 dark:text-gray-200 font-medium" %>
+      <%= f.text_area :observacoes,
+                      rows: 3,
+                      placeholder: "Informações adicionais...",
+                      class: "w-full border rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
+    </div>
+
+    <!-- Botão Atualizar -->
+    <div>
+      <%= f.submit "Atualizar Cotação",
+                   class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition" %>
+    </div>
+    
+  <% end %>
+</div>
+

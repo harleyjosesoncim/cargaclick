@@ -1,0 +1,53 @@
+<h2 class="text-2xl font-bold mb-4">
+  💰 Cotações para o Frete <%= @frete.id %>
+</h2>
+
+<% if @cotacoes.any? %>
+  <div class="overflow-x-auto bg-white shadow-md rounded-lg">
+    <table class="min-w-full border-collapse">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Transportador</th>
+          <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Valor</th>
+          <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Comissão</th>
+          <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Valor Líquido</th>
+          <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Status</th>
+          <th class="px-4 py-2 text-center text-sm font-semibold text-gray-700">Ações</th>
+        </tr>
+      </thead>
+      <tbody id="cotacoes">
+        <% @cotacoes.each do |cotacao| %>
+          <tr class="border-b">
+            <td class="px-4 py-2"><%= cotacao.transportador&.nome || "Não informado" %></td>
+            <td class="px-4 py-2"><%= number_to_currency(cotacao.valor) %></td>
+            <td class="px-4 py-2"><%= number_to_currency(cotacao.comissao) %></td>
+            <td class="px-4 py-2"><%= number_to_currency(cotacao.valor_liquido) %></td>
+            <td class="px-4 py-2"><%= cotacao.status.capitalize %></td>
+            <td class="px-4 py-2 text-center space-x-2">
+              <%= link_to "Detalhes", frete_cotacao_path(@frete, cotacao),
+                          class: "px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700" %>
+              <%= link_to "Editar", edit_frete_cotacao_path(@frete, cotacao),
+                          class: "px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600" %>
+              <%= link_to "Excluir", frete_cotacao_path(@frete, cotacao),
+                          method: :delete,
+                          data: { confirm: "Tem certeza que deseja excluir esta cotação?" },
+                          class: "px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <p class="text-gray-600">Nenhuma cotação registrada para este frete.</p>
+<% end %>
+
+<div class="mt-4 flex space-x-3">
+  <%= link_to "➕ Nova Cotação",
+              new_frete_cotacao_path(@frete),
+              class: "inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" %>
+
+  <%= link_to "⬅ Voltar para Frete",
+              frete_path(@frete),
+              class: "inline-block px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600" %>
+</div>

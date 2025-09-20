@@ -1,0 +1,9 @@
+<%# app/views/shared/_card.html.erb %>
+<div class="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 flex flex-col items-center text-center transition hover:scale-105 hover:shadow-xl duration-300">
+  <span class="text-5xl mb-3"><%= icon %></span>
+  <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200"><%= title %></h3>
+  <%= link_to label, path,
+      class: "mt-4 px-4 py-2 rounded-lg text-white bg-#{color}-600 hover:bg-#{color}-700 transition" %>
+</div>
+
+

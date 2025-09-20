@@ -1,0 +1,43 @@
+                                                Table "public.transportadores"
+         Column         |              Type              | Collation | Nullable |                   Default                   
+------------------------+--------------------------------+-----------+----------+---------------------------------------------
+ id                     | bigint                         |           | not null | nextval('transportadores_id_seq'::regclass)
+ nome                   | character varying              |           |          | 
+ cpf                    | character varying(11)          |           |          | 
+ telefone               | character varying              |           |          | 
+ endereco               | character varying              |           |          | 
+ cep                    | character varying              |           |          | 
+ tipo_veiculo           | character varying              |           |          | 
+ carga_maxima           | numeric(10,2)                  |           |          | 
+ valor_km               | numeric                        |           |          | 
+ largura                | numeric                        |           |          | 
+ altura                 | numeric                        |           |          | 
+ profundidade           | numeric                        |           |          | 
+ peso_aproximado        | numeric                        |           |          | 
+ created_at             | timestamp(6) without time zone |           | not null | 
+ updated_at             | timestamp(6) without time zone |           | not null | 
+ fidelidade_pontos      | integer                        |           |          | 0
+ cidade                 | character varying              |           |          | 
+ email                  | character varying              |           |          | 
+ confirmation_token     | character varying              |           |          | 
+ confirmed_at           | timestamp(6) without time zone |           |          | 
+ confirmation_sent_at   | timestamp(6) without time zone |           |          | 
+ unconfirmed_email      | character varying              |           |          | 
+ pix_key                | character varying              |           |          | 
+ mercado_pago_link      | character varying              |           |          | 
+ encrypted_password     | character varying              |           | not null | ''::character varying
+ reset_password_token   | character varying              |           |          | 
+ reset_password_sent_at | timestamp(6) without time zone |           |          | 
+ remember_created_at    | timestamp(6) without time zone |           |          | 
+ chave_pix              | character varying              |           |          | 
+Indexes:
+    "transportadores_pkey" PRIMARY KEY, btree (id)
+    "index_transportadores_on_confirmation_token" UNIQUE, btree (confirmation_token)
+    "index_transportadores_on_email" UNIQUE, btree (email) WHERE email IS NOT NULL
+    "index_transportadores_on_reset_password_token" UNIQUE, btree (reset_password_token)
+Referenced by:
+    TABLE "modal_transportadores" CONSTRAINT "fk_rails_35f5bc8527" FOREIGN KEY (transportador_id) REFERENCES transportadores(id)
+    TABLE "proposta" CONSTRAINT "fk_rails_4639e33c08" FOREIGN KEY (transportador_id) REFERENCES transportadores(id)
+    TABLE "chats" CONSTRAINT "fk_rails_865491b41a" FOREIGN KEY (transportador_id) REFERENCES transportadores(id)
+    TABLE "pagamentos" CONSTRAINT "fk_rails_a3c79be55b" FOREIGN KEY (transportador_id) REFERENCES transportadores(id)
+

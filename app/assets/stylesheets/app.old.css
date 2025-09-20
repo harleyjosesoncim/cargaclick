@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilo padrão claro */
+body {
+  @apply bg-white text-gray-900;
+}
+
+/* Dark Mode ativado via .dark */
+.dark body {
+  @apply bg-gray-900 text-white;
+}
+
+.dark .card {
+  @apply bg-gray-800 text-white border-gray-700;
+}
+
+.dark .form-input {
+  @apply bg-gray-800 text-white border-gray-600;
+}
+
+#dark-toggle {
+  @apply hover:scale-110 transition-transform;
+}
+
+
+

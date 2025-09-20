@@ -1,0 +1,11 @@
+<h1 class="text-xl font-bold mb-4">Avaliações</h1>
+
+<ul class="space-y-4">
+  <% @avaliacoes.each do |avaliacao| %>
+    <li class="border p-3 rounded bg-gray-100">
+      <p><strong>Frete #<%= avaliacao.frete_id %></strong></p>
+      <p>Nota: <%= avaliacao.nota %> ⭐</p>
+      <p><%= avaliacao.comentario %></p>
+    </li>
+  <% end %>
+</ul>

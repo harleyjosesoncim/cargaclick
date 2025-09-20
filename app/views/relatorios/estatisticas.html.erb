@@ -1,0 +1,10 @@
+<h1 class="text-xl font-bold mb-4">Estatísticas</h1>
+
+<h2 class="font-semibold">Fretes por status:</h2>
+<ul class="list-disc ml-6">
+  <% @qtd_por_status.each do |status, qtd| %>
+    <li><%= status %>: <%= qtd %></li>
+  <% end %>
+</ul>
+
+<p class="mt-4">Média das notas: <%= @media_notas ? @media_notas.round(2) : "N/A" %></p>

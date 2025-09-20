@@ -1,0 +1,9 @@
+<%= turbo_stream.replace dom_id(@cotacao) do %>
+  <%= render partial: "cotacoes/cotacao", locals: { cotacao: @cotacao } %>
+<% end %>
+
+<%= turbo_stream.update "notice" do %>
+  <div class="bg-blue-100 text-blue-800 p-2 rounded">
+    Cotação atualizada com sucesso!
+  </div>
+<% end %>

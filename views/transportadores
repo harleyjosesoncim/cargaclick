@@ -1,0 +1,42 @@
+<div class="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg my-8">
+  <h2 class="text-2xl font-semibold mb-6">Cadastro de Transportador</h2>
+  <%= form_with model: @transportador, url: transportadores_path, local: true do |f| %>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <%= f.label :nome, 'Nome Completo', class: 'block text-gray-700' %>
+        <%= f.text_field :nome, class: 'w-full mt-1 rounded border-gray-300' %>
+      </div>
+      <div>
+        <%= f.label :cpf, 'CPF', class: 'block text-gray-700' %>
+        <%= f.text_field :cpf, class: 'w-full mt-1 rounded border-gray-300' %>
+      </div>
+      <div>
+        <%= f.label :telefone, 'Telefone (WhatsApp)', class: 'block text-gray-700' %>
+        <%= f.text_field :telefone, class: 'w-full mt-1 rounded border-gray-300' %>
+      </div>
+      <div>
+        <%= f.label :endereco, 'Endereço', class: 'block text-gray-700' %>
+        <%= f.text_field :endereco, class: 'w-full mt-1 rounded border-gray-300' %>
+      </div>
+      <div>
+        <%= f.label :cep, 'CEP', class: 'block text-gray-700' %>
+        <%= f.text_field :cep, class: 'w-full mt-1 rounded border-gray-300', placeholder: '00000-000' %>
+      </div>
+      <div>
+        <%= f.label :tipo_veiculo, 'Tipo de Veículo', class: 'block text-gray-700' %>
+        <%= f.select :tipo_veiculo, ['Caminhão', 'Van', 'Carro', 'Moto'], prompt: 'Selecione', class: 'w-full mt-1 rounded border-gray-300' %>
+      </div>
+      <div>
+        <%= f.label :capacidade_carga, 'Capacidade de Carga (kg)', class: 'block text-gray-700' %>
+        <%= f.number_field :capacidade_carga, class: 'w-full mt-1 rounded border-gray-300' %>
+      </div>
+      <div>
+        <%= f.label :valor_km, 'Valor cobrado por Km (R$)', class: 'block text-gray-700' %>
+        <%= f.number_field :valor_km, step: 0.01, class: 'w-full mt-1 rounded border-gray-300' %>
+      </div>
+    </div>
+    <div class="mt-6">
+      <%= f.submit 'Cadastrar Transportador', class: 'bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded' %>
+    </div>
+  <% end %>
+</div>

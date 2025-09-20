@@ -1,0 +1,21 @@
+<h1 class="text-2xl font-bold mb-6">📦 Detalhes do Frete</h1>
+
+<div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 space-y-4">
+  <p><strong>ID:</strong> <%= @frete.id %></p>
+  <p><strong>Cliente:</strong> <%= @frete.cliente&.nome || "—" %></p>
+  <p><strong>Transportador:</strong> <%= @frete.transportador&.nome || "—" %></p>
+  <p><strong>Origem:</strong> <%= @frete.origem %></p>
+  <p><strong>Destino:</strong> <%= @frete.destino %></p>
+
+  <div class="grid grid-cols-2 gap-4">
+    <p><strong>Valor Estimado:</strong> <%= number_to_currency(@frete.valor_estimado) if @frete.valor_estimado.present? %></p>
+    <p><strong>Valor Final:</strong> <%= number_to_currency(@frete.valor_final) if @frete.valor_final.present? %></p>
+  </div>
+
+  <p><strong>Status:</strong> <%= status_badge(@frete) %></p>
+</div>
+
+<div class="mt-6">
+  <%= link_to "← Voltar", fretes_path,
+              class: "inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition" %>
+</div>

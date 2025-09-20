@@ -1,0 +1,40 @@
+<%# app/views/layouts/_footer.html.erb %>
+<footer class="bg-gradient-to-r from-purple-700 to-purple-900 text-white py-6 mt-12 rounded-t-lg shadow-inner">
+  <div class="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between">
+    
+    <!-- Logo + Marca -->
+    <div class="mb-4 md:mb-0 text-center md:text-left">
+      <h2 class="text-xl font-extrabold tracking-wide">CargaClick 🚛</h2>
+      <p class="text-sm text-gray-300">Conectando clientes e transportadores</p>
+    </div>
+
+    <!-- Links rápidos -->
+    <ul class="flex flex-wrap justify-center md:justify-end space-x-6 text-sm font-semibold">
+      <li>
+        <%= link_to "Início", root_path,
+          class: "hover:text-yellow-300 transition duration-300 #{active_link_class(root_path)}" %>
+      </li>
+      <li>
+        <%= link_to "Fidelidade", fidelidade_path,
+          class: "hover:text-yellow-300 transition duration-300 #{active_link_class(fidelidade_path)}" %>
+      </li>
+      <li>
+        <%= link_to "Relatórios", relatorios_path,
+          class: "hover:text-yellow-300 transition duration-300 #{active_link_class(relatorios_path)}" %>
+      </li>
+      <li>
+        <%= link_to "Sobre", about_path,
+          class: "hover:text-yellow-300 transition duration-300 #{active_link_class(about_path)}" %>
+      </li>
+      <li>
+        <%= link_to "Contato", contato_path,
+          class: "hover:text-yellow-300 transition duration-300 #{active_link_class(contato_path)}" %>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Direitos autorais -->
+  <div class="mt-6 border-t border-purple-600 pt-4 text-center text-sm text-gray-300">
+    © <%= Time.current.year %> <strong>CargaClick</strong>. Todos os direitos reservados.
+  </div>
+</footer>

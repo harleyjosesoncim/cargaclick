@@ -1,0 +1,21 @@
+<%= turbo_stream.append "messages" do %>
+  <%= render partial: "messages/message", locals: { message: @message, frete: @frete } %>
+<% end %>
+
+<%= turbo_stream.replace "new_message" do %>
+  <%= turbo_frame_tag "new_message" do %>
+    <%= form_with(model: [@frete, @frete.messages.new],
+                  data: { turbo_frame: "messages" },
+                  class: "flex gap-2") do |f| %>
+      <%= f.text_field :content,
+            placeholder: "Digite sua mensagem...",
+            autofocus: true,
+            class: "flex-1 rounded-lg border-gray-300 dark:border-gray-700 
+                   dark:bg-gray-800 dark:text-white focus:ring-blue-500 focus:border-blue-500" %>
+      <%= f.submit "Enviar",
+            class: "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" %>
+    <% end %>
+  <% end %>
+<% end %>
+
+

@@ -1,0 +1,21 @@
+<%= form_with model: @admin do |form| %>
+  <%= form.label :nome %>
+  <%= form.text_field :nome %>
+
+  <%= form.label :email %>
+  <%= form.email_field :email %>
+
+  <%= form.label :telefone %>
+  <%= form.text_field :telefone %>
+
+  <%= form.label :cargo %>
+  <%= form.text_field :cargo %>
+
+  <%= form.label :password %>
+  <%= form.password_field :password %>
+
+  <%= form.label :password_confirmation %>
+  <%= form.password_field :password_confirmation %>
+
+  <%= form.submit "Cadastrar Administrador" %>
+<% end %>

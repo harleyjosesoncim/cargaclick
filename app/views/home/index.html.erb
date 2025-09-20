@@ -1,0 +1,88 @@
+<%# app/views/home/index.html.erb %>
+<% content_for :title, "CargaClick — Início" %>
+
+<div class="min-h-screen flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-900 px-6 py-16">
+
+  <!-- Título -->
+  <h1 class="text-4xl font-extrabold mb-12 text-gray-800 dark:text-gray-100 text-center">
+    Bem-vindo ao <span class="text-blue-600 dark:text-blue-400">CargaClick</span> 🚛
+  </h1>
+
+  <!-- Linha principal de cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 w-full max-w-6xl mb-16">
+
+    <!-- Cliente -->
+    <% if cliente_signed_in? %>
+      <%= render "shared/card",
+            icon: "👤",
+            title: "Área do Cliente",
+            label: "Entrar",
+            path: cliente_path(current_cliente),
+            color: "blue" %>
+    <% else %>
+      <%= render "shared/card",
+            icon: "👤",
+            title: "Cliente",
+            label: "Login / Cadastro",
+            path: new_cliente_session_path,
+            color: "blue" %>
+    <% end %>
+
+    <!-- Transportador -->
+    <% if transportador_signed_in? %>
+      <%= render "shared/card",
+            icon: "🚚",
+            title: "Área do Transportador",
+            label: "Entrar",
+            path: transportador_path(current_transportador),
+            color: "green" %>
+    <% else %>
+      <%= render "shared/card",
+            icon: "🚚",
+            title: "Transportador",
+            label: "Login / Cadastro",
+            path: new_transportador_session_path,
+            color: "green" %>
+    <% end %>
+
+    <!-- Solicitar Frete -->
+    <%= render "shared/card",
+          icon: "📦",
+          title: "Solicitar Frete",
+          label: "Simular / Solicitar",
+          path: new_frete_path,
+          color: "yellow" %>
+  </div>
+
+  <!-- Linha secundária -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 w-full max-w-6xl">
+    <%= render "shared/card",
+          icon: "⭐",
+          title: "Fidelidade",
+          label: "Benefícios",
+          path: fidelidade_path,
+          color: "yellow" %>
+
+    <%= render "shared/card",
+          icon: "📊",
+          title: "Relatórios",
+          label: "Consultar",
+          path: relatorios_path,
+          color: "purple" %>
+
+    <%= render "shared/card",
+          icon: "ℹ️",
+          title: "Sobre",
+          label: "Saiba mais",
+          path: about_path,
+          color: "blue" %>
+
+    <%= render "shared/card",
+          icon: "📩",
+          title: "Contato",
+          label: "Fale conosco",
+          path: contato_path,
+          color: "green" %>
+  </div>
+</div>
+

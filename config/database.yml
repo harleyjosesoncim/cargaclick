@@ -1,0 +1,28 @@
+# config/database.yml
+
+default: &default
+  adapter: postgresql
+  encoding: unicode
+
+  # Pool = WEB_CONCURRENCY * RAILS_MAX_THREADS + 2
+  pool: <%= ENV.fetch("DB_POOL") { (ENV.fetch("WEB_CONCURRENCY", "2").to_i * ENV.fetch("RAILS_MAX_THREADS", "5").to_i + 2) } %>
+  checkout_timeout: <%= ENV.fetch("DB_CHECKOUT_TIMEOUT", "5") %>
+
+  variables:
+    statement_timeout: <%= ENV.fetch("DB_STATEMENT_TIMEOUT_MS", "15000") %>
+    lock_timeout: <%= ENV.fetch("DB_LOCK_TIMEOUT_MS", "5000") %>
+
+development:
+  <<: *default
+  url: <%= ENV["DATABASE_URL"].presence || "postgres://postgres:1234@localhost:5432/cargaclick_development" %>
+
+test:
+  <<: *default
+  url: <%= ENV["DATABASE_URL"].presence || "postgres://postgres:1234@localhost:5432/cargaclick_test" %>
+
+production:
+  <<: *default
+  url: <%= ENV["DATABASE_URL"].presence || "postgresql://cargaclick:1QorVMfO1pLRCJsJkAfV8weh5b9zgBJP@dpg-d2eub08dl3ps73e0c0l0-a.oregon-postgres.render.com:5432/cargaclick_production?sslmode=require" %>
+
+  reaping_frequency: <%= ENV.fetch("DB_REAPING_FREQUENCY", "10") %>
+  prepared_statements: <%= ENV.fetch("DB_PREPARED_STATEMENTS", "true") == "true" %>

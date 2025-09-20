@@ -1,0 +1,42 @@
+<%# app/views/home/index.html.erb %>
+
+<div class="container mx-auto px-4 py-6">
+  <h1 class="text-2xl font-bold mb-6">Bem-vindo ao CargaClick 🚚</h1>
+
+  <%# ============================================================
+      Card do Chat aparece só se logado e com negociação ativa
+      ============================================================ %>
+  <% if (cliente_signed_in? && current_cliente.fretes.where(status: "em_negociacao").exists?) ||
+        (transportador_signed_in? && current_transportador.fretes.where(status: "em_negociacao").exists?) %>
+    <%= render "card",
+          icon: "💬",
+          title: "Chat",
+          label: "Conversar",
+          path: chats_path,
+          color: "indigo" %>
+  <% end %>
+
+  <%# ============================================================
+      Outros cards / atalhos (exemplo)
+      ============================================================ %>
+  <%= render "card",
+        icon: "📝",
+        title: "Novo Frete",
+        label: "Solicitar",
+        path: new_frete_path,
+        color: "emerald" %>
+
+  <%= render "card",
+        icon: "🚛",
+        title: "Transportadores",
+        label: "Listar",
+        path: transportadores_path,
+        color: "blue" %>
+
+  <%= render "card",
+        icon: "📊",
+        title: "Relatórios",
+        label: "Ver",
+        path: relatorios_path,
+        color: "amber" %>
+</div>

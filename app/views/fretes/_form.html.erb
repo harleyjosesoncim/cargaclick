@@ -1,0 +1,108 @@
+<%= form_with(model: frete, local: true, class: "space-y-8") do |f| %>
+  <% if frete.errors.any? %>
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow mb-6">
+      <h2 class="font-bold flex items-center gap-2">
+        ⚠ <span><%= pluralize(frete.errors.count, "erro") %> impediram o salvamento:</span>
+      </h2>
+      <ul class="mt-2 list-disc list-inside text-sm">
+        <% frete.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <!-- Grid responsivo -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Origem -->
+    <div>
+      <%= f.label :cep_origem, "Origem (CEP ou Endereço)",
+                  class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+      <div class="relative mt-1">
+        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+          <!-- Heroicon location -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 11c0-1.104.896-2 2-2s2 .896 2 2a2 2 0 11-4 0zM12 2a9 9 0 00-9 9c0 7 9 13 9 13s9-6 9-13a9 9 0 00-9-9z" />
+          </svg>
+        </span>
+        <%= f.text_field :cep_origem,
+                         placeholder: "Ex: 18000-000",
+                         class: "pl-10 w-full rounded-lg border-gray-300 shadow-sm 
+                                 focus:border-blue-500 focus:ring-blue-500 sm:text-sm 
+                                 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+      </div>
+      <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Digite o CEP ou endereço completo da coleta.</p>
+    </div>
+
+    <!-- Destino -->
+    <div>
+      <%= f.label :cep_destino, "Destino (CEP ou Endereço)",
+                  class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+      <div class="relative mt-1">
+        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+          <!-- Heroicon location -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 11c0-1.104.896-2 2-2s2 .896 2 2a2 2 0 11-4 0zM12 2a9 9 0 00-9 9c0 7 9 13 9 13s9-6 9-13a9 9 0 00-9-9z" />
+          </svg>
+        </span>
+        <%= f.text_field :cep_destino,
+                         placeholder: "Ex: 11000-000",
+                         class: "pl-10 w-full rounded-lg border-gray-300 shadow-sm 
+                                 focus:border-blue-500 focus:ring-blue-500 sm:text-sm 
+                                 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+      </div>
+      <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Digite o CEP ou endereço de entrega.</p>
+    </div>
+  </div>
+
+  <!-- Grid para peso e volume -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Peso -->
+    <div>
+      <%= f.label :peso, "Peso (kg)", class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+      <div class="relative mt-1">
+        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+          <!-- Heroicon balança -->
+          ⚖️
+        </span>
+        <%= f.number_field :peso,
+                           step: 0.01,
+                           min: 0,
+                           placeholder: "Ex: 120.5",
+                           class: "pl-10 w-full rounded-lg border-gray-300 shadow-sm 
+                                   focus:border-blue-500 focus:ring-blue-500 sm:text-sm 
+                                   dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+      </div>
+      <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Peso aproximado da carga em quilogramas.</p>
+    </div>
+
+    <!-- Volume -->
+    <div>
+      <%= f.label :volume, "Volume (m³)", class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+      <div class="relative mt-1">
+        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+          📦
+        </span>
+        <%= f.number_field :volume,
+                           step: 0.01,
+                           min: 0,
+                           placeholder: "Ex: 3.2",
+                           class: "pl-10 w-full rounded-lg border-gray-300 shadow-sm 
+                                   focus:border-blue-500 focus:ring-blue-500 sm:text-sm 
+                                   dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+      </div>
+      <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Volume aproximado da carga em metros cúbicos.</p>
+    </div>
+  </div>
+
+  <!-- Botões -->
+  <div class="flex flex-col sm:flex-row gap-4">
+    <%= f.submit (frete.persisted? ? "Atualizar Frete" : "Criar Frete"),
+          class: "flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition" %>
+
+    <%= link_to "Cancelar", fretes_path,
+          class: "flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-4 py-2 rounded-lg shadow transition text-center" %>
+  </div>
+<% end %>

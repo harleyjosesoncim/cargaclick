@@ -1,0 +1,15 @@
+<%= form_with(model: [frete, message],
+              data: { turbo_frame: "messages" },
+              class: "flex gap-2 mt-3") do |f| %>
+  <%= f.text_field :content,
+                   placeholder: "Digite sua mensagem...",
+                   class: "flex-1 border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
+
+  <%= f.submit "Enviar",
+               class: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition" %>
+<% end %>
+<%# 
+  Formulário para envio de mensagens em um frete.
+  Utiliza `form_with` para criar um formulário que envia a mensagem associada ao frete.
+  O campo de texto permite ao usuário digitar a mensagem, e o botão de envio submete o formulário.
+  A classe CSS aplicada ao formulário garante um layout flexível e espaçamento adequado entre os elementos.

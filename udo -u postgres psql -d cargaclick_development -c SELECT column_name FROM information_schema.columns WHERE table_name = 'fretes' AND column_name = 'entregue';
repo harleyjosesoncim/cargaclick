@@ -1,0 +1,36 @@
+                                                   Table "public.fretes"
+            Column             |              Type              | Collation | Nullable |              Default               
+-------------------------------+--------------------------------+-----------+----------+------------------------------------
+ id                            | bigint                         |           | not null | nextval('fretes_id_seq'::regclass)
+ cliente_id                    | integer                        |           |          | 
+ transportador_id              | integer                        |           |          | 
+ volume                        | double precision               |           |          | 
+ ponto_referencia              | character varying              |           |          | 
+ horario_entrega               | character varying              |           |          | 
+ previsao_chegada              | character varying              |           |          | 
+ previsao_km                   | double precision               |           |          | 
+ valor_total                   | double precision               |           |          | 
+ aceite_responsabilidade       | boolean                        |           |          | 
+ created_at                    | timestamp(6) without time zone |           | not null | 
+ updated_at                    | timestamp(6) without time zone |           | not null | 
+ cep_origem                    | character varying              |           |          | 
+ cep_destino                   | character varying              |           |          | 
+ peso                          | numeric(8,2)                   |           |          | 
+ distancia                     | numeric(8,2)                   |           |          | 
+ valor_estimado                | numeric(10,2)                  |           |          | 
+ latitude                      | double precision               |           |          | 
+ longitude                     | double precision               |           |          | 
+ cep_atual                     | character varying              |           |          | 
+ latitude_atual_transportador  | double precision               |           |          | 
+ longitude_atual_transportador | double precision               |           |          | 
+ origem                        | character varying              |           |          | 
+ destino                       | character varying              |           |          | 
+ descricao                     | text                           |           |          | 
+ largura                       | integer                        |           |          | 
+ altura                        | integer                        |           |          | 
+ profundidade                  | integer                        |           |          | 
+ status                        | integer                        |           |          | 0
+ contatos_liberados            | boolean                        |           |          | 
+Indexes:
+    "fretes_pkey" PRIMARY KEY, btree (id)
+

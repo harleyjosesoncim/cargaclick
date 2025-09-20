@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- SEO & Social Tags -->
+    <%= render_meta_tags(
+          title:       content_for?(:title)       ? yield(:title)       : "CargaClick 🚚",
+          description: content_for?(:description) ? yield(:description) : "Conectando clientes e transportadores de forma simples e eficiente.",
+          image:       asset_url("cargaclick_og.png"),
+          url:         request.original_url
+        ) %>
+
+    <!-- Segurança -->
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <!-- Estilos -->
+    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+
+    <!-- Scripts -->
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+
+    <!-- Alpine.js para interações dinâmicas -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  </head>
+
+  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen font-sans antialiased flex flex-col">
+
+    <!-- Navbar global fixa -->
+    <header>
+      <%= render "layouts/navbar" %>
+    </header>
+
+    <!-- Flash messages -->
+    <% if lookup_context.exists?("shared/flash") %>
+      <section class="container mx-auto mt-4 px-4">
+        <%= render "shared/flash" %>
+      </section>
+    <% end %>
+
+    <!-- Conteúdo principal -->
+    <main class="container mx-auto flex-1 px-4 pt-24 pb-8">
+      <%= yield %>
+    </main>
+
+    <!-- Rodapé global -->
+    <footer>
+      <%= render "layouts/footer" %>
+    </footer>
+
+  </body>
+</html>

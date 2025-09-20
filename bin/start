@@ -1,0 +1,27 @@
+# no diretório do projeto
+cat > bin/start <<'BASH'
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+echo "===> Boot CargaClick (env: ${RAILS_ENV:-production})"
+
+export RAILS_ENV=${RAILS_ENV:-production}
+export RACK_ENV=${RACK_ENV:-$RAILS_ENV}
+export NODE_ENV=${NODE_ENV:-production}
+
+# Falha rápido se faltar secret (Render define via Settings → Environment)
+: "${RAILS_MASTER_KEY:?RAILS_MASTER_KEY is required}"
+: "${SECRET_KEY_BASE:?SECRET_KEY_BASE is required}"
+
+echo "===> Rodando migrações..."
+bundle exec rails db:migrate
+
+# Precompila assets no runtime (com envs reais)
+if ! ls public/assets/manifest-*.json >/dev/null 2>&1; then
+  echo "===> Precompilando assets..."
+  bundle exec rails assets:precompile
+fi
+
+echo "===> Iniciando Puma..."
+exec bundle exec puma -C config/puma.rb
+BASH

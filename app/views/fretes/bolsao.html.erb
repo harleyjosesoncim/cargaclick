@@ -1,0 +1,17 @@
+<div class="max-w-4xl mx-auto p-6">
+  <h1 class="text-2xl font-semibold mb-4">Bolsão de Solicitações</h1>
+  <% if @fretes.any? %>
+    <ul class="space-y-3">
+      <% @fretes.each do |f| %>
+        <li class="p-4 bg-white rounded shadow">
+          <p class="font-semibold"><%= f.origem %> → <%= f.destino %></p>
+          <p class="text-sm text-gray-500">
+            Criado em <%= l(f.created_at, format: :short) %>
+          </p>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="text-gray-600">Nenhuma solicitação publicada ainda.</p>
+  <% end %>
+</div>

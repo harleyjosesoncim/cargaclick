@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: cargaclick_production
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build: .
+    command: bundle exec puma -C config/puma.rb
+    ports:
+      - "3000:3000"   # agora bate certinho com Puma escutando em 3000
+    environment:
+      RAILS_ENV: production
+      RACK_ENV: production
+      DATABASE_URL: postgres://postgres:password@db:5432/cargaclick_production
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}  # usa seu master.key real
+      RAILS_LOG_TO_STDOUT: "true"
+      RAILS_SERVE_STATIC_FILES: "true"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:

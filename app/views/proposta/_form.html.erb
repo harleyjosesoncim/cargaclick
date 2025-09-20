@@ -1,0 +1,37 @@
+<%= form_with(model: propostum) do |form| %>
+  <% if propostum.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(propostum.errors.count, "error") %> prohibited this propostum from being saved:</h2>
+
+      <ul>
+        <% propostum.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :frete_id, style: "display: block" %>
+    <%= form.text_field :frete_id %>
+  </div>
+
+  <div>
+    <%= form.label :transportador_id, style: "display: block" %>
+    <%= form.text_field :transportador_id %>
+  </div>
+
+  <div>
+    <%= form.label :valor_proposto, style: "display: block" %>
+    <%= form.text_field :valor_proposto %>
+  </div>
+
+  <div>
+    <%= form.label :observacao, style: "display: block" %>
+    <%= form.text_area :observacao %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

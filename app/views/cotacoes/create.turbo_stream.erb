@@ -1,0 +1,9 @@
+<%= turbo_stream.prepend "cotacoes" do %>
+  <%= render partial: "cotacoes/cotacao", locals: { cotacao: @cotacao } %>
+<% end %>
+
+<%= turbo_stream.update "notice" do %>
+  <div class="bg-green-100 text-green-800 p-2 rounded">
+    Cotação criada com sucesso!
+  </div>
+<% end %>

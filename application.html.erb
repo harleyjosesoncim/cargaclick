@@ -1,0 +1,49 @@
+<!-- app/views/layouts/application.html.erb -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- SEO & Social Tags -->
+    <%= render_meta_tags(
+          title: content_for?(:title) ? yield(:title) : "CargaClick",
+          description: content_for?(:description) ? yield(:description) : "CargaClick conecta você ao melhor transporte de cargas.",
+          image: asset_url("cargaclick_og.png"),
+          url: request.original_url
+        ) %>
+
+    <!-- Segurança -->
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <!-- CSS principal -->
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "custom", "data-turbo-track": "reload" %>
+
+    <!-- JS da aplicação -->
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+
+    <!-- AlpineJS para interatividade (menu mobile, toggle etc.) -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  </head>
+
+  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen font-sans antialiased flex flex-col">
+
+    <!-- Navbar global -->
+    <%= render "layouts/navbar" %>
+
+    <!-- Flash messages -->
+    <%= render("shared/flash") if lookup_context.exists?("shared/flash") %>
+
+    <!-- Conteúdo principal -->
+    <main class="container mx-auto flex-1 px-4 py-8">
+      <%= yield %>
+    </main>
+
+    <!-- Rodapé global -->
+    <%= render "layouts/footer" %>
+
+  </body>
+</html>

@@ -1,0 +1,8 @@
+<% case frete.status %>
+<% when "aguardando" %>
+  <span class="text-yellow-500">⏱️ Aguardando Coleta</span>
+<% when "em_transito" %>
+  <span class="text-blue-500">🚚 A Caminho</span>
+<% when "entregue" %>
+  <span class="text-green-600">✅ Entregue</span>
+<% end %>
