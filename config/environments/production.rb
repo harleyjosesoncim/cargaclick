@@ -13,7 +13,9 @@ Rails.application.configure do
   # CACHE & ARQUIVOS ESTÁTICOS
   # ============================================================
   config.action_controller.perform_caching = true
-  config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
+  
+  # Forçar o Rails a servir arquivos estáticos (CSS/JS pré-compilados)
+  config.public_file_server.enabled = true
 
   # Compressão e compilação de assets
   config.assets.js_compressor  = :terser   # Compatível com ES6+
