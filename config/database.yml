@@ -22,7 +22,7 @@ test:
 
 production:
   <<: *default
-  url: <%= ENV["DATABASE_URL"].presence || "postgresql://cargaclick:1QorVMfO1pLRCJsJkAfV8weh5b9zgBJP@dpg-d2eub08dl3ps73e0c0l0-a.oregon-postgres.render.com:5432/cargaclick_production?sslmode=require" %>
+  url: <%= ENV.fetch("DATABASE_URL") %>
 
   reaping_frequency: <%= ENV.fetch("DB_REAPING_FREQUENCY", "10") %>
   prepared_statements: <%= ENV.fetch("DB_PREPARED_STATEMENTS", "true") == "true" %>
