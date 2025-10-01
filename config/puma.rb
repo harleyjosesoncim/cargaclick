@@ -1,5 +1,4 @@
 # config/puma.rb
-# config/puma.rb
 # Puma configuration for CargaClick (Render/Docker ready)
 
 # Threads (mínimo e máximo iguais por simplicidade)
@@ -13,17 +12,22 @@ port ENV.fetch("PORT") { 3000 }
 environment ENV.fetch("RAILS_ENV") { "production" }
 
 # Workers (processos paralelos)
-# Se não setado, cai para single-mode
+# Render recomenda usar WEB_CONCURRENCY conforme plano
 workers ENV.fetch("WEB_CONCURRENCY") { 2 }
 
 # Preload melhora uso de memória em produção
 preload_app!
 
-# Reconexão de DB após fork
+# Reconexão de DB após fork (necessário no Render)
 on_worker_boot do
+  ActiveRecord::Base.connection_pool.disconnect! rescue ActiveRecord::ConnectionNotEstablished
   ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
 end
 
 # Permite `rails restart`
 plugin :tmp_restart
+
+# Bind explícito para funcionar no Docker/Render
+bind "tcp://0.0.0.0:#{ENV.fetch("PORT") { 3000 }}"
+
 
