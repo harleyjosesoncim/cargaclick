@@ -12,7 +12,6 @@ port ENV.fetch("PORT") { 3000 }
 environment ENV.fetch("RAILS_ENV") { "production" }
 
 # Workers (processos paralelos)
-# Render recomenda usar WEB_CONCURRENCY conforme plano
 workers ENV.fetch("WEB_CONCURRENCY") { 2 }
 
 # Preload melhora uso de memória em produção
@@ -26,8 +25,3 @@ end
 
 # Permite `rails restart`
 plugin :tmp_restart
-
-# Bind explícito para funcionar no Docker/Render
-bind "tcp://0.0.0.0:#{ENV.fetch("PORT") { 3000 }}"
-
-
