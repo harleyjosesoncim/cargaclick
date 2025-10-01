@@ -1,40 +1,44 @@
-# Etapa 1: Build - Onde as dependências são instaladas e os assets pré-compilados
+# ================================================================
+# Etapa 1: Build - instala dependências e pré-compila assets
+# ================================================================
 FROM ruby:3.2.4 AS build
 
-# Instalação de dependências de sistema para o build
+# Dependências necessárias no build
 RUN apt-get update -qq && apt-get install -y nodejs yarn build-essential libpq-dev
 
 WORKDIR /app
 
-# Copia Gemfile para aproveitar o cache do Docker
+# Copia Gemfile para aproveitar cache
 COPY Gemfile Gemfile.lock ./
 RUN gem install bundler && bundle install --without development test
 
-# Copia o restante do código da aplicação
+# Copia restante do código da aplicação
 COPY . .
 
-# Pré-compilação de assets
-# O SECRET_KEY_BASE é necessário para o Rails rodar a pré-compilação
+# Variáveis mínimas para build
 ENV RAILS_ENV=production
 ENV SECRET_KEY_BASE=dummy_key
+# Dummy DATABASE_URL só para evitar erro no build
+ENV DATABASE_URL=postgres://postgres:1234@localhost:5432/dummy
+
+# Pré-compilação de assets
 RUN bundle exec rails assets:precompile
 
-# ---
-# Etapa 2: Runtime - Uma imagem final mais leve para rodar a aplicação
+# ================================================================
+# Etapa 2: Runtime - imagem final mais leve
+# ================================================================
 FROM ruby:3.2.4
 
-# Instalação de dependências de sistema necessárias APENAS para o runtime
+# Dependências necessárias apenas para runtime
 RUN apt-get update -qq && apt-get install -y libpq-dev
 
 WORKDIR /app
 
-# Copia o diretório de instalação do Bundler completo da etapa de build
-# Esta é a linha mais importante para resolver o problema!
+# Copia gems já instaladas da etapa de build
 COPY --from=build /usr/local/bundle /usr/local/bundle
 
-# Copia todos os arquivos da aplicação da etapa de build, incluindo os assets pré-compilados
+# Copia código da aplicação (já com assets pré-compilados)
 COPY --from=build /app /app
 
-# Comando para iniciar a aplicação com o Puma
+# Comando padrão para iniciar o Puma
 CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
-
