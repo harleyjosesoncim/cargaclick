@@ -22,7 +22,6 @@ test:
 
 production:
   <<: *default
-  url: <%= ENV.fetch("DATABASE_URL") %>
-
+  url: <%= ENV["DATABASE_URL"].presence || "postgres://localhost:5432/dummy" %>
   reaping_frequency: <%= ENV.fetch("DB_REAPING_FREQUENCY", "10") %>
   prepared_statements: <%= ENV.fetch("DB_PREPARED_STATEMENTS", "true") == "true" %>
