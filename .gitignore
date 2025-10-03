@@ -72,3 +72,18 @@ ghp_*                      # Tokens do GitHub Pages
 /app/assets/builds/*
 !/app/assets/builds/.keep
 /config/master.key
+
+# --- harden: não versionar caches/artefatos ---
+/tmp/*
+!/tmp/.keep
+/log/*
+!/log/.keep
+/storage/*
+!/storage/.keep
+/public/assets
+/node_modules
+.byebug_history
+/config/master.key
+.env
+.env.*
+/vendor/bundle
