@@ -4,17 +4,42 @@ Rails.application.routes.draw do
   # ===============================================================
   # AUTENTICAÇÃO (Devise + ActiveAdmin)
   # ===============================================================
-  devise_for :transportadores
+
+  # Admin (ActiveAdmin)
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
 
+  # Transportadores (usa controllers gerados)
+  devise_for :transportadores,
+             path: "transportadores",
+             controllers: {
+               sessions:      "transportadores/sessions",
+               registrations: "transportadores/registrations",
+               passwords:     "transportadores/passwords",
+               confirmations: "transportadores/confirmations"
+             },
+             path_names: {
+               sign_in:  "entrar",
+               sign_out: "sair",
+               sign_up:  "cadastro"
+             },
+             sign_out_via: [:delete, :get]
+
+  # Clientes (usa controllers gerados)
   devise_for :clientes,
              path: "clientes",
              controllers: {
                sessions:      "clientes/sessions",
                registrations: "clientes/registrations",
-               passwords:     "clientes/passwords"
-             }
+               passwords:     "clientes/passwords",
+               confirmations: "clientes/confirmations"
+             },
+             path_names: {
+               sign_in:  "entrar",
+               sign_out: "sair",
+               sign_up:  "cadastro"
+             },
+             sign_out_via: [:delete, :get]
 
   # ===============================================================
   # HEALTHCHECK
@@ -25,17 +50,17 @@ Rails.application.routes.draw do
   # PÁGINAS PÚBLICAS
   # ===============================================================
   get "home",       to: "home#index",      as: :home
-  get "sobre",      to: "home#about",      as: :about   # corrigido
+  get "sobre",      to: "home#about",      as: :about
   get "fidelidade", to: "home#fidelidade", as: :fidelidade
   get "contato",    to: "contatos#new",    as: :contato
 
   # ===============================================================
   # FORMULÁRIO DE CONTATO
   # ===============================================================
-  resources :contatos, only: [:new, :create]
+  resources :contatos, only: %i[new create]
 
   # ===============================================================
-  # ROOTS
+  # ROOTS (com Devise helpers)
   # ===============================================================
   authenticated :cliente do
     root "fretes#index", as: :authenticated_root
@@ -44,8 +69,7 @@ Rails.application.routes.draw do
   unauthenticated do
     root "home#index", as: :unauthenticated_root
   end
-
-  root "home#index"
+  # (evita declarar um terceiro `root` redundante)
 
   # ===============================================================
   # CLIENTES & TRANSPORTADORES
@@ -58,7 +82,6 @@ Rails.application.routes.draw do
     member do
       get :fidelidade
     end
-
     resources :cotacoes,   only: [:index]
     resources :pagamentos, only: [:index]
   end
@@ -67,16 +90,16 @@ Rails.application.routes.draw do
   # FRETES & COTAÇÕES
   # ===============================================================
   resources :fretes do
-    resources :cotacoes, only: [:index, :new, :create]
+    resources :cotacoes, only: %i[index new create]
 
-    resources :messages, only: [:index, :create] do
+    resources :messages, only: %i[index create] do
       member do
         patch :mark_as_read
         patch :mark_as_important
       end
     end
 
-    resources :pagamentos, only: [:index, :create]
+    resources :pagamentos, only: %i[index create]
 
     member do
       get :pagar
@@ -84,7 +107,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :cotacoes, only: [:index, :show, :edit, :update, :destroy] do
+  resources :cotacoes, only: %i[index show edit update destroy] do
     member do
       post :aceitar
       post :recusar
@@ -113,7 +136,7 @@ Rails.application.routes.draw do
   # ===============================================================
   # AVALIAÇÕES
   # ===============================================================
-  resources :avaliacoes, only: [:index, :new, :create, :show]
+  resources :avaliacoes, only: %i[index new create show]
 
   # ===============================================================
   # ATALHOS
@@ -125,12 +148,11 @@ Rails.application.routes.draw do
   # ===============================================================
   # PAGAMENTOS GLOBAIS
   # ===============================================================
-  resources :pagamentos, only: [:index, :show, :create] do
+  resources :pagamentos, only: %i[index show create] do
     member do
       post  :checkout
       patch :cancelar
     end
-
     collection do
       get  :retorno
       post :webhook
@@ -140,11 +162,4 @@ Rails.application.routes.draw do
       get  :pendente
     end
   end
-
-  # ===============================================================
-  # RELATÓRIOS
-  # ===============================================================
-  get "relatorios",              to: "relatorios#index",        as: :relatorios
-  get "relatorios/ganhos",       to: "relatorios#ganhos",       as: :relatorios_ganhos
-  get "relatorios/estatisticas", to: "relatorios#estatisticas", as: :relatorios_estatisticas
 end

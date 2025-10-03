@@ -1,13 +1,9 @@
 # config/database.yml
-
 default: &default
   adapter: postgresql
   encoding: unicode
-
-  # Pool = WEB_CONCURRENCY * RAILS_MAX_THREADS + 2
   pool: <%= ENV.fetch("DB_POOL") { (ENV.fetch("WEB_CONCURRENCY", "2").to_i * ENV.fetch("RAILS_MAX_THREADS", "5").to_i + 2) } %>
   checkout_timeout: <%= ENV.fetch("DB_CHECKOUT_TIMEOUT", "5") %>
-
   variables:
     statement_timeout: <%= ENV.fetch("DB_STATEMENT_TIMEOUT_MS", "15000") %>
     lock_timeout: <%= ENV.fetch("DB_LOCK_TIMEOUT_MS", "5000") %>
@@ -22,6 +18,5 @@ test:
 
 production:
   <<: *default
-  url: <%= ENV["DATABASE_URL"].presence || "postgres://localhost:5432/dummy" %>
-  reaping_frequency: <%= ENV.fetch("DB_REAPING_FREQUENCY", "10") %>
-  prepared_statements: <%= ENV.fetch("DB_PREPARED_STATEMENTS", "true") == "true" %>
+  url: <%= ENV["DATABASE_URL"] || "postgres://USER:PASS@35.227.164.209:5432/cargaclick_prod?sslmode=require" %>
+

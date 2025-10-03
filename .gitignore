@@ -71,3 +71,4 @@ ghp_*                      # Tokens do GitHub Pages
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
+/config/master.key
