@@ -4,12 +4,9 @@ Rails.application.routes.draw do
   # ===============================================================
   # AUTENTICAÇÃO (Devise + ActiveAdmin)
   # ===============================================================
-
-  # Admin (ActiveAdmin)
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
 
-  # Transportadores (usa controllers gerados)
   devise_for :transportadores,
              path: "transportadores",
              controllers: {
@@ -18,14 +15,9 @@ Rails.application.routes.draw do
                passwords:     "transportadores/passwords",
                confirmations: "transportadores/confirmations"
              },
-             path_names: {
-               sign_in:  "entrar",
-               sign_out: "sair",
-               sign_up:  "cadastro"
-             },
+             path_names: { sign_in: "entrar", sign_out: "sair", sign_up: "cadastro" },
              sign_out_via: [:delete, :get]
 
-  # Clientes (usa controllers gerados)
   devise_for :clientes,
              path: "clientes",
              controllers: {
@@ -34,11 +26,7 @@ Rails.application.routes.draw do
                passwords:     "clientes/passwords",
                confirmations: "clientes/confirmations"
              },
-             path_names: {
-               sign_in:  "entrar",
-               sign_out: "sair",
-               sign_up:  "cadastro"
-             },
+             path_names: { sign_in: "entrar", sign_out: "sair", sign_up: "cadastro" },
              sign_out_via: [:delete, :get]
 
   # ===============================================================
@@ -55,21 +43,30 @@ Rails.application.routes.draw do
   get "contato",    to: "contatos#new",    as: :contato
 
   # ===============================================================
-  # FORMULÁRIO DE CONTATO
-  # ===============================================================
-  resources :contatos, only: %i[new create]
-
-  # ===============================================================
-  # ROOTS (com Devise helpers)
+  # ROOTS
   # ===============================================================
   authenticated :cliente do
     root "fretes#index", as: :authenticated_root
   end
-
   unauthenticated do
     root "home#index", as: :unauthenticated_root
   end
-  # (evita declarar um terceiro `root` redundante)
+
+  # ===============================================================
+  # CONTATO
+  # ===============================================================
+  resources :contatos, only: %i[new create]
+
+  # ===============================================================
+  # RELATÓRIOS (novo)
+  # ===============================================================
+  resources :relatorios, only: [:index] do
+    collection do
+      get :ganhos
+      get :avaliacoes
+      get :estatisticas
+    end
+  end
 
   # ===============================================================
   # CLIENTES & TRANSPORTADORES
@@ -87,7 +84,7 @@ Rails.application.routes.draw do
   end
 
   # ===============================================================
-  # FRETES & COTAÇÕES
+  # FRETES, COTAÇÕES, MENSAGENS
   # ===============================================================
   resources :fretes do
     resources :cotacoes, only: %i[index new create]
@@ -146,7 +143,7 @@ Rails.application.routes.draw do
   get "calcular_fretes", to: "fretes#new",   as: :calcular_fretes
 
   # ===============================================================
-  # PAGAMENTOS GLOBAIS
+  # PAGAMENTOS (GLOBAL)
   # ===============================================================
   resources :pagamentos, only: %i[index show create] do
     member do
@@ -163,3 +160,6 @@ Rails.application.routes.draw do
     end
   end
 end
+# ===============================================================
+# CONTROLLER: RELATÓRIOS
+# ===============================================================

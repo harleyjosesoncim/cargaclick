@@ -1,8 +1,7 @@
-<!-- app/views/layouts/_navbar.html.erb -->
 <nav x-data="{ open: false }" class="bg-purple-800 p-4 shadow-lg fixed top-0 left-0 w-full z-50">
   <div class="container mx-auto flex items-center justify-between">
     <!-- Logo -->
-    <%= link_to root_path, class: "text-white text-2xl font-bold flex items-center hover:text-purple-200 transition" do %>
+    <%= link_to home_link_path, class: "text-white text-2xl font-bold flex items-center hover:text-purple-200 transition" do %>
       CargaClick <span class="ml-2 text-lg">🚚</span>
     <% end %>
 
@@ -18,7 +17,7 @@
     <!-- Botões Desktop -->
     <ul class="hidden md:flex space-x-4 items-center">
       <!-- Cliente -->
-      <% if current_cliente %>
+      <% if cliente_signed_in? %>
         <li>
           <%= link_to "Área do Cliente",
                       cliente_path(current_cliente),
@@ -33,7 +32,7 @@
       <% end %>
 
       <!-- Transportador -->
-      <% if current_transportador %>
+      <% if transportador_signed_in? %>
         <li>
           <%= link_to "Área do Transportador",
                       transportador_path(current_transportador),
@@ -50,7 +49,7 @@
 
     <!-- Botão Hamburguer Mobile -->
     <div class="md:hidden">
-      <button @click="open = !open" class="text-white focus:outline-none">
+      <button @click="open = !open" class="text-white focus:outline-none" aria-label="Abrir menu">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <!-- Ícone hamburguer -->
           <path :class="{'hidden': open, 'inline-flex': !open}" class="inline-flex"
@@ -75,32 +74,51 @@
        x-transition:leave-end="opacity-0 -translate-y-2"
        class="md:hidden mt-4 space-y-2 bg-purple-700 rounded-lg p-4 shadow-lg">
 
-    <%= link_to "Simular Frete", calcular_fretes_path, class: "block text-white hover:text-yellow-300" %>
-    <%= link_to "Fidelidade", fidelidade_path, class: "block text-white hover:text-yellow-300" %>
-    <%= link_to "Relatórios", relatorios_path, class: "block text-white hover:text-yellow-300" %>
-    <%= link_to "Sobre", about_path, class: "block text-white hover:text-yellow-300" %>
-    <%= link_to "Contato", contato_path, class: "block text-white hover:text-yellow-300" %>
+    <%= link_to "Simular Frete", calcular_fretes_path, class: "block text-white hover:text-yellow-300", data: { action: "click->close" } %>
+    <%= link_to "Fidelidade", fidelidade_path, class: "block text-white hover:text-yellow-300", data: { action: "click->close" } %>
+    <%= link_to "Relatórios", relatorios_path, class: "block text-white hover:text-yellow-300", data: { action: "click->close" } %>
+    <%= link_to "Sobre", about_path, class: "block text-white hover:text-yellow-300", data: { action: "click->close" } %>
+    <%= link_to "Contato", contato_path, class: "block text-white hover:text-yellow-300", data: { action: "click->close" } %>
 
     <!-- Cliente -->
-    <% if current_cliente %>
+    <% if cliente_signed_in? %>
       <%= link_to "Área do Cliente",
                   cliente_path(current_cliente),
-                  class: "block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg mt-2" %>
+                  class: "block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg mt-2",
+                  data: { action: "click->close" } %>
     <% else %>
       <%= link_to "Login Cliente",
                   new_cliente_session_path,
-                  class: "block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg mt-2" %>
+                  class: "block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg mt-2",
+                  data: { action: "click->close" } %>
     <% end %>
 
     <!-- Transportador -->
-    <% if current_transportador %>
+    <% if transportador_signed_in? %>
       <%= link_to "Área do Transportador",
                   transportador_path(current_transportador),
-                  class: "block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg mt-2" %>
+                  class: "block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg mt-2",
+                  data: { action: "click->close" } %>
     <% else %>
       <%= link_to "Login Transportador",
                   new_transportador_session_path,
-                  class: "block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg mt-2" %>
+                  class: "block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg mt-2",
+                  data: { action: "click->close" } %>
     <% end %>
   </div>
 </nav>
+
+<script>
+  // Fecha o menu mobile ao clicar em qualquer link (produzido sem dependências extras)
+  document.addEventListener("click", function(e) {
+    const link = e.target.closest('a[data-action="click->close"]');
+    if (!link) return;
+    const nav = e.target.closest('nav[x-data]');
+    if (!nav) return;
+    const alpine = nav.__x; // Alpine injeta __x
+    if (alpine) alpine.$data.open = false;
+  });
+</script>
+# ===============================================================
+# CONTROLLER: RELATÓRIOS
+# ===============================================================
