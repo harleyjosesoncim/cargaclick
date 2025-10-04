@@ -9,17 +9,21 @@ Rails.application.configure do
   config.eager_load    = true
   config.consider_all_requests_local = false
 
-  # Em produção use credenciais/keys obrigatórias
-  config.require_master_key = true
+  # Exige master key em produção, exceto durante o build de assets (SKIP_MASTER_KEY=1)
+  config.require_master_key = ENV["SKIP_MASTER_KEY"] != "1"
 
   # ============================================================
   # HOSTS & SSL
   # ============================================================
-  # Permite seu domínio e o domínio de preview do Render
+  # Domínio principal e host de preview (Render)
   if (app_host = ENV["APP_HOST"]).present?
     config.hosts << app_host
   end
   config.hosts << /.*\.onrender\.com/
+  # Permite testes locais em produção (opcional, útil para smoke local)
+  config.hosts << "localhost"
+  config.hosts << "127.0.0.1"
+  config.hosts << "::1"
 
   # Força HTTPS (pode desativar com FORCE_SSL=false)
   config.force_ssl = ActiveModel::Type::Boolean.new.cast(ENV.fetch("FORCE_SSL", "true"))
@@ -35,16 +39,16 @@ Rails.application.configure do
   # ============================================================
   config.action_controller.perform_caching = true
 
-  # No Render, defina RAILS_SERVE_STATIC_FILES=1
+  # Servir estáticos via Rails somente se variável setada (Render define)
   config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
 
-  # Cache (usa Redis se REDIS_URL definido, senão memória)
+  # Cache store: Redis se REDIS_URL; senão memória
   if ENV["REDIS_URL"].present?
     config.cache_store = :redis_cache_store, {
       url: ENV["REDIS_URL"],
-      error_handler: ->(method:, returning:, exception:) {
+      error_handler: ->(method:, returning:, exception:) do
         Rails.logger.warn("Redis cache error: #{method} #{exception.class}: #{exception.message}")
-      }
+      end
     }
   else
     config.cache_store = :memory_store, { size: 64.megabytes }
@@ -53,7 +57,7 @@ Rails.application.configure do
   # ============================================================
   # ASSETS
   # ============================================================
-  config.assets.js_compressor  = :terser   # precisa do gem 'terser'
+  config.assets.js_compressor  = :terser   # gem 'terser'
   config.assets.css_compressor = nil       # Tailwind já minifica
   config.assets.compile        = false     # exige precompile no deploy
   config.assets.digest         = true
@@ -62,13 +66,12 @@ Rails.application.configure do
   # ============================================================
   # ACTIVE STORAGE
   # ============================================================
-  # Escolha via env: 'amazon', 'google', 'azure', 'local' (config/storage.yml)
+  # Use 'amazon'/'google'/'azure' em produção real (Render FS é efêmero)
   config.active_storage.service = ENV.fetch("ACTIVE_STORAGE_SERVICE", "local").to_sym
 
   # ============================================================
   # JOBS / BACKGROUND
   # ============================================================
-  # Use Sidekiq se tiver (QUEUE_ADAPTER=sidekiq)
   config.active_job.queue_adapter = ENV.fetch("QUEUE_ADAPTER", "async").to_sym
   config.active_job.queue_name_prefix = "cargaclick_production"
 
@@ -102,7 +105,7 @@ Rails.application.configure do
   }
 
   # ============================================================
-  # LOGS
+  # LOGS (JSON com Lograge)
   # ============================================================
   config.log_level = (ENV["RAILS_LOG_LEVEL"] || :info).to_sym
   config.log_tags  = [:request_id]
@@ -111,21 +114,34 @@ Rails.application.configure do
   logger.formatter = ::Logger::Formatter.new
   config.logger    = ActiveSupport::TaggedLogging.new(logger)
 
-  # Lograge (opcional). Ativa se o gem estiver presente.
-  if defined?(Lograge)
-    config.lograge.enabled = true
-    config.lograge.formatter = Lograge::Formatters::Json.new
-    config.lograge.keep_original_rails_log = false
-    config.lograge.custom_payload do |controller|
-      {
-        host:   controller.request.host,
-        user:   controller.try(:current_admin_user)&.id ||
-                controller.try(:current_transportador)&.id ||
-                controller.try(:current_cliente)&.id,
-        params: controller.request.filtered_parameters.except("controller", "action")
-      }
-    end
+  # Lograge: JSON, sem duplicar logs Rails
+  config.lograge.enabled                 = true
+  config.lograge.keep_original_rails_log = false
+  config.lograge.formatter               = Lograge::Formatters::Json.new
+  config.lograge.ignore_actions          = ["Rails::HealthController#show"] # /up
+
+  config.lograge.custom_payload do |controller|
+    {
+      host: controller.request.host,
+      ip:   controller.request.remote_ip,
+      ua:   controller.request.user_agent,
+      admin_id:         controller.try(:current_admin_user)&.id,
+      cliente_id:       controller.try(:current_cliente)&.id,
+      transportador_id: controller.try(:current_transportador)&.id
+    }
   end
+
+  config.lograge.custom_options = lambda do |event|
+    {
+      time:       event.time.utc.iso8601,
+      request_id: event.payload[:request_id],
+      params:     event.payload[:params].except("controller", "action", "format")
+    }
+  end
+
+  # Reduz ruído de SQL nos logs
+  config.active_record.logger = nil
+  config.active_record.verbose_query_logs = false
 
   # ============================================================
   # BANCO DE DADOS
@@ -141,7 +157,7 @@ Rails.application.configure do
   # ERROS & NOTIFICAÇÕES
   # ============================================================
   config.active_support.report_deprecations = false
-
-  # Páginas de erro estáticas (public/404.html etc) — padrão Rails
-  # Se quiser usar rotas personalizadas: config.exceptions_app = routes
+  # Páginas de erro estáticas (public/404.html etc). Para rotas customizadas:
+  # config.exceptions_app = routes
 end
+# EOF
