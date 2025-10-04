@@ -6,7 +6,9 @@ FROM ruby:3.2.4-slim AS build
 ENV LANG=C.UTF-8 \
     RAILS_ENV=production \
     RACK_ENV=production \
-    BUNDLE_WITHOUT="development:test"
+    BUNDLE_WITHOUT="development:test" \
+    BUNDLE_PATH=/usr/local/bundle \
+    BUNDLE_BIN=/usr/local/bundle/bin
 
 # Dependências de build
 RUN apt-get update -qq && apt-get install -y --no-install-recommends \
@@ -28,9 +30,9 @@ WORKDIR /app
 
 # Gems (cache)
 COPY Gemfile Gemfile.lock ./
-# use a mesma versão do bundler da sua imagem/lock (se precisar fixe com: gem install bundler -v X.Y.Z)
 RUN bundle config set deployment 'true' \
   && bundle config set without 'development test' \
+  && bundle config set path "$BUNDLE_PATH" \
   && bundle install --jobs 4 --retry 3
 
 # Node deps (se não houver package.json, ignora)
@@ -40,13 +42,20 @@ RUN [ -f package.json ] && yarn install --frozen-lockfile || true
 # Código da aplicação
 COPY . .
 
-# Variáveis mínimas p/ build de assets
+# Variáveis mínimas p/ build de assets (NÃO usar master key no build)
 # - SECRET_KEY_BASE dummy permite inicialização em produção durante o build
-# - DATABASE_URL dummy evita erros em inicializadores que inspectam ActiveRecord
+# - DATABASE_URL dummy evita erros em inicializadores que inspecionam ActiveRecord
+# - SKIP_MASTER_KEY=1 alinha com production.rb para dispensar master key no build
+# - ASSETS_PRECOMPILE=1 permite "pular" inicializadores que usam credentials
 ENV SECRET_KEY_BASE=dummy_key \
-    DATABASE_URL=postgres://postgres:1234@localhost:5432/dummy
+    DATABASE_URL=postgres://postgres:1234@localhost:5432/dummy \
+    SKIP_MASTER_KEY=1 \
+    ASSETS_PRECOMPILE=1
 
-# Pré-compilação de assets (não exige master key)
+# (opcional) debug — confirme que as ENVs estão setadas
+# RUN echo "SKIP_MASTER_KEY=$SKIP_MASTER_KEY  ASSETS_PRECOMPILE=$ASSETS_PRECOMPILE  RAILS_ENV=$RAILS_ENV"
+
+# Pré-compilação de assets
 RUN bundle exec rake assets:precompile
 
 # Ajusta permissões para o runtime não-root já no artefato
@@ -68,7 +77,9 @@ ENV RAILS_ENV=production \
     RACK_ENV=production \
     RAILS_LOG_TO_STDOUT=1 \
     RAILS_SERVE_STATIC_FILES=1 \
-    BUNDLE_WITHOUT="development:test"
+    BUNDLE_WITHOUT="development:test" \
+    BUNDLE_PATH=/usr/local/bundle \
+    BUNDLE_BIN=/usr/local/bundle/bin
 
 WORKDIR /app
 
@@ -85,10 +96,6 @@ USER appuser
 RUN mkdir -p tmp/pids log
 
 EXPOSE 3000
-
-# Healthcheck (opcional, o Render usa health path se você configurar)
-# HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-#   CMD wget -qO- http://127.0.0.1:${PORT:-3000}/up || exit 1
 
 # Entrypoint + Puma
 ENTRYPOINT ["dumb-init", "--"]

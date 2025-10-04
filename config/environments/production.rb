@@ -9,46 +9,39 @@ Rails.application.configure do
   config.eager_load    = true
   config.consider_all_requests_local = false
 
-  # Exige master key em produção, exceto durante o build de assets (SKIP_MASTER_KEY=1)
+  # Exige master key em runtime; pula no build de assets (SKIP_MASTER_KEY=1)
   config.require_master_key = ENV["SKIP_MASTER_KEY"] != "1"
 
   # ============================================================
   # HOSTS & SSL
   # ============================================================
-  # Domínio principal e host de preview (Render)
   if (app_host = ENV["APP_HOST"]).present?
     config.hosts << app_host
   end
   config.hosts << /.*\.onrender\.com/
-  # Permite testes locais em produção (opcional, útil para smoke local)
+  # Smoke local em “prod”
   config.hosts << "localhost"
   config.hosts << "127.0.0.1"
   config.hosts << "::1"
 
-  # Força HTTPS (pode desativar com FORCE_SSL=false)
   config.force_ssl = ActiveModel::Type::Boolean.new.cast(ENV.fetch("FORCE_SSL", "true"))
-  config.ssl_options = {
-    hsts: { expires: 1.year, subdomains: true, preload: true }
-  }
+  config.ssl_options = { hsts: { expires: 1.year, subdomains: true, preload: true } }
 
-  # Proteção extra contra CSRF via Origin/Host
+  # Proteção extra
   config.action_controller.forgery_protection_origin_check = true
 
   # ============================================================
   # CACHE & ARQUIVOS ESTÁTICOS
   # ============================================================
   config.action_controller.perform_caching = true
-
-  # Servir estáticos via Rails somente se variável setada (Render define)
   config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
 
-  # Cache store: Redis se REDIS_URL; senão memória
   if ENV["REDIS_URL"].present?
     config.cache_store = :redis_cache_store, {
       url: ENV["REDIS_URL"],
-      error_handler: ->(method:, returning:, exception:) do
+      error_handler: ->(method:, returning:, exception:) {
         Rails.logger.warn("Redis cache error: #{method} #{exception.class}: #{exception.message}")
-      end
+      }
     }
   else
     config.cache_store = :memory_store, { size: 64.megabytes }
@@ -66,7 +59,7 @@ Rails.application.configure do
   # ============================================================
   # ACTIVE STORAGE
   # ============================================================
-  # Use 'amazon'/'google'/'azure' em produção real (Render FS é efêmero)
+  # Em produção real, prefira 'amazon'/'google'/'azure' (Render FS é efêmero)
   config.active_storage.service = ENV.fetch("ACTIVE_STORAGE_SERVICE", "local").to_sym
 
   # ============================================================
@@ -114,7 +107,6 @@ Rails.application.configure do
   logger.formatter = ::Logger::Formatter.new
   config.logger    = ActiveSupport::TaggedLogging.new(logger)
 
-  # Lograge: JSON, sem duplicar logs Rails
   config.lograge.enabled                 = true
   config.lograge.keep_original_rails_log = false
   config.lograge.formatter               = Lograge::Formatters::Json.new
@@ -139,7 +131,7 @@ Rails.application.configure do
     }
   end
 
-  # Reduz ruído de SQL nos logs
+  # Menos ruído de SQL
   config.active_record.logger = nil
   config.active_record.verbose_query_logs = false
 
@@ -157,7 +149,6 @@ Rails.application.configure do
   # ERROS & NOTIFICAÇÕES
   # ============================================================
   config.active_support.report_deprecations = false
-  # Páginas de erro estáticas (public/404.html etc). Para rotas customizadas:
-  # config.exceptions_app = routes
+  # Para páginas de erro customizadas: config.exceptions_app = routes
 end
 # EOF
