@@ -1,31 +1,31 @@
 # frozen_string_literal: true
 
 source "https://rubygems.org"
-
 ruby "3.2.4"
 
 # === Core Rails & Database ===
-gem "rails", "~> 7.1.5", ">= 7.1.5.1"
+gem "rails", "~> 7.1.5", ">= 7.1.5.2"
 gem "pg", "~> 1.5"
 gem "puma", "~> 6.6"
 gem "bootsnap", ">= 1.17", require: false
-gem "json", ">= 2.6"
+gem "redis", "~> 5.0" # usado se REDIS_URL estiver definido (cache/sidekiq)
 
 # === Frontend & Assets ===
-gem "tailwindcss-rails", "~> 3.0" # Corrigido para a versão compatível com suas gems instaladas
+gem "importmap-rails"               # para Turbo/JS sem Node em runtime
 gem "turbo-rails", "~> 2.0"
+gem "tailwindcss-rails", "~> 2.6"   # estável com Rails 7.1
 gem "sprockets-rails", "~> 3.4"
 gem "sassc-rails", "~> 2.1"
+gem "terser"                        # compressor JS do Sprockets
 
 # === Utilities & Business Logic ===
 gem "activeadmin"
 gem "devise", "~> 4.9"
 gem "mercadopago-sdk", "~> 2.3", require: "mercadopago"
-gem "image_processing", "~> 1.2"
+gem "image_processing", "~> 1.12"
 gem "sitemap_generator"
 gem "secure_headers", "~> 6.5"
 gem "rails-i18n", "~> 7.0"
-gem "terser"
 
 # === Production Environment ===
 group :production do
@@ -54,3 +54,6 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+# Windows (opcional, se rodar fora do WSL)
+gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]

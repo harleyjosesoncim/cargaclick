@@ -1,11 +1,12 @@
 # ================================================================
-# Etapa 1: Build - instala dependências e pré-compila assets
+# Etapa 1: BUILD — instala dependências e pré-compila assets
 # ================================================================
 FROM ruby:3.2.4-slim AS build
 
 ENV LANG=C.UTF-8 \
     RAILS_ENV=production \
-    RACK_ENV=production
+    RACK_ENV=production \
+    BUNDLE_WITHOUT="development:test"
 
 # Dependências de build
 RUN apt-get update -qq && apt-get install -y --no-install-recommends \
@@ -17,7 +18,7 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     shared-mime-info \
   && rm -rf /var/lib/apt/lists/*
 
-# Node 20 + Yarn via Corepack (sem repositório Yarn legado)
+# Node 20 + Corepack (Yarn moderno)
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
   && apt-get update -qq && apt-get install -y --no-install-recommends nodejs \
   && corepack enable \
@@ -25,35 +26,38 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 
 WORKDIR /app
 
-# Copia Gemfile para cache do bundler
+# Gems (cache)
 COPY Gemfile Gemfile.lock ./
-RUN gem install bundler \
-  && bundle config set deployment 'true' \
+# use a mesma versão do bundler da sua imagem/lock (se precisar fixe com: gem install bundler -v X.Y.Z)
+RUN bundle config set deployment 'true' \
   && bundle config set without 'development test' \
   && bundle install --jobs 4 --retry 3
 
-# Copia restante do código da aplicação
+# Node deps (se não houver package.json, ignora)
+COPY package.json yarn.lock* ./
+RUN [ -f package.json ] && yarn install --frozen-lockfile || true
+
+# Código da aplicação
 COPY . .
 
-# Variáveis mínimas para build
-ARG RAILS_MASTER_KEY
-ENV RAILS_MASTER_KEY=${RAILS_MASTER_KEY}
-ENV SECRET_KEY_BASE=dummy_key
-# Dummy DATABASE_URL só para evitar erro no build
-ENV DATABASE_URL=postgres://postgres:1234@localhost:5432/dummy
+# Variáveis mínimas p/ build de assets
+# - SECRET_KEY_BASE dummy permite inicialização em produção durante o build
+# - DATABASE_URL dummy evita erros em inicializadores que inspectam ActiveRecord
+ENV SECRET_KEY_BASE=dummy_key \
+    DATABASE_URL=postgres://postgres:1234@localhost:5432/dummy
 
-# Falha cedo se a master key não chegou ao build
-RUN test -n "$RAILS_MASTER_KEY" || (echo "❌ RAILS_MASTER_KEY ausente no build" && exit 1)
-
-# Pré-compilação de assets
+# Pré-compilação de assets (não exige master key)
 RUN bundle exec rake assets:precompile
 
+# Ajusta permissões para o runtime não-root já no artefato
+RUN mkdir -p tmp/pids log && chmod -R 775 tmp log
+
 # ================================================================
-# Etapa 2: Runtime - imagem final mais leve
+# Etapa 2: RUNTIME — imagem final, leve e segura
 # ================================================================
 FROM ruby:3.2.4-slim AS runtime
 
-# Dependências necessárias apenas para runtime
+# Dependências necessárias em runtime
 RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     libpq5 \
     tzdata \
@@ -62,21 +66,30 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
 
 ENV RAILS_ENV=production \
     RACK_ENV=production \
-    RAILS_LOG_TO_STDOUT=true \
-    RAILS_SERVE_STATIC_FILES=true
+    RAILS_LOG_TO_STDOUT=1 \
+    RAILS_SERVE_STATIC_FILES=1 \
+    BUNDLE_WITHOUT="development:test"
 
 WORKDIR /app
 
-# Copia gems já instaladas e app (com assets pré-compilados) da etapa de build
+# Copia gems e app (com assets compilados)
 COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY --from=build /app /app
 
-# Usuario não-root
-RUN useradd -m -u 10001 appuser && chown -R appuser:appuser /app
+# Usuário não-root e permissões de escrita
+RUN useradd -m -u 10001 appuser \
+  && chown -R appuser:appuser /app
 USER appuser
+
+# Garantir diretórios de pid/log em runtime
+RUN mkdir -p tmp/pids log
 
 EXPOSE 3000
 
-# Comando padrão para iniciar o Puma
+# Healthcheck (opcional, o Render usa health path se você configurar)
+# HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+#   CMD wget -qO- http://127.0.0.1:${PORT:-3000}/up || exit 1
+
+# Entrypoint + Puma
 ENTRYPOINT ["dumb-init", "--"]
 CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
