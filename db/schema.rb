@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_09_20_170531) do
+ActiveRecord::Schema[7.1].define(version: 2025_10_18_193100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -72,9 +72,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_20_170531) do
     t.string "encrypted_password", default: "", null: false
     t.string "confirmation_token"
     t.string "campo_extra"
-    t.integer "tipo", default: 0, null: false
+    t.string "tipo", default: "pf", null: false
     t.index ["cnpj"], name: "index_clientes_on_cnpj", unique: true, where: "(cnpj IS NOT NULL)"
     t.index ["cpf"], name: "index_clientes_on_cpf", unique: true, where: "(cpf IS NOT NULL)"
+    t.index ["tipo"], name: "index_clientes_on_tipo"
   end
 
   create_table "clientes_cnpjs", force: :cascade do |t|
@@ -125,8 +126,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_20_170531) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "comissao"
+    t.string "status", default: "pendente", null: false
     t.index ["cliente_id"], name: "index_cotacoes_on_cliente_id"
     t.index ["frete_id"], name: "index_cotacoes_on_frete_id"
+    t.index ["status"], name: "index_cotacoes_on_status"
   end
 
   create_table "fretes", force: :cascade do |t|
@@ -259,10 +262,11 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_20_170531) do
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
     t.string "chave_pix"
-    t.integer "status", default: 0, null: false
+    t.string "status", default: "pendente", null: false
     t.index ["confirmation_token"], name: "index_transportadores_on_confirmation_token", unique: true
     t.index ["email"], name: "index_transportadores_on_email", unique: true, where: "(email IS NOT NULL)"
     t.index ["reset_password_token"], name: "index_transportadores_on_reset_password_token", unique: true
+    t.index ["status"], name: "index_transportadores_on_status"
   end
 
   add_foreign_key "avaliacoes", "clientes"
