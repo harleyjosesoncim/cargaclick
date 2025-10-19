@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Tema p/ light/dark (ajusta barra do navegador em mobile) -->
+    <!-- Tema p/ light/dark (barra do navegador em mobile) -->
     <meta name="theme-color" content="#0b132b" media="(prefers-color-scheme: dark)">
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 
@@ -21,49 +21,44 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <!-- Leaflet: ícones fingerprintados (devem existir em app/assets/images) -->
-    <meta name="leaflet-icon" content="<%= asset_path('marker-icon.png') %>">
-    <meta name="leaflet-icon-2x" content="<%= asset_path('marker-icon-2x.png') %>">
-    <meta name="leaflet-shadow" content="<%= asset_path('marker-shadow.png') %>">
+    <!-- Leaflet: ícones fingerprintados -->
+    <meta name="leaflet-icon"     content="<%= asset_path('marker-icon.png') %>">
+    <meta name="leaflet-icon-2x"  content="<%= asset_path('marker-icon-2x.png') %>">
+    <meta name="leaflet-shadow"   content="<%= asset_path('marker-shadow.png') %>">
 
-    <!-- Stylesheets (ordem importa: libs antes do app) -->
+    <!-- Stylesheets (ordem: libs -> tailwind -> app) -->
     <%= stylesheet_link_tag "leaflet", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
 
     <!-- JavaScript (bundle gerado pelo esbuild em app/assets/builds) -->
     <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
 
-    <!-- Alpine.js (CDN) — se usar CSP restrito, liberar domínio no secure_headers -->
+    <!-- Alpine.js por CDN (libere em CSP se necessário) -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <!-- Ponto de extensão para páginas -->
     <%= yield :head %>
   </head>
 
   <body class="bg-gray-100 dark:bg-gray-900 min-h-screen font-sans antialiased flex flex-col">
-    <!-- Navbar global -->
     <header>
       <%= render "layouts/navbar" %>
     </header>
 
-    <!-- Flash messages -->
     <% if lookup_context.exists?("shared/flash") %>
       <section class="container mx-auto mt-4 px-4">
         <%= render "shared/flash" %>
       </section>
     <% end %>
 
-    <!-- Conteúdo principal -->
     <main class="container mx-auto flex-1 px-4 pt-24 pb-8">
       <%= yield %>
     </main>
 
-    <!-- Rodapé -->
     <footer>
       <%= render "layouts/footer" %>
     </footer>
 
-    <!-- Ponto de extensão para scripts no fim do body -->
     <%= yield :body_end %>
   </body>
 </html>
