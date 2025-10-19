@@ -3,7 +3,7 @@
 
 SecureHeaders::Configuration.default do |config|
   # Domínios externos usados pelo app
-  mp_domains  = %w[
+  mp  = %w[
     https://sdk.mercadopago.com
     https://www.mercadopago.com.br
     https://www.mercadopago.com
@@ -13,22 +13,20 @@ SecureHeaders::Configuration.default do |config|
     https://*.mercadopago.com.br
   ]
 
-  osm_img    = %w[
+  osm = %w[
     https://tile.openstreetmap.org
     https://*.tile.openstreetmap.org
     https://*.openstreetmap.org
   ]
 
-  geo_apis   = %w[
+  geo = %w[
     https://api.openrouteservice.org
     https://nominatim.openstreetmap.org
   ]
 
-  cdn_libs   = %w[
-    https://unpkg.com   # Alpine.js (se mantiver via CDN)
-  ]
+  # Se precisar de Alpine via CDN, habilite com ALLOW_CDN=true
+  cdn = ENV["ALLOW_CDN"] == "true" ? %w[https://unpkg.com] : []
 
-  # ------------------ CSP principal ------------------
   config.csp = {
     preserve_schemes: true,
     upgrade_insecure_requests: true,
@@ -36,48 +34,35 @@ SecureHeaders::Configuration.default do |config|
     default_src: %w['self'],
     base_uri:    %w['self'],
 
-    # JS: evite 'unsafe-eval'; mantenha 'unsafe-inline' até migrarmos p/ nonces
-    script_src:  %w['self'] + cdn_libs + %w['unsafe-inline'],
-
-    # CSS: Tailwind já vem minificado como arquivo; alguns admins usam inline
+    # Evite 'unsafe-eval'. Mantemos 'unsafe-inline' até migrar para nonces.
+    script_src:  %w['self' 'unsafe-inline'] + cdn,
     style_src:   %w['self' 'unsafe-inline'],
 
-    # Imagens: inclui tiles OSM e qualquer https (ícones, OG, etc)
-    img_src:     %w['self' data: blob: https:] + osm_img,
-
+    img_src:     %w['self' data: blob: https:] + osm,
     font_src:    %w['self' data:],
-
-    # Conexões XHR/Fetch/WebSocket (ActionCable), geocoders e MP
-    connect_src: %w['self' https: wss:] + geo_apis + mp_domains,
-
-    # Iframes do checkout MP
-    frame_src:   %w['self'] + mp_domains,
-
-    # Submissões (ex.: redirecionamentos/forms para MP)
-    form_action: %w['self'] + mp_domains,
-
-    # WebWorkers (se usar)
+    connect_src: %w['self' https: wss:] + geo + mp,
+    frame_src:   %w['self'] + mp,
+    form_action: %w['self'] + mp,
     worker_src:  %w['self' blob:],
+    object_src:  %w['none'],
+    frame_ancestors: %w['self'],
 
-    # Bloqueios
-    object_src:       %w['none'],
-    frame_ancestors:  %w['self'] # quem pode embutir seu site
-  }
+    # Report-only opcional
+    report_uri: (ENV["CSP_REPORT_URI"].present? ? [ENV["CSP_REPORT_URI"]] : nil)
+  }.compact
 
-  # ---------------- Cabeçalhos adicionais -------------
+  # Cabeçalhos complementares
   config.hsts                     = "max-age=31536000; includeSubDomains; preload"
   config.x_frame_options          = "SAMEORIGIN"
   config.x_content_type_options   = "nosniff"
   config.x_xss_protection         = "1; mode=block"
   config.referrer_policy          = "strict-origin-when-cross-origin"
 
-  # COOP/CORP: escolha segura que não quebra terceiros que você consome
-  config.cross_origin_opener_policy   = "same-origin"
-  config.cross_origin_resource_policy = "cross-origin"
-
-  # (Opcional) Modo report-only e endpoint de report
-  if ENV["CSP_REPORT_URI"].present?
-    config.csp[:report_uri] = [ENV["CSP_REPORT_URI"]]
-    config.csp_report_only  = ActiveModel::Type::Boolean.new.cast(ENV.fetch("CSP_REPORT_ONLY", "false"))
-  end
+  # NÃO chamar config.cross_origin_opener_policy / resource_policy (não existem nesta versão)
 end
+
+# Se quiser COOP/CORP mesmo assim, defina via Rails (independe do secure_headers):
+Rails.application.config.action_dispatch.default_headers.merge!(
+  "Cross-Origin-Opener-Policy"   => "same-origin",
+  "Cross-Origin-Resource-Policy" => "cross-origin"
+)
