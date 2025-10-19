@@ -11,21 +11,25 @@ class Transportador < ApplicationRecord
   self.table_name = "transportadores"
 
   # ================== Associações ===================
-  has_many :cotacoes,    dependent: :destroy
-  has_many :fretes,      through: :cotacoes
-  has_many :messages,    as: :sender, dependent: :destroy
-  has_many :pagamentos,  dependent: :destroy
+  has_many :cotacoes,   dependent: :destroy
+  has_many :fretes,     through: :cotacoes
+  has_many :messages,   as: :sender, dependent: :destroy
+  has_many :pagamentos, dependent: :destroy
 
   # =================== Constantes ===================
   TIPOS_VEICULO = %w[Carro Moto VUC Toco 3/4 Truck Cavalo Bitrem].freeze
 
   # ===================== Enums ======================
-  # DB deve ter: coluna :status (string), NOT NULL, default 'ativo'
-  enum status: { ativo: "ativo", suspenso: "suspenso" },
-       _default: "ativo",
-       _prefix:  true
+  # Compatível com estados legados e atual (string-backed).
+  # Garanta no BD: status:string NOT NULL default 'ativo'
+  enum status: {
+    pendente:  "pendente",  # legado (se existia)
+    ativo:     "ativo",
+    suspenso:  "suspenso",
+    bloqueado: "bloqueado"  # legado (se existia)
+  }, _default: "ativo", _prefix: true
 
-  # Garantia de default em nível de modelo (new/initialize)
+  # Defaults em nível de modelo (boa prática mesmo com default no BD)
   attribute :status, :string, default: "ativo"
   attribute :fidelidade_pontos, :integer, default: 0
 
@@ -34,7 +38,7 @@ class Transportador < ApplicationRecord
   before_validation :ensure_default_status, on: :create
 
   # =================== Validações ===================
-  validates :nome,  presence: true, length: { minimum: 2, maximum: 100 }
+  validates :nome, presence: true, length: { minimum: 2, maximum: 100 }
 
   validates :cpf,
             presence: true,
@@ -58,7 +62,7 @@ class Transportador < ApplicationRecord
             length: { maximum: 100 }
 
   # ==================== Scopes ======================
-  scope :ativos, -> { where(status: "ativo") }
+  scope :ativos, -> { where(status: statuses[:ativo]) }
 
   # ============== Métodos de negócio ===============
   def adicionar_pontos!(qtd)
@@ -68,23 +72,26 @@ class Transportador < ApplicationRecord
   def fidelidade_bonus? = fidelidade_pontos >= 100
   def resetar_pontos!   = update!(fidelidade_pontos: 0)
 
-  def display_name  = "#{nome} (##{id})"
-  def status_label  = ativo? ? "🟢 Ativo" : "🔴 Suspenso"
-  def pontos_label  = "⭐ #{fidelidade_pontos} pontos"
+  def display_name = "#{nome} (##{id})"
+
+  def status_label
+    case status
+    when "ativo"     then "🟢 Ativo"
+    when "suspenso"  then "🟠 Suspenso"
+    when "bloqueado" then "🔴 Bloqueado"
+    else                  "🟡 Pendente"
+    end
+  end
+
+  def pontos_label = "⭐ #{fidelidade_pontos} pontos"
 
   def pode_receber_pagamento?
     chave_pix.present? && ativo?
   end
 
   # ============== Utilidades de seed ===============
-  # Importante: insert_all/upsert_all PULAM callbacks/defaults/validações.
-  # Se usar, SEMPRE passe status e fidelidade_pontos explicitamente:
-  #
-  # Transportador.insert_all([
-  #   attrs.merge(status: "ativo", fidelidade_pontos: 0, created_at: Time.current, updated_at: Time.current)
-  # ])
-  #
-  # Alternativa segura (valida e aplica defaults):
+  # insert_all/upsert_all pulam callbacks/defaults/validações.
+  # Use este helper para criação/atualização segura preservando normalizações.
   def self.safe_create_or_update!(attrs)
     email = attrs[:email] || attrs["email"]
     record = find_or_initialize_by(email: email.to_s.downcase.strip)
@@ -100,15 +107,15 @@ class Transportador < ApplicationRecord
   end
 
   def normalize_campos
-    self.nome       = nome.to_s.strip
-    self.email      = email.to_s.strip.downcase
-    self.cpf        = cpf.to_s.gsub(/\D/, "") # apenas dígitos
-    self.cidade     = cidade.to_s.strip
-    self.chave_pix  = chave_pix.to_s.strip
+    self.nome         = nome.to_s.strip
+    self.email        = email.to_s.strip.downcase
+    self.cpf          = cpf.to_s.gsub(/\D/, "") # apenas dígitos
+    self.cidade       = cidade.to_s.strip
+    self.chave_pix    = chave_pix.to_s.strip
     self.tipo_veiculo = tipo_veiculo.to_s.strip
   end
 
-  # Validação simples de CPF (check digits)
+  # Validação simples de CPF (dois dígitos verificadores)
   def cpf_checksum
     num = cpf.to_s
     return if num.blank? || num.length != 11 || num.chars.uniq.length == 1
@@ -125,5 +132,3 @@ class Transportador < ApplicationRecord
     mod < 2 ? 0 : 11 - mod
   end
 end
-# app/controllers/application_controller.rb
-# frozen_string_literal: true

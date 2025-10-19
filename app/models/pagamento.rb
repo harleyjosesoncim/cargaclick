@@ -22,6 +22,7 @@ class Pagamento < ApplicationRecord
 
   validates :status, presence: true
 
+  # Serão preenchidos automaticamente; validamos se presentes
   validates :valor_total, :valor_liquido, :comissao_cargaclick,
             numericality: { greater_than_or_equal_to: 0 },
             allow_nil: true
@@ -35,6 +36,8 @@ class Pagamento < ApplicationRecord
 
   # === CALLBACKS =====================================
   before_validation :set_default_status, on: :create
+  # Calcula totais para que as validações não quebrem e o registro já saia coerente
+  before_validation :calcular_totais
 
   # === SCOPES ========================================
   scope :recentes,    -> { order(created_at: :desc) }
@@ -55,18 +58,22 @@ class Pagamento < ApplicationRecord
     status == "pendente"
   end
 
+  # Aplica/atualiza comissão manualmente (ex.: quando taxa vem do painel/admin)
   def aplicar_comissao!(taxa)
-    self.valor_total ||= valor
-    self.comissao_cargaclick = (valor_total * taxa).round(2)
-    self.valor_liquido = valor_total - comissao_cargaclick
+    taxa = taxa.to_d
+    self.valor_total = (valor.presence || 0).to_d if valor_total.blank?
+    self.comissao_cargaclick = (valor_total.to_d * taxa).round(2)
+    self.valor_liquido = (valor_total.to_d - comissao_cargaclick.to_d).round(2)
     save!
   end
 
   # === LABELS ========================================
   def to_s
+    vt = (valor_total || 0).to_d
+    vl = (valor_liquido || 0).to_d
     "💸 Pagamento ##{id} | Frete ##{frete_id} | Cliente ##{cliente_id} | " \
     "Transportador ##{transportador_id} | #{status_label} | " \
-    "Total: R$ #{'%.2f' % valor_total} | Líquido: R$ #{'%.2f' % valor_liquido}"
+    "Total: R$ #{format('%.2f', vt)} | Líquido: R$ #{format('%.2f', vl)}"
   end
 
   def status_label
@@ -101,5 +108,19 @@ class Pagamento < ApplicationRecord
 
   def set_default_status
     self.status ||= "pendente"
+  end
+
+  # Calcula/normaliza totais com segurança (usa atributos opcionais se existirem)
+  def calcular_totais
+    base = (valor.presence || 0).to_d
+    taxa = (try(:taxa).presence || 0).to_d          # se existir coluna :taxa
+    desc = (try(:desconto).presence || 0).to_d      # se existir coluna :desconto
+
+    self.valor_total = base if valor_total.blank?
+    # Só calcula se ainda não houver comissão; mantém se já tiver sido definida
+    self.comissao_cargaclick = (valor_total.to_d * taxa).round(2) if comissao_cargaclick.blank?
+    self.comissao_cargaclick ||= 0.to_d
+
+    self.valor_liquido = (valor_total.to_d - comissao_cargaclick.to_d - desc).round(2)
   end
 end

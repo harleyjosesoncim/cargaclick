@@ -1,48 +1,155 @@
-<!-- app/views/clientes/sessions/new.html.erb -->
+<%# app/views/clientes/sessions/new.html.erb %>
 <% content_for :title, "Entrar no CargaClick" %>
 
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-  <div class="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 max-w-md w-full border border-blue-200" id="session_form">
-    <div class="flex items-center justify-center mb-6">
-      <span class="text-4xl text-blue-600">🔐</span>
+<div role="main" aria-labelledby="login_heading"
+     class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+  <div class="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 max-w-md w-full border border-blue-200">
+    <div class="flex items-center justify-center mb-4">
+      <span class="text-4xl text-blue-600" aria-hidden="true">🔐</span>
     </div>
 
-    <h2 class="text-2xl font-bold text-center text-blue-700 mb-6">Entrar no CargaClick</h2>
+    <h1 id="login_heading" class="text-2xl font-bold text-center text-blue-700">
+      Entrar no CargaClick
+    </h1>
 
-    <%= form_with model: resource, as: resource_name, url: session_path(resource_name), local: true, data: { turbo: false }, class: "space-y-6" do |f| %>
-      <% if flash[:alert] || flash[:notice] %>
-        <div class="bg-red-100 text-red-700 px-4 py-2 rounded text-sm" id="flash">
-          <%= flash[:alert] || flash[:notice] %>
-        </div>
-      <% end %>
-
-      <div>
-        <%= f.label :email, class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= f.email_field :email, required: true, autofocus: true, autocomplete: "email", class: "w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
-      </div>
-
-      <div>
-        <%= f.label :password, class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= f.password_field :password, required: true, autocomplete: "current-password", class: "w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
-      </div>
-
-      <div class="flex items-center">
-        <%= f.check_box :remember_me, class: "mr-2" %>
-        <%= f.label :remember_me, class: "text-sm text-gray-600" %>
-      </div>
-
-      <div>
-        <%= f.submit "Entrar", class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow" %>
+    <% if flash[:alert].present? || flash[:notice].present? %>
+      <% msg = (flash[:alert] || flash[:notice] || t('devise.failure.invalid', default: 'E-mail ou senha inválidos.')).to_s %>
+      <% msg = 'Você precisa fazer login para continuar.' if msg.include?('Translation missing') %>
+      <div id="flash"
+           class="mt-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+           role="alert" aria-live="polite">
+        <%= msg %>
       </div>
     <% end %>
 
-    <div class="mt-6 text-center text-sm text-gray-600">
+    <%= form_for(resource,
+                 as: resource_name,
+                 url: session_path(resource_name),
+                 data: { turbo: false },
+                 html: { id: "cliente-login-form", class: "mt-6 space-y-5", autocomplete: "on", novalidate: true }) do |f| %>
+
+      <!-- Email -->
+      <div>
+        <%= f.label :email, "E-mail", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.email_field :email,
+              required: true,
+              autofocus: true,
+              inputmode: "email",
+              autocomplete: "username",
+              placeholder: "voce@exemplo.com",
+              'aria-describedby': "email_help",
+              class: "w-full rounded-lg border border-gray-300 bg-white px-3 py-2
+                      text-gray-900 placeholder:text-gray-400 caret-blue-600
+                      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
+        <p id="email_help" class="mt-1 text-xs text-gray-500">Use o e-mail cadastrado como cliente.</p>
+      </div>
+
+      <!-- Senha -->
+      <div>
+        <div class="flex items-center justify-between">
+          <%= f.label :password, "Senha", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <button type="button" id="togglePwd"
+                  class="text-xs text-blue-600 hover:underline focus:outline-none">
+            Mostrar
+          </button>
+        </div>
+
+        <div class="relative">
+          <%= f.password_field :password,
+                required: true,
+                autocomplete: "current-password",
+                placeholder: "Sua senha",
+                id: "password",
+                'aria-describedby': "caps_hint",
+                class: "w-full rounded-lg border border-gray-300 bg-white px-3 py-2
+                        text-gray-900 placeholder:text-gray-400 caret-blue-600
+                        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
+        </div>
+
+        <p id="caps_hint"
+           class="mt-1 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-2 py-1 hidden">
+          Atenção: Caps Lock ligado.
+        </p>
+      </div>
+
+      <!-- Lembrar-me -->
+      <% if devise_mapping.rememberable? %>
+        <label class="flex items-center gap-2 text-sm text-gray-700 select-none">
+          <%= f.check_box :remember_me, class: "rounded" %>
+          Lembrar-me neste dispositivo
+        </label>
+      <% end %>
+
+      <!-- Enviar -->
+      <button type="submit" id="submitBtn"
+              class="w-full rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 shadow transition disabled:opacity-60 disabled:cursor-not-allowed">
+        <span id="submitText">Entrar</span>
+        <svg id="spinner" class="hidden inline h-5 w-5 animate-spin ml-2" viewBox="0 0 24 24" aria-hidden="true">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4A4 4 0 008 12H4z"></path>
+        </svg>
+      </button>
+    <% end %>
+
+    <!-- Links auxiliares -->
+    <div class="mt-6 text-center text-sm text-gray-700 space-y-1">
       <% if devise_mapping.recoverable? %>
-        <%= link_to "Esqueci minha senha", new_cliente_password_path, class: "text-blue-600 hover:underline font-medium" %>
+        <div><%= link_to "Esqueci minha senha", new_password_path(:cliente), class: "text-blue-600 hover:underline font-medium" %></div>
       <% end %>
       <% if devise_mapping.registerable? %>
-        <br><%= link_to "Criar nova conta", new_cliente_registration_path, class: "text-blue-600 hover:underline font-medium" %>
+        <div><%= link_to "Criar nova conta", new_registration_path(:cliente), class: "text-blue-600 hover:underline font-medium" %></div>
       <% end %>
+      <div class="pt-2 text-gray-500">
+        É transportador? <%= link_to "Acesse aqui", new_session_path(:transportador), class: "text-indigo-600 hover:underline" %>
+      </div>
     </div>
   </div>
 </div>
+
+<%# JS leve e isolado para melhor UX %>
+<script>
+  (function () {
+    const form = document.getElementById('cliente-login-form');
+    const btn  = document.getElementById('submitBtn');
+    const txt  = document.getElementById('submitText');
+    const spn  = document.getElementById('spinner');
+    const pwd  = document.getElementById('password');
+    const caps = document.getElementById('caps_hint');
+    const tog  = document.getElementById('togglePwd');
+
+    if (tog && pwd) {
+      tog.addEventListener('click', function () {
+        const show = pwd.type === 'password';
+        pwd.type = show ? 'text' : 'password';
+        tog.textContent = show ? 'Ocultar' : 'Mostrar';
+        pwd.focus();
+      });
+    }
+
+    if (pwd && caps) {
+      pwd.addEventListener('keyup', function (e) {
+        const on = e.getModifierState && e.getModifierState('CapsLock');
+        caps.classList.toggle('hidden', !on);
+      });
+    }
+
+    if (form && btn && txt && spn) {
+      form.addEventListener('submit', function () {
+        btn.disabled = true;
+        spn.classList.remove('hidden');
+        txt.textContent = 'Entrando...';
+      });
+    }
+  })();
+</script>
+
+<%# Blindagem extra caso exista CSS global ruim %>
+<style>
+  /* Garante que o texto da senha não fique invisível por CSS global */
+  input[type="password"] {
+    color: #111827;           /* text-gray-900 */
+    caret-color: #2563eb;     /* blue-600 */
+    background: #ffffff;      /* bg-white */
+  }
+  input[type="password"]::placeholder { color: #9ca3af; } /* placeholder:text-gray-400 */
+</style>

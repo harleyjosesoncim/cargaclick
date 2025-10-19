@@ -1,0 +1,49 @@
+pt-BR:
+  devise:
+    failure:
+      unauthenticated: "Você precisa entrar ou se cadastrar antes de continuar."
+      already_authenticated: "Você já está autenticado."
+      invalid: "E-mail ou senha inválidos."
+      not_found_in_database: "E-mail ou senha inválidos."
+      last_attempt: "Você tem mais uma tentativa antes de sua conta ser bloqueada."
+      locked: "Sua conta está bloqueada."
+      unconfirmed: "Você precisa confirmar sua conta antes de continuar."
+      timeout: "Sua sessão expirou. Por favor, entre novamente."
+      inactive: "Sua conta ainda não está ativada."
+      admin_user:
+        unauthenticated: "Acesse o painel administrativo para continuar."
+        invalid: "E-mail ou senha inválidos."
+        not_found_in_database: "E-mail ou senha inválidos."
+      cliente:
+        unauthenticated: "Você precisa entrar como cliente."
+        invalid: "E-mail ou senha inválidos."
+        not_found_in_database: "E-mail ou senha inválidos."
+      transportador:
+        unauthenticated: "Você precisa entrar como transportador."
+        invalid: "E-mail ou senha inválidos."
+        not_found_in_database: "E-mail ou senha inválidos."
+
+    sessions:
+      signed_in: "Login efetuado com sucesso."
+      signed_out: "Logout efetuado com sucesso."
+      already_signed_out: "Você já saiu."
+
+    registrations:
+      signed_up: "Conta criada com sucesso."
+      signed_up_but_unconfirmed: "Enviamos um e-mail com o link de confirmação."
+      updated: "Sua conta foi atualizada com sucesso."
+      destroyed: "Sua conta foi cancelada com sucesso."
+
+    passwords:
+      send_instructions: "Você receberá um e-mail com instruções para redefinir sua senha."
+      updated: "Sua senha foi alterada com sucesso. Você está autenticado."
+      updated_not_active: "Sua senha foi alterada com sucesso."
+      no_token: "Acesse esta página apenas pelo link enviado para redefinir a senha."
+
+    confirmations:
+      send_instructions: "Você receberá um e-mail com instruções para confirmar sua conta."
+      confirmed: "Sua conta foi confirmada com sucesso."
+
+    unlocks:
+      send_instructions: "Você receberá um e-mail com instruções para desbloquear sua conta."
+      unlocked: "Sua conta foi desbloqueada com sucesso. Faça login para continuar."
