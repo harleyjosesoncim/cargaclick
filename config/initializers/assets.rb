@@ -3,10 +3,12 @@
 
 Rails.application.config.assets.version = "1.0"
 
-# Inclui a pasta dos bundles gerados (esbuild/tailwind)
+# Onde esbuild / tailwindcss-rails gravam os bundles fingerprintados
 Rails.application.config.assets.paths << Rails.root.join("app/assets/builds")
 
-# Garante a pré-compilação de folhas avulsas além do application.css
+# Manifests extras além de application.(css|js)
 Rails.application.config.assets.precompile += %w[
+  tailwind.css
   leaflet.css
+  inter-font.css
 ]
