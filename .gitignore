@@ -87,3 +87,14 @@ ghp_*                      # Tokens do GitHub Pages
 .env
 .env.*
 /vendor/bundle
+# --- rails/node ---
+/node_modules
+/log
+/tmp
+/public/assets
+/storage/*
+!/storage/.keep
+.env
+.env.*
+# logs específicos
+lead_bot/*.log
