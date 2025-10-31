@@ -98,3 +98,8 @@ ghp_*                      # Tokens do GitHub Pages
 .env.*
 # logs específicos
 lead_bot/*.log
+
+node_modules/
+/tmp/
+
+package-lock.json
