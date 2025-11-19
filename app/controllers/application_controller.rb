@@ -15,32 +15,55 @@ class ApplicationController < ActionController::Base
 
   # --- Rotas públicas declarativas ---
   PUBLIC_ROUTES = [
+    # Landing / página inicial pública
+    { controller: "landing",        actions: %w[index] },
+
+    # Páginas institucionais
     { controller: "home",           actions: %w[index about fidelidade] },
+
+    # Contato público
     { controller: "contatos",       actions: %w[new create] },
+
+    # Webhooks e retornos de pagamento (não exigem login)
     { controller: "pagamentos",     actions: %w[webhook ping sucesso falha pendente retorno] },
-    { controller: "rails/health",   actions: %w[show] } # /up
+
+    # Healthcheck /up
+    { controller: "rails/health",   actions: %w[show] }
   ].freeze
 
   # --- Redirecionamentos pós-auth ---
   def after_sign_in_path_for(resource)
     case resource
-    when AdminUser     then admin_root_path
-    when Transportador then fretes_path
-    when Cliente       then fretes_path
-    else                    super
+    when AdminUser
+      admin_root_path
+    when Transportador
+      fretes_path
+    when Cliente
+      fretes_path
+    else
+      super
     end
   end
 
-  def after_sign_up_path_for(resource)  = after_sign_in_path_for(resource)
-  def after_sign_out_path_for(_scope)   = unauthenticated_root_path
+  def after_sign_up_path_for(resource)
+    after_sign_in_path_for(resource)
+  end
+
+  def after_sign_out_path_for(_scope)
+    unauthenticated_root_path
+  end
 
   private
 
   # --- Autenticação por escopo (cliente/transportador/admin) ---
   def authenticate_scope!
-    return authenticate_admin_user!        if admin_namespace?
-    return authenticate_transportador!     if transportador_namespace?
-    authenticate_cliente!
+    if admin_namespace?
+      authenticate_admin_user!
+    elsif transportador_namespace?
+      authenticate_transportador!
+    else
+      authenticate_cliente!
+    end
   end
 
   def admin_namespace?
@@ -53,10 +76,12 @@ class ApplicationController < ActionController::Base
 
   # --- Páginas públicas (sem login) ---
   def public_page?
+    # Devise cuida da própria proteção (ex: edit de conta), então deixamos ele decidir
     return true if devise_controller?
 
-    PUBLIC_ROUTES.any? do |r|
-      r[:controller] == controller_path && (r[:actions].blank? || r[:actions].include?(action_name))
+    PUBLIC_ROUTES.any? do |route|
+      route[:controller] == controller_path &&
+        (route[:actions].blank? || route[:actions].include?(action_name))
     end
   end
 
@@ -82,11 +107,13 @@ class ApplicationController < ActionController::Base
     return {} unless host
 
     protocol = (request&.ssl? || ssl_forced?) ? "https" : "http"
-    { host:, protocol: }
+    { host: host, protocol: protocol }
   end
 
   # Decide protocolo quando precisamos montar URL absoluta
   def ssl_forced?
-    ActiveModel::Type::Boolean.new.cast(ENV.fetch("FORCE_SSL", Rails.env.production?))
+    ActiveModel::Type::Boolean.new.cast(
+      ENV.fetch("FORCE_SSL", Rails.env.production?)
+    )
   end
 end
