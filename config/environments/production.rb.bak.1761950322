@@ -49,6 +49,7 @@ Rails.application.configure do
   # Servir assets estáticos (Render define RAILS_SERVE_STATIC_FILES=true)
   config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
   config.public_file_server.headers = {
+    # Cache agressivo p/ assets fingerprintados; ok para Render
     "Cache-Control" => "public, max-age=31536000, immutable"
   }
 
@@ -67,6 +68,7 @@ Rails.application.configure do
       # ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
     }
   else
+    # Sem REDIS_URL → fallback em memória (atenção: não recomendado com várias instâncias)
     STDERR.puts "[warn] REDIS_URL ausente; usando :memory_store (adequado só para 1 instância)"
     config.cache_store = :memory_store, { size: 128.megabytes }
   end
@@ -149,7 +151,7 @@ Rails.application.configure do
   config.lograge.custom_options = lambda do |event|
     params = event.payload[:params]
     {
-      # Usa o tempo do evento em UTC p/ evitar "1970-..."
+      # Usa o tempo do evento em UTC p/ evitar aquele "1970-..." que você viu antes
       time:       event.time.utc.iso8601,
       request_id: event.payload[:request_id],
       params:     params ? params.except("controller", "action", "format") : {}

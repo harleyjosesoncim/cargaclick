@@ -2,6 +2,12 @@
 
 Rails.application.routes.draw do
   # ===============================================================
+  # LANDING PAGE
+  # ===============================================================
+  # Rota direta para a landing (se quiser usar /landing)
+  get "landing", to: "landing#index", as: :landing
+
+  # ===============================================================
   # AUTENTICAÇÃO (Devise + ActiveAdmin)
   # ===============================================================
   devise_for :admin_users, ActiveAdmin::Devise.config
@@ -45,11 +51,14 @@ Rails.application.routes.draw do
   # ===============================================================
   # ROOTS
   # ===============================================================
+  # Cliente autenticado continua indo para o index de fretes
   authenticated :cliente do
     root "fretes#index", as: :authenticated_root
   end
+
+  # Visitante (não autenticado) agora cai na LANDING
   unauthenticated do
-    root "home#index", as: :unauthenticated_root
+    root "landing#index", as: :unauthenticated_root
   end
 
   # ===============================================================
@@ -160,6 +169,3 @@ Rails.application.routes.draw do
     end
   end
 end
-# ===============================================================
-# CONTROLLER: RELATÓRIOS
-# ===============================================================

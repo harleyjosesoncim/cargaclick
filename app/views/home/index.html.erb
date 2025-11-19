@@ -1,88 +1,119 @@
 <%# app/views/home/index.html.erb %>
 <% content_for :title, "CargaClick — Início" %>
 
-<div class="min-h-screen flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-900 px-6 py-16">
+<div class="min-h-screen bg-slate-950 text-slate-100">
+  <div class="max-w-6xl mx-auto px-4 py-10 space-y-10">
 
-  <!-- Título -->
-  <h1 class="text-4xl font-extrabold mb-12 text-gray-800 dark:text-gray-100 text-center">
-    Bem-vindo ao <span class="text-blue-600 dark:text-blue-400">CargaClick</span> 🚛
-  </h1>
+    <!-- HERO -->
+    <section class="text-center space-y-4">
+      <p class="inline-flex items-center px-3 py-1 rounded-full bg-purple-800/40 text-xs uppercase tracking-wide">
+        Plataforma inteligente de fretes
+      </p>
 
-  <!-- Linha principal de cards -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 w-full max-w-6xl mb-16">
+      <h1 class="text-3xl sm:text-4xl font-extrabold">
+        Bem-vindo ao <span class="text-purple-300">CargaClick</span> 🚛
+      </h1>
 
-    <!-- Cliente -->
-    <% if cliente_signed_in? %>
-      <%= render "shared/card",
-            icon: "👤",
-            title: "Área do Cliente",
-            label: "Entrar",
-            path: cliente_path(current_cliente),
-            color: "blue" %>
-    <% else %>
-      <%= render "shared/card",
-            icon: "👤",
-            title: "Cliente",
-            label: "Login / Cadastro",
-            path: new_cliente_session_path,
-            color: "blue" %>
-    <% end %>
+      <p class="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto">
+        Simule valores, encontre transportadores confiáveis e acompanhe seus fretes em um só lugar.
+      </p>
+    </section>
 
-    <!-- Transportador -->
-    <% if transportador_signed_in? %>
-      <%= render "shared/card",
-            icon: "🚚",
-            title: "Área do Transportador",
-            label: "Entrar",
-            path: transportador_path(current_transportador),
-            color: "green" %>
-    <% else %>
-      <%= render "shared/card",
-            icon: "🚚",
-            title: "Transportador",
-            label: "Login / Cadastro",
-            path: new_transportador_session_path,
-            color: "green" %>
-    <% end %>
+    <!-- AÇÃO PRINCIPAL: SIMULAR FRETE -->
+    <section>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+        <div class="md:col-span-2">
+          <%= render "shared/card",
+                icon: "📦",
+                title: "Simular / Solicitar Frete",
+                label: "Começar agora",
+                path: new_frete_path,
+                color: "yellow" %>
+        </div>
 
-    <!-- Solicitar Frete -->
-    <%= render "shared/card",
-          icon: "📦",
-          title: "Solicitar Frete",
-          label: "Simular / Solicitar",
-          path: new_frete_path,
-          color: "yellow" %>
-  </div>
+        <div class="hidden md:block text-sm text-slate-300 space-y-2">
+          <p class="font-semibold">Como funciona?</p>
+          <p>
+            Informe origem e destino, compare preços por tipo de veículo
+            e escolha o frete ideal em poucos cliques.
+          </p>
+        </div>
+      </div>
+    </section>
 
-  <!-- Linha secundária -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 w-full max-w-6xl">
-    <%= render "shared/card",
-          icon: "⭐",
-          title: "Fidelidade",
-          label: "Benefícios",
-          path: fidelidade_path,
-          color: "yellow" %>
+    <!-- PERFIS DE ACESSO -->
+    <section class="space-y-4">
+      <h2 class="text-lg font-semibold text-slate-100">Acesse sua conta</h2>
 
-    <%= render "shared/card",
-          icon: "📊",
-          title: "Relatórios",
-          label: "Consultar",
-          path: relatorios_path,
-          color: "purple" %>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <% if cliente_signed_in? %>
+          <%= render "shared/card",
+                icon: "👤",
+                title: "Área do Cliente",
+                label: "Entrar",
+                path: cliente_path(current_cliente),
+                color: "blue" %>
+        <% else %>
+          <%= render "shared/card",
+                icon: "👤",
+                title: "Cliente",
+                label: "Login / Cadastro",
+                path: new_cliente_session_path,
+                color: "blue" %>
+        <% end %>
 
-    <%= render "shared/card",
-          icon: "ℹ️",
-          title: "Sobre",
-          label: "Saiba mais",
-          path: about_path,
-          color: "blue" %>
+        <% if transportador_signed_in? %>
+          <%= render "shared/card",
+                icon: "🚚",
+                title: "Área do Transportador",
+                label: "Entrar",
+                path: transportador_path(current_transportador),
+                color: "green" %>
+        <% else %>
+          <%= render "shared/card",
+                icon: "🚚",
+                title: "Transportador",
+                label: "Login / Cadastro",
+                path: new_transportador_session_path,
+                color: "green" %>
+        <% end %>
+      </div>
+    </section>
 
-    <%= render "shared/card",
-          icon: "📩",
-          title: "Contato",
-          label: "Fale conosco",
-          path: contato_path,
-          color: "green" %>
+    <!-- OUTROS RECURSOS / MENUS -->
+    <section class="space-y-4 pb-6">
+      <h2 class="text-lg font-semibold text-slate-100">Outros recursos</h2>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <%= render "shared/card",
+              icon: "⭐",
+              title: "Fidelidade",
+              label: "Ver benefícios",
+              path: fidelidade_path,
+              color: "yellow" %>
+
+        <%= render "shared/card",
+              icon: "📊",
+              title: "Relatórios",
+              label: "Consultar",
+              path: relatorios_path,
+              color: "purple" %>
+
+        <%= render "shared/card",
+              icon: "ℹ️",
+              title: "Sobre",
+              label: "Saiba mais",
+              path: about_path,
+              color: "blue" %>
+
+        <%= render "shared/card",
+              icon: "📩",
+              title: "Contato",
+              label: "Fale conosco",
+              path: contato_path,
+              color: "green" %>
+      </div>
+    </section>
+
   </div>
 </div>
-
