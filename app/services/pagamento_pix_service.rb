@@ -2,19 +2,29 @@
 # frozen_string_literal: true
 
 class PagamentoPixService
-  # Comissão da CargaClick → menor que Uber/iFood (8%)
-  TAXA_CARGACLICK = BigDecimal("0.08")
+  # Comissão padrão apenas como referência textual (regra real está em Taxas::Calculadora)
+  TAXA_CARGACLICK_PADRAO = BigDecimal("0.08")
 
+  # ===============================================================
+  # CHECKOUTS POR TIPO DE CLIENTE
+  # ===============================================================
+
+  # Cliente PF → cobra comissão da plataforma sobre o valor total
+  # A taxa (8% ou 5%) é definida conforme fidelidade do transportador.
   def checkout_pf(frete, cliente, transportador, pagamento)
-    valor_total = frete.valor_total
-    comissao = (valor_total * TAXA_CARGACLICK).round(2)
-    valor_liquido = valor_total - comissao
+    valor_total = frete.valor_total.to_d
+
+    # Taxa dinâmica baseada na fidelidade do transportador
+    taxa      = Taxas::Calculadora.taxa_para(transportador)
+    comissao  = Taxas::Calculadora.comissao(valor_total, transportador)
+    valor_liquido = (valor_total - comissao).round(2)
 
     pagamento.update!(
-      valor_total: valor_total,
-      valor_liquido: valor_liquido,
+      valor_total:         valor_total,
+      valor_liquido:       valor_liquido,
       comissao_cargaclick: comissao,
-      status: "pendente"
+      taxa:                taxa,       # se essa coluna ainda não existir em Pagamento, criamos depois via migration
+      status:              "pendente"
     )
 
     criar_preferencia_pagamento(
@@ -24,17 +34,19 @@ class PagamentoPixService
     )
   end
 
+  # Cliente PJ assinante → desconto de 5% para o cliente e sem comissão sobre o entregador
   def checkout_assinante(frete, cliente, transportador, pagamento)
-    valor_total = frete.valor_total
-    # PJ fidelizado → desconto e sem comissão sobre entregador
-    desconto = (valor_total * 0.05).round(2)
-    valor_final = valor_total - desconto
+    valor_total = frete.valor_total.to_d
+
+    desconto    = (valor_total * BigDecimal("0.05")).round(2)
+    valor_final = (valor_total - desconto).round(2)
 
     pagamento.update!(
-      valor_total: valor_total,
-      valor_liquido: valor_final,
+      valor_total:         valor_total,
+      valor_liquido:       valor_final,
       comissao_cargaclick: 0,
-      status: "pendente"
+      taxa:                0,
+      status:              "pendente"
     )
 
     criar_preferencia_pagamento(
@@ -44,14 +56,16 @@ class PagamentoPixService
     )
   end
 
+  # Cliente avulso (sem assinatura) → sem desconto e sem comissão
   def checkout_avulso(frete, cliente, transportador, pagamento)
-    valor_total = frete.valor_total
+    valor_total = frete.valor_total.to_d
 
     pagamento.update!(
-      valor_total: valor_total,
-      valor_liquido: valor_total,
+      valor_total:         valor_total,
+      valor_liquido:       valor_total,
       comissao_cargaclick: 0,
-      status: "pendente"
+      taxa:                0,
+      status:              "pendente"
     )
 
     criar_preferencia_pagamento(
@@ -61,7 +75,9 @@ class PagamentoPixService
     )
   end
 
-  # === Retorno e Webhook =============================
+  # ===============================================================
+  # RETORNO E WEBHOOK
+  # ===============================================================
   def retorno(params)
     payment_id = params[:payment_id].presence || params[:collection_id].presence
     marcar_pago_se_aprovado(payment_id) if payment_id.present?
@@ -79,17 +95,20 @@ class PagamentoPixService
 
   private
 
+  # ===============================================================
+  # CRIAÇÃO DA PREFERÊNCIA NO MERCADO PAGO
+  # ===============================================================
   def criar_preferencia_pagamento(titulo, valor, frete_id)
     pref_data = {
       items: [{
-        title: titulo,
-        quantity: 1,
+        title:       titulo,
+        quantity:    1,
         currency_id: "BRL",
-        unit_price: valor.to_f
+        unit_price:  valor.to_f
       }],
       external_reference: "frete:#{frete_id}",
-      auto_return: "approved",
-      notification_url: Rails.application.routes.url_helpers.pagamentos_webhook_url(
+      auto_return:        "approved",
+      notification_url:   Rails.application.routes.url_helpers.pagamentos_webhook_url(
         host: app_host, protocol: app_protocol
       )
     }
@@ -104,6 +123,9 @@ class PagamentoPixService
     end
   end
 
+  # ===============================================================
+  # CONFIRMAÇÃO DO PAGAMENTO
+  # ===============================================================
   def marcar_pago_se_aprovado(payment_id)
     return if Rails.cache.read("mp:paid:#{payment_id}").present?
 
@@ -114,21 +136,21 @@ class PagamentoPixService
 
     return unless body && status == "approved" && extref.to_s.start_with?("frete:")
 
-    frete_id = extref.split(":").last
-    frete = Frete.find_by(id: frete_id)
+    frete_id  = extref.split(":").last
+    frete     = Frete.find_by(id: frete_id)
     pagamento = Pagamento.find_by(frete_id: frete_id)
 
     if pagamento
       pagamento.update!(status: "confirmado", txid: payment_id)
     else
       Pagamento.create!(
-        frete_id: frete_id,
-        transportador_id: frete&.transportador_id,
-        valor_total: body[:transaction_amount],
-        valor_liquido: body[:transaction_amount],
+        frete_id:            frete_id,
+        transportador_id:    frete&.transportador_id,
+        valor_total:         body[:transaction_amount],
+        valor_liquido:       body[:transaction_amount],
         comissao_cargaclick: 0,
-        status: "confirmado",
-        txid: payment_id
+        status:              "confirmado",
+        txid:                payment_id
       )
     end
 
@@ -148,7 +170,9 @@ class PagamentoPixService
     marcar_pago_se_aprovado(indifferent(aprovado, :id)) if aprovado
   end
 
-  # === Helpers ======================================
+  # ===============================================================
+  # HELPERS
+  # ===============================================================
   def mp_sdk
     @mp_sdk ||= Mercadopago::SDK.new(ENV.fetch("MP_ACCESS_TOKEN"))
   end
@@ -166,6 +190,6 @@ class PagamentoPixService
     obj[key] || obj[key.to_s] || obj[key.to_sym]
   end
 
-  def success(data); OpenStruct.new(success?: true, data: data); end
+  def success(data);  OpenStruct.new(success?: true,  data: data);  end
   def failure(error); OpenStruct.new(success?: false, error: error); end
 end

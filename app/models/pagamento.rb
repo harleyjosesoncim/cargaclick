@@ -12,8 +12,14 @@ class Pagamento < ApplicationRecord
   delegate :nome, :email, to: :transportador, prefix: true, allow_nil: true
   delegate :nome, to: :cliente, prefix: true, allow_nil: true
 
+  # === ALIAS PARA COLUNAS DO BANCO ==================
+  # Banco tem: :valor, :comissao, :taxa, :desconto, :valor_liquido
+  # Código usa: :valor_total, :comissao_cargaclick
+  alias_attribute :valor_total,        :valor
+  alias_attribute :comissao_cargaclick, :comissao
+
   # === VALIDAÇÕES ===================================
-  validates :valor,
+  validates :valor_total,
             presence: true,
             numericality: {
               greater_than_or_equal_to: 0,
@@ -36,8 +42,11 @@ class Pagamento < ApplicationRecord
 
   # === CALLBACKS =====================================
   before_validation :set_default_status, on: :create
-  # Calcula totais para que as validações não quebrem e o registro já saia coerente
+  # Calcula/normaliza totais sem atropelar o que veio do serviço de pagamento
   before_validation :calcular_totais
+
+  # Quando o pagamento for confirmado, aplica pontos de fidelidade
+  after_update :aplicar_fidelidade_apos_confirmacao, if: :saved_change_to_status?
 
   # === SCOPES ========================================
   scope :recentes,    -> { order(created_at: :desc) }
@@ -59,10 +68,13 @@ class Pagamento < ApplicationRecord
   end
 
   # Aplica/atualiza comissão manualmente (ex.: quando taxa vem do painel/admin)
-  def aplicar_comissao!(taxa)
-    taxa = taxa.to_d
-    self.valor_total = (valor.presence || 0).to_d if valor_total.blank?
-    self.comissao_cargaclick = (valor_total.to_d * taxa).round(2)
+  def aplicar_comissao!(nova_taxa)
+    taxa_decimal = nova_taxa.to_d
+    self.taxa = taxa_decimal
+
+    # Usa valor_total (alias de :valor) como base
+    self.valor_total = (valor_total.presence || 0).to_d
+    self.comissao_cargaclick = (valor_total.to_d * taxa_decimal).round(2)
     self.valor_liquido = (valor_total.to_d - comissao_cargaclick.to_d).round(2)
     save!
   end
@@ -72,8 +84,8 @@ class Pagamento < ApplicationRecord
     vt = (valor_total || 0).to_d
     vl = (valor_liquido || 0).to_d
     "💸 Pagamento ##{id} | Frete ##{frete_id} | Cliente ##{cliente_id} | " \
-    "Transportador ##{transportador_id} | #{status_label} | " \
-    "Total: R$ #{format('%.2f', vt)} | Líquido: R$ #{format('%.2f', vl)}"
+      "Transportador ##{transportador_id} | #{status_label} | " \
+      "Total: R$ #{format('%.2f', vt)} | Líquido: R$ #{format('%.2f', vl)}"
   end
 
   def status_label
@@ -106,21 +118,57 @@ class Pagamento < ApplicationRecord
 
   private
 
+  # === STATUS / DEFAULTS =============================
   def set_default_status
     self.status ||= "pendente"
   end
 
-  # Calcula/normaliza totais com segurança (usa atributos opcionais se existirem)
+  # Calcula/normaliza totais com segurança:
+  # - não sobrescreve valores já definidos pelo PagamentoPixService
+  # - apenas preenche o que estiver em branco
   def calcular_totais
-    base = (valor.presence || 0).to_d
-    taxa = (try(:taxa).presence || 0).to_d          # se existir coluna :taxa
-    desc = (try(:desconto).presence || 0).to_d      # se existir coluna :desconto
+    base = (valor_total.presence || 0).to_d
+    taxa_local = (try(:taxa).presence || 0).to_d          # coluna :taxa já existe
+    desc = (try(:desconto).presence || 0).to_d            # coluna :desconto já existe
 
+    # Garante que valor_total esteja preenchido (usa base)
     self.valor_total = base if valor_total.blank?
-    # Só calcula se ainda não houver comissão; mantém se já tiver sido definida
-    self.comissao_cargaclick = (valor_total.to_d * taxa).round(2) if comissao_cargaclick.blank?
+
+    # Só calcula comissão se ainda não houver valor definido
+    if comissao_cargaclick.blank? && taxa_local.positive?
+      self.comissao_cargaclick = (valor_total.to_d * taxa_local).round(2)
+    end
     self.comissao_cargaclick ||= 0.to_d
 
-    self.valor_liquido = (valor_total.to_d - comissao_cargaclick.to_d - desc).round(2)
+    # Só recalcula valor_liquido se ainda estiver em branco
+    if valor_liquido.blank?
+      self.valor_liquido = (valor_total.to_d - comissao_cargaclick.to_d - desc).round(2)
+    end
+  end
+
+  # === FIDELIDADE / CLICKPOINTS ======================
+  # Quando o status muda para "confirmado", o transportador ganha pontos
+  def aplicar_fidelidade_apos_confirmacao
+    old_status, new_status = saved_change_to_status
+    return unless new_status == "confirmado"
+    return unless transportador.present?
+    return unless transportador.respond_to?(:adicionar_pontos!)
+
+    pontos = calcular_pontos_fidelidade
+    return if pontos <= 0
+
+    transportador.adicionar_pontos!(pontos)
+  rescue StandardError => e
+    Rails.logger.error("[Fidelidade] erro ao aplicar pontos para transportador #{transportador_id}: #{e.message}")
+  end
+
+  # Regra simples: 1 ponto a cada R$ 10 de valor_total, mínimo 1, máximo 100
+  def calcular_pontos_fidelidade
+    base = (valor_total.presence || valor_liquido.presence || 0).to_d
+    pontos = (base / 10).floor
+    pontos = 1 if pontos < 1
+    pontos = 100 if pontos > 100
+    pontos
   end
 end
+  

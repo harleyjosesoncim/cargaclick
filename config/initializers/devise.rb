@@ -5,7 +5,12 @@
 Devise.setup do |config|
   # É uma boa prática usar uma variável de ambiente ou o Rails credentials para
   # definir o remetente, assim você não expõe o e-mail no código.
-  config.mailer_sender = ENV.fetch("DEVISE_MAILER_SENDER", "no-reply@cargaclick.com.br")
+  # Aqui priorizamos MAILER_SENDER (usado no production.rb) e,
+  # se não existir, DEVISE_MAILER_SENDER. Por fim, cai no padrão.
+  config.mailer_sender = ENV.fetch(
+    "MAILER_SENDER",
+    ENV.fetch("DEVISE_MAILER_SENDER", "no-reply@cargaclick.com.br")
+  )
 
   # Define qual ORM (Object-Relational Mapper) o Devise deve usar.
   # No seu caso, o ActiveRecord. Esta linha geralmente não é necessária em
@@ -30,7 +35,7 @@ Devise.setup do |config|
 
   # Define as chaves para redefinição de senha e confirmação de conta.
   config.reset_password_keys = [:email]
-  config.confirmation_keys = [:email]
+  config.confirmation_keys   = [:email]
 
   # Força as chaves de autenticação a serem tratadas como case-insensitive.
   # Por exemplo, "usuario@exemplo.com" será o mesmo que "USUARIO@EXEMPLO.COM".

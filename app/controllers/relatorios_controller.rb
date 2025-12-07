@@ -6,11 +6,19 @@ class RelatoriosController < ApplicationController
 
   # /relatorios/ganhos?from=2025-01-01&to=2025-12-31
   def ganhos
-    scope = Frete.concluido
+    scope = Pagamento.confirmados.includes(:frete, :transportador, :cliente)
     scope = scope.where(created_at: @from..@to) if @from && @to
 
-    @fretes_concluidos = scope.includes(:cliente).order(created_at: :desc)
-    @total_ganhos      = scope.sum(Arel.sql('COALESCE(valor_total, 0)'))
+    @pagamentos = scope.order(created_at: :desc)
+
+    # Total movimentado em fretes (o que o cliente paga)
+    @total_movimentado = scope.sum(Arel.sql("COALESCE(valor, 0)"))
+
+    # Total repassado aos transportadores
+    @total_repassado_transportadores = scope.sum(Arel.sql("COALESCE(valor_liquido, 0)"))
+
+    # Ganho da plataforma (comissão CargaClick)
+    @total_ganhos_plataforma = scope.sum(Arel.sql("COALESCE(comissao, 0)"))
   end
 
   # /relatorios/avaliacoes?from=2025-01-01&to=2025-12-31
@@ -59,4 +67,3 @@ class RelatoriosController < ApplicationController
     ordered
   end
 end
-
