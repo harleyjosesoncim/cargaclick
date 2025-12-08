@@ -90,9 +90,26 @@ class ApplicationController < ActionController::Base
     extra_keys =
       case resource_name
       when :transportador
-        %i[nome cpf cidade tipo_veiculo carga_maxima valor_km chave_pix mercado_pago_link]
+        %i[
+          nome
+          cpf
+          cidade
+          tipo_veiculo
+          carga_maxima
+          valor_km
+          chave_pix
+          mercado_pago_link
+          tipo_documento
+          documento
+          cnh_numero
+          placa_veiculo
+        ]
       when :cliente
-        %i[nome telefone cidade]
+        %i[
+          nome
+          telefone
+          cidade
+        ]
       else
         []
       end

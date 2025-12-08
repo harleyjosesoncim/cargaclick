@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_10_18_193100) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_08_215800) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -263,7 +263,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_18_193100) do
     t.string "unconfirmed_email"
     t.string "chave_pix"
     t.string "status", default: "pendente", null: false
+    t.string "tipo_documento"
+    t.string "documento"
+    t.string "cnh_numero"
+    t.string "placa_veiculo"
     t.index ["confirmation_token"], name: "index_transportadores_on_confirmation_token", unique: true
+    t.index ["documento"], name: "index_transportadores_on_documento", unique: true
     t.index ["email"], name: "index_transportadores_on_email", unique: true, where: "(email IS NOT NULL)"
     t.index ["reset_password_token"], name: "index_transportadores_on_reset_password_token", unique: true
     t.index ["status"], name: "index_transportadores_on_status"
