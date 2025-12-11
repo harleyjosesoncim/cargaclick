@@ -23,10 +23,10 @@
         <!-- BOTÕES DE AÇÃO  -->
         <div class="mt-8 flex flex-wrap gap-4">
           <%# Ajuste os links abaixo para as rotas reais de login/cadastro (Devise, etc.) %>
-          <%= link_to "Entrar no sistema", "#",
+          <%= link_to "Entrar no sistema", new_cliente_session_path,
               class: "px-6 py-3 rounded-full text-sm font-semibold bg-emerald-500 hover:bg-emerald-400 text-gray-900 shadow-lg shadow-emerald-500/40 transition" %>
 
-          <%= link_to "Criar minha conta", "#",
+          <%= link_to "Criar minha conta", new_cliente_registration_path,
               class: "px-6 py-3 rounded-full text-sm font-semibold border border-gray-600 hover:border-emerald-400 text-gray-100 hover:text-emerald-300 transition" %>
         </div>
 
