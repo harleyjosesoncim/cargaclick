@@ -123,7 +123,7 @@ class Transportador < ApplicationRecord
   end
 
   def pode_receber_pagamento?
-    chave_pix.present? && ativo?
+    chave_pix.present? && (respond_to?(:status_ativo?) ? status_ativo? : status.to_s == "ativo")
   end
 
   # ============== Utilidades de seed ===============
