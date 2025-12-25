@@ -34,10 +34,17 @@ class Pagamento < ApplicationRecord
             allow_nil: true
 
   # === STATUS ========================================
+  # Fluxo recomendado:
+  #   pendente -> escrow (pagamento aprovado/retido) -> liberado (repasse executado)
+  # Estados auxiliares:
+  #   confirmado (compatibilidade/testes), cancelado, estornado
   enum status: {
     pendente:   "pendente",
     confirmado: "confirmado",
-    cancelado:  "cancelado"
+    escrow:     "escrow",
+    liberado:   "liberado",
+    cancelado:  "cancelado",
+    estornado:  "estornado"
   }, _default: "pendente"
 
   # === CALLBACKS =====================================
@@ -45,22 +52,43 @@ class Pagamento < ApplicationRecord
   # Calcula/normaliza totais sem atropelar o que veio do serviço de pagamento
   before_validation :calcular_totais
 
-  # Quando o pagamento for confirmado, aplica pontos de fidelidade
+  # Quando o repasse for liberado, aplica pontos de fidelidade
   after_update :aplicar_fidelidade_apos_confirmacao, if: :saved_change_to_status?
 
   # === SCOPES ========================================
   scope :recentes,    -> { order(created_at: :desc) }
   scope :pendentes,   -> { where(status: "pendente") }
   scope :confirmados, -> { where(status: "confirmado") }
+  scope :em_escrow,   -> { where(status: "escrow") }
+  scope :liberados,   -> { where(status: "liberado") }
   scope :cancelados,  -> { where(status: "cancelado") }
+  scope :estornados,  -> { where(status: "estornado") }
 
   # === LÓGICA DE NEGÓCIO =============================
   def confirmar!
     update!(status: "confirmado")
   end
 
+  # Pagamento aprovado e retido em garantia (escrow)
+  def colocar_em_escrow!
+    attrs = { status: "escrow" }
+    attrs[:escrow_at] = Time.current if has_attribute?(:escrow_at)
+    update!(attrs)
+  end
+
+  # Repasse executado ao transportador (Pix)
+  def liberar!
+    attrs = { status: "liberado" }
+    attrs[:liberado_at] = Time.current if has_attribute?(:liberado_at)
+    update!(attrs)
+  end
+
   def cancelar!
     update!(status: "cancelado")
+  end
+
+  def estornar!
+    update!(status: "estornado")
   end
 
   def pendente?
@@ -147,10 +175,11 @@ class Pagamento < ApplicationRecord
   end
 
   # === FIDELIDADE / CLICKPOINTS ======================
-  # Quando o status muda para "confirmado", o transportador ganha pontos
+  # Quando o status muda para "liberado", o transportador ganha pontos
   def aplicar_fidelidade_apos_confirmacao
-    old_status, new_status = saved_change_to_status
-    return unless new_status == "confirmado"
+    _old_status, new_status = saved_change_to_status
+    # Fidelidade deve ser aplicada quando o repasse é liberado (entrega concluída)
+    return unless new_status == "liberado"
     return unless transportador.present?
     return unless transportador.respond_to?(:adicionar_pontos!)
 

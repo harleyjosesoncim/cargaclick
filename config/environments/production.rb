@@ -54,7 +54,7 @@ Rails.application.configure do
 
   # Cache store com Redis e fallback seguro
   redis_url = ENV["REDIS_URL"].presence
-  if redis_url
+  if redis_url && !redis_url.include?("redis://host:6379")
     config.cache_store = :redis_cache_store, {
       url: redis_url,
       connect_timeout: 5, read_timeout: 1, write_timeout: 1,

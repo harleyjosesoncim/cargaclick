@@ -2,7 +2,7 @@
 
 class PagamentosController < ApplicationController
   skip_before_action :verify_authenticity_token, only: %i[webhook ping]
-  before_action :set_pagamento, only: [:show, :cancelar]
+  before_action :set_pagamento, only: %i[show update cancelar liberar]
 
   # ===============================================================
   # LISTAGEM / VISUALIZAÇÃO
@@ -28,6 +28,8 @@ class PagamentosController < ApplicationController
 
     pagamento = Pagamento.find_or_initialize_by(frete: frete, transportador: transportador)
     pagamento.cliente = cliente
+
+    # Mantém compatibilidade com colunas/aliases
     pagamento.valor_total = calcular_valor_final(frete, cliente)
     pagamento.comissao_cargaclick ||= 0
     pagamento.valor_liquido ||= pagamento.valor_total
@@ -57,6 +59,38 @@ class PagamentosController < ApplicationController
   end
 
   # ===============================================================
+  # ATUALIZAÇÃO DE STATUS (UI/Turbo)
+  # ===============================================================
+  # PATCH /pagamentos/:id?status=escrow|cancelado|confirmado|estornado
+  def update
+    status = params[:status].to_s
+
+    case status
+    when "escrow"
+      @pagamento.colocar_em_escrow! if @pagamento.respond_to?(:colocar_em_escrow!)
+    when "confirmado"
+      @pagamento.confirmar!
+    when "cancelado"
+      return redirect_to(@pagamento, alert: "⚠️ Só é possível cancelar quando pendente.") unless @pagamento.pendente?
+      @pagamento.cancelar!
+    when "estornado"
+      @pagamento.estornar! if @pagamento.respond_to?(:estornar!)
+    else
+      return respond_to do |format|
+        format.turbo_stream { render :update, status: :unprocessable_entity }
+        format.html { redirect_to @pagamento, alert: "Status inválido." }
+        format.json { render json: { error: "Status inválido" }, status: :unprocessable_entity }
+      end
+    end
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to @pagamento, notice: "✅ Status atualizado." }
+      format.json { render json: { ok: true, status: @pagamento.status } }
+    end
+  end
+
+  # ===============================================================
   # CANCELAR
   # ===============================================================
   def cancelar
@@ -65,6 +99,38 @@ class PagamentosController < ApplicationController
       redirect_to @pagamento, notice: "❌ Pagamento cancelado com sucesso."
     else
       redirect_to @pagamento, alert: "⚠️ Não é possível cancelar um pagamento #{@pagamento.status}."
+    end
+  end
+
+  # ===============================================================
+  # ESCROW / REPASSE
+  # ===============================================================
+  # POST /pagamentos/:id/liberar
+  def liberar
+    unless autorizado_para_liberar?(@pagamento)
+      return respond_to do |format|
+        format.html { redirect_to @pagamento, alert: "⚠️ Você não tem permissão para liberar este repasse." }
+        format.json { render json: { error: "forbidden" }, status: :forbidden }
+      end
+    end
+
+    actor = (respond_to?(:current_admin_user) && current_admin_user) ||
+            (respond_to?(:current_cliente) && current_cliente)
+
+    result = Pagamentos::EscrowService.new.liberar!(@pagamento, actor: actor)
+
+    if result.success?
+      respond_to do |format|
+        format.turbo_stream { render :update }
+        format.html { redirect_to @pagamento, notice: "✅ Repasse liberado com sucesso." }
+        format.json { render json: { ok: true, status: @pagamento.status, payout_txid: @pagamento.payout_txid } }
+      end
+    else
+      respond_to do |format|
+        format.turbo_stream { render :update }
+        format.html { redirect_to @pagamento, alert: "❌ Falha ao liberar repasse: #{result.error}" }
+        format.json { render json: { error: result.error }, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -103,8 +169,22 @@ class PagamentosController < ApplicationController
     nil
   end
 
-  def calcular_valor_final(frete, cliente)
-    # lógica de cálculo → substitua pela regra do seu negócio
-    frete.valor_base
+  def calcular_valor_final(frete, _cliente)
+    # Usa o valor já consolidado no Frete (valor_final/estimado).
+    frete.valor_total.to_d
+  end
+
+  def autorizado_para_liberar?(pagamento)
+    # Admin pode liberar sempre
+    if respond_to?(:admin_user_signed_in?) && admin_user_signed_in?
+      return true
+    end
+
+    # Cliente dono do frete pode liberar
+    if respond_to?(:cliente_signed_in?) && cliente_signed_in?
+      return pagamento.cliente_id.present? && current_cliente.id == pagamento.cliente_id
+    end
+
+    false
   end
 end

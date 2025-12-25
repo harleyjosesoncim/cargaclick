@@ -127,7 +127,7 @@ class PagamentoPixService
   # CONFIRMAÇÃO DO PAGAMENTO
   # ===============================================================
   def marcar_pago_se_aprovado(payment_id)
-    return if Rails.cache.read("mp:paid:#{payment_id}").present?
+    return if safe_cache_read("mp:paid:#{payment_id}").present?
 
     payment_resp = mp_sdk.payment.get(payment_id)
     body   = indifferent(payment_resp, :response)
@@ -138,29 +138,44 @@ class PagamentoPixService
 
     frete_id  = extref.split(":").last
     frete     = Frete.find_by(id: frete_id)
-    pagamento = Pagamento.find_by(frete_id: frete_id)
+
+    # Idempotência: primeiro por txid, depois por frete
+    pagamento = Pagamento.find_by(txid: payment_id) || Pagamento.find_by(frete_id: frete_id)
 
     if pagamento
-      pagamento.update!(status: "confirmado", txid: payment_id)
+      attrs = { txid: payment_id, metodo_pagamento: "pix" }
+
+      # Preferência: após aprovado, entra em escrow (retenção) até liberação do repasse
+      attrs[:status] = "escrow"
+      attrs[:escrow_at] = Time.current if pagamento.has_attribute?(:escrow_at)
+
+      pagamento.update!(attrs)
     else
-      Pagamento.create!(
+      attrs = {
         frete_id:            frete_id,
         transportador_id:    frete&.transportador_id,
-        valor_total:         body[:transaction_amount],
-        valor_liquido:       body[:transaction_amount],
+        cliente_id:          frete&.cliente_id,
+        valor_total:         indifferent(body, :transaction_amount),
+        valor_liquido:       indifferent(body, :transaction_amount),
         comissao_cargaclick: 0,
-        status:              "confirmado",
+        status:              "escrow",
+        metodo_pagamento:    "pix",
         txid:                payment_id
-      )
+      }
+      attrs[:escrow_at] = Time.current if Pagamento.new.has_attribute?(:escrow_at)
+
+      Pagamento.create!(attrs)
     end
 
+    # Libera o chat/contatos no frete (pagamento já aprovado)
     frete.update(contatos_liberados: true) if frete.present?
-    Rails.cache.write("mp:paid:#{payment_id}", true, expires_in: 3.days)
 
-    Rails.logger.info("[MP] Pagamento confirmado, frete #{frete_id} liberado")
+    safe_cache_write("mp:paid:#{payment_id}", true, expires_in: 3.days)
+    Rails.logger.info("[MP] Pagamento aprovado (escrow), frete #{frete_id} liberado")
   rescue StandardError => e
     Rails.logger.error("[MP] erro ao confirmar pagamento: #{e.message}")
   end
+
 
   def processar_merchant_order(merchant_order_id)
     mo_resp = mp_sdk.merchant_order.get(merchant_order_id)
@@ -188,6 +203,19 @@ class PagamentoPixService
   def indifferent(obj, key)
     return nil unless obj.is_a?(Hash)
     obj[key] || obj[key.to_s] || obj[key.to_sym]
+  end
+
+
+  def safe_cache_read(key)
+    Rails.cache.read(key)
+  rescue StandardError
+    nil
+  end
+
+  def safe_cache_write(key, value, **opts)
+    Rails.cache.write(key, value, **opts)
+  rescue StandardError
+    false
   end
 
   def success(data);  OpenStruct.new(success?: true,  data: data);  end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_08_215800) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_25_030000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -73,8 +73,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_08_215800) do
     t.string "confirmation_token"
     t.string "campo_extra"
     t.string "tipo", default: "pf", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
     t.index ["cnpj"], name: "index_clientes_on_cnpj", unique: true, where: "(cnpj IS NOT NULL)"
     t.index ["cpf"], name: "index_clientes_on_cpf", unique: true, where: "(cpf IS NOT NULL)"
+    t.index ["email"], name: "index_clientes_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_clientes_on_reset_password_token", unique: true
     t.index ["tipo"], name: "index_clientes_on_tipo"
   end
 
@@ -127,9 +132,11 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_08_215800) do
     t.datetime "updated_at", null: false
     t.decimal "comissao"
     t.string "status", default: "pendente", null: false
+    t.bigint "transportador_id"
     t.index ["cliente_id"], name: "index_cotacoes_on_cliente_id"
     t.index ["frete_id"], name: "index_cotacoes_on_frete_id"
     t.index ["status"], name: "index_cotacoes_on_status"
+    t.index ["transportador_id"], name: "index_cotacoes_on_transportador_id"
   end
 
   create_table "fretes", force: :cascade do |t|
@@ -214,8 +221,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_08_215800) do
     t.string "txid"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "cliente_id"
+    t.datetime "escrow_at"
+    t.datetime "liberado_at"
+    t.string "payout_txid"
+    t.string "payout_status", default: "pendente"
+    t.text "payout_error"
+    t.index ["cliente_id"], name: "index_pagamentos_on_cliente_id"
     t.index ["frete_id"], name: "index_pagamentos_on_frete_id"
+    t.index ["payout_txid"], name: "index_pagamentos_on_payout_txid"
     t.index ["transportador_id"], name: "index_pagamentos_on_transportador_id"
+    t.index ["txid"], name: "index_pagamentos_on_txid", unique: true
   end
 
   create_table "propostas", force: :cascade do |t|
@@ -282,6 +298,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_08_215800) do
   add_foreign_key "chats", "transportadores"
   add_foreign_key "cotacoes", "clientes"
   add_foreign_key "cotacoes", "fretes"
+  add_foreign_key "cotacoes", "transportadores"
   add_foreign_key "fretes", "clientes"
   add_foreign_key "fretes", "transportadores"
   add_foreign_key "historico_emails", "clientes"
@@ -290,6 +307,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_08_215800) do
   add_foreign_key "historico_propostas", "propostas"
   add_foreign_key "modal_transportadores", "modals"
   add_foreign_key "modal_transportadores", "transportadores"
+  add_foreign_key "pagamentos", "clientes"
   add_foreign_key "pagamentos", "fretes"
   add_foreign_key "pagamentos", "transportadores"
   add_foreign_key "propostas", "clientes"

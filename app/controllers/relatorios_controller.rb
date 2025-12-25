@@ -6,7 +6,7 @@ class RelatoriosController < ApplicationController
 
   # /relatorios/ganhos?from=2025-01-01&to=2025-12-31
   def ganhos
-    scope = Pagamento.confirmados.includes(:frete, :transportador, :cliente)
+    scope = Pagamento.where(status: %w[escrow liberado confirmado]).includes(:frete, :transportador, :cliente)
     scope = scope.where(created_at: @from..@to) if @from && @to
 
     @pagamentos = scope.order(created_at: :desc)

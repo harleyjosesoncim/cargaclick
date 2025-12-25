@@ -154,12 +154,13 @@ Rails.application.routes.draw do
   # ===============================================================
   # PAGAMENTOS (GLOBAL)
   # ===============================================================
-  resources :pagamentos, only: %i[index show create] do
+  resources :pagamentos, only: %i[index show create update] do
     member do
-      post  :checkout
       patch :cancelar
+      post  :liberar
     end
     collection do
+      post :checkout
       get  :retorno
       post :webhook
       get  :ping

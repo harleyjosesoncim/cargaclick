@@ -1,8 +1,6 @@
-<!-- app/views/pagamentos/_pagamento.html.erb -->
 <div id="pagamento_<%= pagamento.id %>"
      class="bg-white dark:bg-gray-900 shadow rounded-lg p-4 mb-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
 
-  <!-- Informações principais -->
   <div>
     <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
       💸 Pagamento ##<%= pagamento.id %>
@@ -14,13 +12,15 @@
     </p>
   </div>
 
-  <!-- Status + valores -->
   <div class="flex flex-col text-sm text-gray-700 dark:text-gray-300">
     <span class="px-2 py-1 rounded text-xs font-medium
       <%= case pagamento.status
-          when "pendente" then "bg-yellow-100 text-yellow-800"
-          when "confirmado" then "bg-green-100 text-green-800"
+          when "liberado"  then "bg-green-100 text-green-800"
+          when "escrow"    then "bg-indigo-100 text-indigo-800"
+          when "confirmado" then "bg-teal-100 text-teal-800"
+          when "pendente"  then "bg-yellow-100 text-yellow-800"
           when "cancelado" then "bg-red-100 text-red-800"
+          when "estornado" then "bg-gray-100 text-gray-800"
           else "bg-gray-100 text-gray-800" end %>">
       <%= pagamento.status_label %>
     </span>
@@ -30,20 +30,25 @@
     <span>Comissão CargaClick: <%= number_to_currency(pagamento.comissao_cargaclick) %></span>
   </div>
 
-  <!-- Botões de ação -->
   <div class="flex gap-2">
     <% if pagamento.pendente? %>
-      <%= button_to "Confirmar",
-          pagamento_path(pagamento, status: "confirmado"),
+      <%= button_to "Marcar como Pago (Escrow)",
+          pagamento_path(pagamento, status: "escrow"),
           method: :patch,
           data: { turbo_stream: true },
-          class: "px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700" %>
+          class: "px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700" %>
 
       <%= button_to "Cancelar",
           pagamento_path(pagamento, status: "cancelado"),
           method: :patch,
           data: { turbo_stream: true, confirm: "Deseja realmente cancelar este pagamento?" },
           class: "px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700" %>
+    <% elsif pagamento.escrow? %>
+      <%= button_to "Liberar repasse (Pix)",
+          liberar_pagamento_path(pagamento),
+          method: :post,
+          data: { turbo_stream: true, confirm: "Confirmar liberação do repasse ao transportador?" },
+          class: "px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700" %>
     <% end %>
 
     <%= link_to "Detalhes",

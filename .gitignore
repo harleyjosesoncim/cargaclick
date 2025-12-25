@@ -103,3 +103,7 @@ node_modules/
 /tmp/
 
 package-lock.json
+
+# Artifacts
+*.zip
+_export_core/
