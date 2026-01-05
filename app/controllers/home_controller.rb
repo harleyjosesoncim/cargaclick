@@ -1,19 +1,23 @@
-#class HomeController < ApplicationController
+class HomeController < ApplicationController
   # Tela inicial
   def index
   end
 
-  # Páginas institucionais / temporárias
+  # Sobre
   def about
   end
 
+  # Contato
   def contato
   end
 
+  # Fidelidade
   def fidelidade
   end
 
+  # Relatórios
   def relatorios
   end
 end
+
 
