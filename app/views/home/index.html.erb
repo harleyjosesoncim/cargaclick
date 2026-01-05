@@ -1,225 +1,87 @@
-<%# app/views/home/index.html.erb %>
 <% content_for :title, "CargaClick — Início" %>
 
-<div class="min-h-screen bg-slate-950 text-slate-100">
+<div class="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
 
-  <!-- MENU ROXO SOMENTE MOBILE (FIXO NO TOPO) -->
-  <div class="md:hidden fixed top-0 left-0 right-0 z-40">
-    <!-- Barra roxa com botão -->
-    <button
-      id="mobile-menu-toggle"
-      type="button"
-      class="w-full flex items-center justify-between px-4 py-3
-             bg-purple-700 text-white text-sm font-semibold
-             shadow-lg focus:outline-none"
-    >
-      <span>Menu rápido</span>
-      <svg id="mobile-menu-icon"
-           xmlns="http://www.w3.org/2000/svg"
-           class="h-4 w-4 transition-transform duration-200"
-           viewBox="0 0 20 20" fill="currentColor">
-        <path fill-rule="evenodd"
-              d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.25a.75.75 0 01-1.06 0L5.21 8.27a.75.75 0 01.02-1.06z"
-              clip-rule="evenodd" />
-      </svg>
-    </button>
+  <!-- HEADER SIMPLES -->
+  <header class="w-full px-4 py-4 flex justify-between items-center border-b border-slate-800">
+    <h1 class="text-lg font-bold text-purple-300">CargaClick</h1>
 
-    <!-- Painel do submenu roxo (abre/fecha) -->
-    <nav
-      id="mobile-menu-panel"
-      class="hidden bg-purple-700 text-white shadow-2xl border-t border-purple-500"
-    >
-      <ul class="py-2 text-sm font-medium">
+    <div class="space-x-2 text-sm">
+      <%= link_to "Entrar", new_cliente_session_path,
+            class: "px-3 py-1 rounded bg-purple-700 hover:bg-purple-600" %>
+      <%= link_to "Cadastrar", new_cliente_session_path,
+            class: "px-3 py-1 rounded border border-purple-600 hover:bg-purple-800" %>
+    </div>
+  </header>
 
-        <li>
-          <%= link_to "Simular Frete", new_frete_path,
-              class: "block px-4 py-2 hover:bg-purple-600" %>
-        </li>
-
-        <li>
-          <%= link_to "Fidelidade", fidelidade_path,
-              class: "block px-4 py-2 hover:bg-purple-600" %>
-        </li>
-
-        <li>
-          <%= link_to "Relatórios", relatorios_path,
-              class: "block px-4 py-2 hover:bg-purple-600" %>
-        </li>
-
-        <li>
-          <%= link_to "Sobre", about_path,
-              class: "block px-4 py-2 hover:bg-purple-600" %>
-        </li>
-
-        <li>
-          <%= link_to "Contato", contato_path,
-              class: "block px-4 py-2 hover:bg-purple-600" %>
-        </li>
-
-        <hr class="my-2 border-purple-400/60">
-
-        <!-- Login / Área do Cliente -->
-        <li>
-          <% if cliente_signed_in? %>
-            <%= link_to "Área do Cliente",
-                        cliente_path(current_cliente),
-                        class: "block px-4 py-2 bg-white text-purple-700 font-semibold hover:bg-purple-100" %>
-          <% else %>
-            <%= link_to "Login Cliente",
-                        new_cliente_session_path,
-                        class: "block px-4 py-2 bg-white text-purple-700 font-semibold hover:bg-purple-100" %>
-          <% end %>
-        </li>
-
-        <!-- Login / Área do Transportador -->
-        <li>
-          <% if transportador_signed_in? %>
-            <%= link_to "Área do Transportador",
-                        transportador_path(current_transportador),
-                        class: "block px-4 py-2 border-t border-purple-400/60 hover:bg-purple-600" %>
-          <% else %>
-            <%= link_to "Login Transportador",
-                        new_transportador_session_path,
-                        class: "block px-4 py-2 border-t border-purple-400/60 hover:bg-purple-600" %>
-          <% end %>
-        </li>
-      </ul>
-    </nav>
-  </div>
-  <!-- FIM MENU MOBILE -->
-
-  <!-- CONTEÚDO PRINCIPAL (com espaço no topo para o menu mobile) -->
-  <div class="max-w-6xl mx-auto px-4 pb-10 pt-24 md:pt-10 space-y-10">
+  <!-- CONTEÚDO CENTRAL -->
+  <main class="flex-1 px-4 py-10 max-w-4xl mx-auto space-y-10">
 
     <!-- HERO -->
     <section class="text-center space-y-4">
-      <p class="inline-flex items-center px-3 py-1 rounded-full bg-purple-800/40 text-xs uppercase tracking-wide">
-        Plataforma inteligente de fretes
+      <h2 class="text-3xl font-extrabold">
+        Fretes rápidos e sem intermediários
+      </h2>
+
+      <p class="text-slate-300 text-sm">
+        Simule, contrate e acompanhe seus fretes em poucos cliques.
       </p>
 
-      <h1 class="text-3xl sm:text-4xl font-extrabold">
-        Bem-vindo ao <span class="text-purple-300">CargaClick</span> 🚛
-      </h1>
-
-      <p class="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto">
-        Simule valores, encontre transportadores confiáveis e acompanhe seus fretes em um só lugar.
-      </p>
+      <%= link_to "Simular Frete",
+            new_frete_path,
+            class: "inline-block mt-4 px-6 py-3 rounded bg-yellow-500 text-black font-semibold hover:bg-yellow-400" %>
     </section>
 
-    <!-- AÇÃO PRINCIPAL: SIMULAR FRETE -->
-    <section>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-        <div class="md:col-span-2">
-          <%= render "shared/card",
-                icon: "📦",
-                title: "Simular / Solicitar Frete",
-                label: "Começar agora",
-                path: new_frete_path,
-                color: "yellow" %>
-        </div>
+    <!-- PERFIS -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 gap-6">
 
-        <div class="hidden md:block text-sm text-slate-300 space-y-2">
-          <p class="font-semibold">Como funciona?</p>
-          <p>
-            Informe origem e destino, compare preços por tipo de veículo
-            e escolha o frete ideal em poucos cliques.
-          </p>
-        </div>
-      </div>
-    </section>
+      <!-- CLIENTE -->
+      <div class="p-6 rounded-xl bg-slate-900 border border-slate-800 text-center space-y-3">
+        <div class="text-3xl">👤</div>
+        <h3 class="font-semibold">Cliente</h3>
 
-    <!-- PERFIS DE ACESSO -->
-    <section class="space-y-4">
-      <h2 class="text-lg font-semibold text-slate-100">Acesse sua conta</h2>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <% if cliente_signed_in? %>
-          <%= render "shared/card",
-                icon: "👤",
-                title: "Área do Cliente",
-                label: "Entrar",
-                path: cliente_path(current_cliente),
-                color: "blue" %>
+          <%= link_to "Acessar painel",
+                cliente_path(current_cliente),
+                class: "block px-4 py-2 rounded bg-blue-600 hover:bg-blue-500" %>
         <% else %>
-          <%= render "shared/card",
-                icon: "👤",
-                title: "Cliente",
-                label: "Login / Cadastro",
-                path: new_cliente_session_path,
-                color: "blue" %>
+          <%= link_to "Login / Cadastro",
+                new_cliente_session_path,
+                class: "block px-4 py-2 rounded bg-blue-600 hover:bg-blue-500" %>
         <% end %>
+      </div>
+
+      <!-- TRANSPORTADOR -->
+      <div class="p-6 rounded-xl bg-slate-900 border border-slate-800 text-center space-y-3">
+        <div class="text-3xl">🚚</div>
+        <h3 class="font-semibold">Transportador</h3>
 
         <% if transportador_signed_in? %>
-          <%= render "shared/card",
-                icon: "🚚",
-                title: "Área do Transportador",
-                label: "Entrar",
-                path: transportador_path(current_transportador),
-                color: "green" %>
+          <%= link_to "Acessar painel",
+                transportador_path(current_transportador),
+                class: "block px-4 py-2 rounded bg-green-600 hover:bg-green-500" %>
         <% else %>
-          <%= render "shared/card",
-                icon: "🚚",
-                title: "Transportador",
-                label: "Login / Cadastro",
-                path: new_transportador_session_path,
-                color: "green" %>
+          <%= link_to "Login / Cadastro",
+                new_transportador_session_path,
+                class: "block px-4 py-2 rounded bg-green-600 hover:bg-green-500" %>
         <% end %>
       </div>
+
     </section>
 
-    <!-- OUTROS RECURSOS / MENUS -->
-    <section class="space-y-4 pb-6">
-      <h2 class="text-lg font-semibold text-slate-100">Outros recursos</h2>
-
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <%= render "shared/card",
-              icon: "⭐",
-              title: "Fidelidade",
-              label: "Ver benefícios",
-              path: fidelidade_path,
-              color: "yellow" %>
-
-        <%= render "shared/card",
-              icon: "📊",
-              title: "Relatórios",
-              label: "Consultar",
-              path: relatorios_path,
-              color: "purple" %>
-
-        <%= render "shared/card",
-              icon: "ℹ️",
-              title: "Sobre",
-              label: "Saiba mais",
-              path: about_path,
-              color: "blue" %>
-
-        <%= render "shared/card",
-              icon: "📩",
-              title: "Contato",
-              label: "Fale conosco",
-              path: contato_path,
-              color: "green" %>
-      </div>
+    <!-- LINKS SECUNDÁRIOS -->
+    <section class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm text-center">
+      <%= link_to "Fidelidade", fidelidade_path, class: "p-3 rounded bg-slate-800 hover:bg-slate-700" %>
+      <%= link_to "Relatórios", relatorios_path, class: "p-3 rounded bg-slate-800 hover:bg-slate-700" %>
+      <%= link_to "Sobre", about_path, class: "p-3 rounded bg-slate-800 hover:bg-slate-700" %>
+      <%= link_to "Contato", contato_path, class: "p-3 rounded bg-slate-800 hover:bg-slate-700" %>
     </section>
 
-  </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="text-center text-xs text-slate-500 py-4 border-t border-slate-800">
+    © <%= Time.current.year %> CargaClick
+  </footer>
+
 </div>
-
-<!-- JS simples para abrir/fechar o menu MOBILE -->
-<script>
-  function initCargaClickMobileMenu() {
-    const btn   = document.getElementById("mobile-menu-toggle");
-    const panel = document.getElementById("mobile-menu-panel");
-    const icon  = document.getElementById("mobile-menu-icon");
-
-    if (!btn || !panel) return;
-
-    btn.addEventListener("click", function () {
-      panel.classList.toggle("hidden");
-      if (icon) icon.classList.toggle("rotate-180");
-    });
-  }
-
-  document.addEventListener("DOMContentLoaded", initCargaClickMobileMenu);
-  document.addEventListener("turbo:load",    initCargaClickMobileMenu);
-</script>
