@@ -2,14 +2,17 @@
 
 <div class="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
 
-  <!-- HEADER SIMPLES -->
+  <!-- HEADER SIMPLES (NEUTRO) -->
   <header class="w-full px-4 py-4 flex justify-between items-center border-b border-slate-800">
     <h1 class="text-lg font-bold text-purple-300">CargaClick</h1>
 
     <div class="space-x-2 text-sm">
-      <%= link_to "Entrar", new_cliente_session_path,
+      <%= link_to "Entrar",
+            "/login",
             class: "px-3 py-1 rounded bg-purple-700 hover:bg-purple-600" %>
-      <%= link_to "Cadastrar", new_cliente_session_path,
+
+      <%= link_to "Cadastrar",
+            "/cadastro",
             class: "px-3 py-1 rounded border border-purple-600 hover:bg-purple-800" %>
     </div>
   </header>
@@ -32,7 +35,7 @@
             class: "inline-block mt-4 px-6 py-3 rounded bg-yellow-500 text-black font-semibold hover:bg-yellow-400" %>
     </section>
 
-    <!-- PERFIS -->
+    <!-- PERFIS (APRESENTAÇÃO) -->
     <section class="grid grid-cols-1 sm:grid-cols-2 gap-6">
 
       <!-- CLIENTE -->
@@ -40,15 +43,9 @@
         <div class="text-3xl">👤</div>
         <h3 class="font-semibold">Cliente</h3>
 
-        <% if cliente_signed_in? %>
-          <%= link_to "Acessar painel",
-                cliente_path(current_cliente),
-                class: "block px-4 py-2 rounded bg-blue-600 hover:bg-blue-500" %>
-        <% else %>
-          <%= link_to "Login / Cadastro",
-                new_cliente_session_path,
-                class: "block px-4 py-2 rounded bg-blue-600 hover:bg-blue-500" %>
-        <% end %>
+        <%= link_to "Área do Cliente",
+              "/cliente",
+              class: "block px-4 py-2 rounded bg-blue-600 hover:bg-blue-500" %>
       </div>
 
       <!-- TRANSPORTADOR -->
@@ -56,15 +53,9 @@
         <div class="text-3xl">🚚</div>
         <h3 class="font-semibold">Transportador</h3>
 
-        <% if transportador_signed_in? %>
-          <%= link_to "Acessar painel",
-                transportador_path(current_transportador),
-                class: "block px-4 py-2 rounded bg-green-600 hover:bg-green-500" %>
-        <% else %>
-          <%= link_to "Login / Cadastro",
-                new_transportador_session_path,
-                class: "block px-4 py-2 rounded bg-green-600 hover:bg-green-500" %>
-        <% end %>
+        <%= link_to "Área do Transportador",
+              "/transportador",
+              class: "block px-4 py-2 rounded bg-green-600 hover:bg-green-500" %>
       </div>
 
     </section>
