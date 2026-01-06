@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cadastro Transportador – CargaClick</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+
+<form method="POST"
+      action="/api/transportadores/optin"
+      class="max-w-xl mx-auto bg-white p-6 rounded shadow">
+
+  <h1 class="text-2xl font-bold mb-4">Cadastro de Transportador</h1>
+
+  <input name="nome" required placeholder="Nome completo"
+         class="w-full border p-2 mb-3 rounded"/>
+
+  <input name="telefone" required placeholder="WhatsApp"
+         class="w-full border p-2 mb-3 rounded"/>
+
+  <input name="email" type="email" placeholder="E-mail"
+         class="w-full border p-2 mb-3 rounded"/>
+
+  <input name="cidade" required placeholder="Cidade"
+         class="w-full border p-2 mb-3 rounded"/>
+
+  <select name="tipo_veiculo" required class="w-full border p-2 mb-3 rounded">
+    <option value="">Tipo de veículo</option>
+    <option value="moto">Moto</option>
+    <option value="van">Van</option>
+    <option value="caminhao">Caminhão</option>
+  </select>
+
+  <input name="capacidade" placeholder="Capacidade (kg)"
+         class="w-full border p-2 mb-3 rounded"/>
+
+  <input type="hidden" name="origem" value="discord"/>
+
+  <label class="flex items-center text-sm mb-4">
+    <input type="checkbox" name="consentimento" required class="mr-2">
+    Autorizo o uso dos meus dados conforme a LGPD.
+  </label>
+
+  <button class="bg-blue-600 text-white w-full py-2 rounded">
+    Cadastrar
+  </button>
+</form>
+
+</body>
+</html>

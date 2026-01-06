@@ -1,0 +1,28 @@
+<nav class="flex items-center gap-4 text-sm">
+
+  <!-- Link Início -->
+  <%= link_to "Início",
+        safe_root_path,
+        class: active_link_class(root_path) %>
+
+  <!-- CLIENTE -->
+  <% cliente_links.each do |link| %>
+    <%= link_to link[:label],
+          link[:path],
+          class: active_link_class(link[:path]) %>
+  <% end %>
+
+  <!-- TRANSPORTADOR -->
+  <% transportador_links.each do |link| %>
+    <%= link_to link[:label],
+          link[:path],
+          class: active_link_class(link[:path]) %>
+  <% end %>
+
+  <!-- VISITANTE -->
+  <% unless cliente_autenticado? || transportador_autenticado? %>
+    <%= link_to "Entrar", "/login", class: "px-3 py-1 rounded bg-purple-700" %>
+    <%= link_to "Cadastrar", "/cadastro", class: "px-3 py-1 border rounded" %>
+  <% end %>
+
+</nav>

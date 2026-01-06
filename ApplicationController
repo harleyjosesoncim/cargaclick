@@ -1,0 +1,15 @@
+class ApplicationController < ActionController::Base
+  rescue_from StandardError, with: :render_500
+
+  private
+
+  def render_500(exception)
+    Rails.logger.error exception.message
+    Rails.logger.error exception.backtrace.join("\n")
+
+    respond_to do |format|
+      format.html { render "errors/500", status: 500 }
+      format.json { render json: { error: "Erro interno" }, status: 500 }
+    end
+  end
+end
