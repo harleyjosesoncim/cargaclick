@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# 🔒 CATCH DEFINITIVO DE ROTAS ÓRFÃS
+get "/fretes", to: redirect("/fretes/new")
+get "/up", to: redirect("/")
+
 Rails.application.routes.draw do
   # =====================================================
   # ROOT (HOME)
