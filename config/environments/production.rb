@@ -2,6 +2,10 @@
 # frozen_string_literal: true
 
 Rails.application.configure do
+config.force_ssl = false
+config.public_file_server.enabled = ENV['RAILS_SERVE_STATIC_FILES'].present?
+config.log_level = :info
+
   # ============================================================
   # AMBIENTE: PRODUÇÃO
   # ============================================================
