@@ -24,13 +24,15 @@
 
     <!-- MENU DESKTOP -->
     <nav class="hidden md:flex gap-2 text-sm">
-      <%= link_to "Entrar",
-            "/login",
-            class: "px-4 py-2 rounded-lg bg-purple-700 hover:bg-purple-600 transition" %>
+      <a href="/clientes/sign_in"
+         class="px-4 py-2 rounded-lg bg-purple-700 hover:bg-purple-600 transition">
+        Entrar
+      </a>
 
-      <%= link_to "Cadastrar",
-            "/cadastro",
-            class: "px-4 py-2 rounded-lg border border-purple-600 hover:bg-purple-800 transition" %>
+      <a href="/clientes/sign_up"
+         class="px-4 py-2 rounded-lg border border-purple-600 hover:bg-purple-800 transition">
+        Cadastrar
+      </a>
     </nav>
 
     <!-- BOTÃO HAMBÚRGUER (MOBILE) -->
@@ -52,25 +54,30 @@
     <nav id="mobile-menu"
          class="hidden absolute top-full left-0 w-full bg-slate-900 border-b border-slate-800 flex flex-col text-sm md:hidden z-50">
 
-      <%= link_to "Entrar",
-            "/login",
-            class: "px-6 py-4 border-t border-slate-800 hover:bg-slate-800" %>
+      <a href="/clientes/sign_in"
+         class="px-6 py-4 border-t border-slate-800 hover:bg-slate-800">
+        Entrar
+      </a>
 
-      <%= link_to "Cadastrar",
-            "/cadastro",
-            class: "px-6 py-4 border-t border-slate-800 hover:bg-slate-800" %>
+      <a href="/clientes/sign_up"
+         class="px-6 py-4 border-t border-slate-800 hover:bg-slate-800">
+        Cadastrar
+      </a>
 
-      <%= link_to "Simular Frete",
-            new_frete_path,
-            class: "px-6 py-4 border-t border-slate-800 hover:bg-slate-800" %>
+      <a href="/fretes/new"
+         class="px-6 py-4 border-t border-slate-800 hover:bg-slate-800">
+        Simular Frete
+      </a>
 
-      <%= link_to "Fidelidade",
-            fidelidade_path,
-            class: "px-6 py-4 border-t border-slate-800 hover:bg-slate-800" %>
+      <a href="/fidelidade"
+         class="px-6 py-4 border-t border-slate-800 hover:bg-slate-800">
+        Fidelidade
+      </a>
 
-      <%= link_to "Contato",
-            contato_path,
-            class: "px-6 py-4 border-t border-slate-800 hover:bg-slate-800" %>
+      <a href="/contato"
+         class="px-6 py-4 border-t border-slate-800 hover:bg-slate-800">
+        Contato
+      </a>
     </nav>
 
   </header>
@@ -90,8 +97,8 @@
         direta e transparente.
       </p>
 
-      <%= link_to new_frete_path,
-            class: "inline-flex items-center gap-2 mt-4 px-8 py-4 rounded-xl bg-yellow-500 text-black font-semibold hover:bg-yellow-400 transition" do %>
+      <a href="/fretes/new"
+         class="inline-flex items-center gap-2 mt-4 px-8 py-4 rounded-xl bg-yellow-500 text-black font-semibold hover:bg-yellow-400 transition">
         <svg xmlns="http://www.w3.org/2000/svg"
              class="w-5 h-5"
              fill="none"
@@ -103,7 +110,7 @@
                 d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
         Simular Frete
-      <% end %>
+      </a>
     </section>
 
     <!-- PERFIS -->
@@ -111,64 +118,30 @@
 
       <!-- CLIENTE -->
       <div class="p-8 rounded-2xl bg-slate-900 border border-slate-800 text-center space-y-4 hover:border-blue-500 transition">
-        <div class="mx-auto w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg"
-               class="w-6 h-6"
-               fill="none"
-               viewBox="0 0 24 24"
-               stroke="currentColor">
-            <path stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-        </div>
-
         <h3 class="text-lg font-semibold">Cliente</h3>
         <p class="text-sm text-slate-400">
           Solicite fretes, compare valores e acompanhe entregas.
         </p>
 
-        <%= link_to "/cliente",
-              class: "inline-block px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 transition" do %>
+        <a href="/clientes/sign_in"
+           class="inline-block px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 transition">
           Área do Cliente
-        <% end %>
+        </a>
       </div>
 
       <!-- TRANSPORTADOR -->
       <div class="p-8 rounded-2xl bg-slate-900 border border-slate-800 text-center space-y-4 hover:border-green-500 transition">
-        <div class="mx-auto w-12 h-12 rounded-full bg-green-600 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg"
-               class="w-6 h-6"
-               fill="none"
-               viewBox="0 0 24 24"
-               stroke="currentColor">
-            <path stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 17a2 2 0 11-4 0 2 2 0 014 0zm10 0a2 2 0 11-4 0 2 2 0 014 0zM3 13h13V6H3v7zm13 0h3l2 3v1h-5v-4z" />
-          </svg>
-        </div>
-
         <h3 class="text-lg font-semibold">Transportador</h3>
         <p class="text-sm text-slate-400">
           Receba solicitações e aumente sua renda.
         </p>
 
-        <%= link_to "/transportador",
-              class: "inline-block px-5 py-2 rounded-lg bg-green-600 hover:bg-green-500 transition" do %>
+        <a href="/transportadores/cadastro"
+           class="inline-block px-5 py-2 rounded-lg bg-green-600 hover:bg-green-500 transition">
           Área do Transportador
-        <% end %>
+        </a>
       </div>
 
-    </section>
-
-    <!-- LINKS SECUNDÁRIOS -->
-    <section class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm text-center">
-      <%= link_to "Fidelidade", fidelidade_path, class: "p-4 rounded-xl bg-slate-800 hover:bg-slate-700 transition" %>
-      <%= link_to "Relatórios", relatorios_path, class: "p-4 rounded-xl bg-slate-800 hover:bg-slate-700 transition" %>
-      <%= link_to "Sobre", about_path, class: "p-4 rounded-xl bg-slate-800 hover:bg-slate-700 transition" %>
-      <%= link_to "Contato", contato_path, class: "p-4 rounded-xl bg-slate-800 hover:bg-slate-700 transition" %>
     </section>
 
   </main>
@@ -183,12 +156,7 @@
     document.addEventListener("DOMContentLoaded", function () {
       const btn = document.getElementById("menu-btn");
       const menu = document.getElementById("mobile-menu");
-
-      if (btn && menu) {
-        btn.addEventListener("click", function () {
-          menu.classList.toggle("hidden");
-        });
-      }
+      if (btn && menu) btn.addEventListener("click", () => menu.classList.toggle("hidden"));
     });
   </script>
 
