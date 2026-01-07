@@ -1,113 +1,50 @@
-<<nav class="bg-gradient-to-r from-purple-900 to-purple-700 p-4 shadow-lg fixed top-0 left-0 w-full z-50">
+<nav class="bg-gradient-to-r from-purple-900 to-purple-700 p-4 shadow-lg fixed top-0 left-0 w-full z-50">
   <div class="max-w-7xl mx-auto flex items-center justify-between">
 
-    <!-- LOGO -->
-    <a href="/" class="flex items-center gap-2 text-white text-2xl font-extrabold tracking-wide hover:text-purple-200 transition">
+    <%= link_to root_path, class: "flex items-center gap-2 text-white text-2xl font-extrabold tracking-wide hover:text-purple-200 transition" do %>
       🚚 <span>CargaClick</span>
-    </a>
+    <% end %>
 
-    <!-- LINKS DESKTOP -->
     <div class="hidden md:flex items-center space-x-6 text-white font-medium">
+      
+      <%= link_to "🧮 Simular Frete", simular_frete_path, class: "hover:text-yellow-300 transition" %>
 
-      <!-- Simular Frete (sempre seguro) -->
-      <a href="/fretes/new" class="hover:text-yellow-300 transition">
-        🧮 Simular Frete
-      </a>
+      <%= link_to "⭐ Fidelidade", fidelidade_path, class: "hover:text-yellow-300 transition" %>
 
-      <a href="/fidelidade" class="hover:text-yellow-300 transition">
-        ⭐ Fidelidade
-      </a>
+      <a href="/contato" class="hover:text-yellow-300 transition">📞 Contato</a>
 
-      <a href="/contato" class="hover:text-yellow-300 transition">
-        📞 Contato
-      </a>
-
-      <!-- CLIENTE -->
-      <% if defined?(cliente_signed_in?) && cliente_signed_in? %>
-        <a href="/clientes"
-           class="bg-white text-purple-800 font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition">
-          👤 Área do Cliente
-        </a>
+      <% if respond_to?(:cliente_signed_in?) && cliente_signed_in? %>
+        <%= link_to "👤 Área do Cliente", clientes_root_path, class: "bg-white text-purple-800 font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition" %>
       <% else %>
-        <a href="/clientes/sign_in"
-           class="bg-white text-purple-800 font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition">
-          🔐 Login Cliente
-        </a>
+        <%= link_to "🔐 Login Cliente", new_cliente_session_path, class: "bg-white text-purple-800 font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition" %>
       <% end %>
 
-      <!-- TRANSPORTADOR -->
-      <% if defined?(transportador_signed_in?) && transportador_signed_in? %>
-        <a href="/transportadores"
-           class="bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-500 transition">
-          🚛 Área do Transportador
-        </a>
+      <% if respond_to?(:transportador_signed_in?) && transportador_signed_in? %>
+        <%= link_to "🚛 Área do Transportador", transportadores_root_path, class: "bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-500 transition" %>
       <% else %>
-        <a href="/transportadores/sign_in"
-           class="bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-500 transition">
-          🔑 Login Transportador
-        </a>
+        <%= link_to "🔑 Login Transportador", new_transportador_session_path, class: "bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-500 transition" %>
       <% end %>
     </div>
 
-    <!-- BOTÃO MOBILE -->
-    <button id="navbar-toggle"
-            class="md:hidden text-white text-2xl focus:outline-none"
-            aria-label="Abrir menu">
+    <button id="navbar-toggle" class="md:hidden text-white text-2xl focus:outline-none" aria-label="Abrir menu">
       ☰
     </button>
   </div>
 
-  <!-- MENU MOBILE -->
-  <div id="navbar-menu"
-       class="hidden md:hidden mt-4 space-y-2 bg-purple-800 rounded-xl p-4 shadow-lg">
-
-    <a href="/fretes/new" class="block text-white hover:text-yellow-300">
-      🧮 Simular Frete
-    </a>
-
-    <a href="/fidelidade" class="block text-white hover:text-yellow-300">
-      ⭐ Fidelidade
-    </a>
-
-    <a href="/contato" class="block text-white hover:text-yellow-300">
-      📞 Contato
-    </a>
-
-    <% if defined?(cliente_signed_in?) && cliente_signed_in? %>
-      <a href="/clientes"
-         class="block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg mt-2">
-        👤 Área do Cliente
-      </a>
+  <div id="navbar-menu" class="hidden md:hidden mt-4 space-y-2 bg-purple-800 rounded-xl p-4 shadow-lg">
+    <%= link_to "🧮 Simular Frete", simular_frete_path, class: "block text-white hover:text-yellow-300" %>
+    <%= link_to "⭐ Fidelidade", fidelidade_path, class: "block text-white hover:text-yellow-300" %>
+    
+    <% if respond_to?(:cliente_signed_in?) && cliente_signed_in? %>
+      <%= link_to "👤 Área do Cliente", clientes_root_path, class: "block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg mt-2 text-center" %>
     <% else %>
-      <a href="/clientes/sign_in"
-         class="block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg mt-2">
-        🔐 Login Cliente
-      </a>
+      <%= link_to "🔐 Login Cliente", new_cliente_session_path, class: "block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg mt-2 text-center" %>
     <% end %>
 
-    <% if defined?(transportador_signed_in?) && transportador_signed_in? %>
-      <a href="/transportadores"
-         class="block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg mt-2">
-        🚛 Área do Transportador
-      </a>
+    <% if respond_to?(:transportador_signed_in?) && transportador_signed_in? %>
+      <%= link_to "🚛 Área do Transportador", transportadores_root_path, class: "block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg mt-2 text-center" %>
     <% else %>
-      <a href="/transportadores/sign_in"
-         class="block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg mt-2">
-        🔑 Login Transportador
-      </a>
+      <%= link_to "🔑 Login Transportador", new_transportador_session_path, class: "block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg mt-2 text-center" %>
     <% end %>
   </div>
 </nav>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const btn  = document.getElementById("navbar-toggle");
-    const menu = document.getElementById("navbar-menu");
-
-    if (!btn || !menu) return;
-
-    btn.addEventListener("click", function () {
-      menu.classList.toggle("hidden");
-    });
-  });
-</script>
