@@ -1,84 +1,43 @@
 <nav class="bg-gradient-to-r from-purple-900 to-purple-700 p-4 shadow-lg fixed top-0 left-0 w-full z-50">
   <div class="max-w-7xl mx-auto flex items-center justify-between">
 
-    <%= link_to root_path, class: "flex items-center gap-2 text-white text-2xl font-extrabold tracking-wide hover:text-purple-200 transition" do %>
+    <a href="/" class="flex items-center gap-2 text-white text-2xl font-extrabold tracking-wide hover:text-purple-200 transition">
       🚚 <span>CargaClick</span>
-    <% end %>
+    </a>
 
-    <!-- MENU DESKTOP -->
+    <!-- Desktop -->
     <div class="hidden md:flex items-center space-x-6 text-white font-medium">
+      <a href="/simular-frete" class="hover:text-yellow-300 transition">🧮 Simular Frete</a>
+      <a href="/fidelidade" class="hover:text-yellow-300 transition">⭐ Fidelidade</a>
+      <a href="/contato" class="hover:text-yellow-300 transition">📞 Contato</a>
 
-      <%= link_to "🧮 Simular Frete", simular_frete_path, class: "hover:text-yellow-300 transition" %>
-      <%= link_to "⭐ Fidelidade", fidelidade_path, class: "hover:text-yellow-300 transition" %>
-      <%= link_to "📞 Contato", contato_path, class: "hover:text-yellow-300 transition" %>
+      <a href="/clientes" class="bg-white text-purple-800 font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition">
+        👤 Área do Cliente
+      </a>
 
-      <%# ===== CLIENTE ===== %>
-      <% if respond_to?(:cliente_signed_in?) && cliente_signed_in? %>
-        <%= link_to "👤 Área do Cliente",
-                    clientes_root_path,
-                    class: "bg-white text-purple-800 font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition" %>
-      <% else %>
-        <% cliente_login_path =
-             respond_to?(:new_cliente_session_path) ? new_cliente_session_path : "/clientes/sign_in" %>
-
-        <%= link_to "🔐 Login Cliente",
-                    cliente_login_path,
-                    class: "bg-white text-purple-800 font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition" %>
-      <% end %>
-
-      <%# ===== TRANSPORTADOR ===== %>
-      <% if respond_to?(:transportador_signed_in?) && transportador_signed_in? %>
-        <%= link_to "🚛 Área do Transportador",
-                    transportadores_root_path,
-                    class: "bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-500 transition" %>
-      <% else %>
-        <% transportador_login_path =
-             respond_to?(:new_transportador_session_path) ? new_transportador_session_path : "/transportadores/sign_in" %>
-
-        <%= link_to "🔑 Login Transportador",
-                    transportador_login_path,
-                    class: "bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-500 transition" %>
-      <% end %>
+      <a href="/transportadores" class="bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-500 transition">
+        🚛 Área do Transportador
+      </a>
     </div>
 
-    <!-- BOTÃO MOBILE -->
-    <button id="navbar-toggle"
-            class="md:hidden text-white text-2xl focus:outline-none"
-            aria-label="Abrir menu">
+    <!-- Mobile button -->
+    <button id="navbar-toggle" class="md:hidden text-white text-2xl focus:outline-none">
       ☰
     </button>
   </div>
 
-  <!-- MENU MOBILE -->
+  <!-- Mobile menu -->
   <div id="navbar-menu" class="hidden md:hidden mt-4 space-y-2 bg-purple-800 rounded-xl p-4 shadow-lg">
-    <%= link_to "🧮 Simular Frete", simular_frete_path, class: "block text-white hover:text-yellow-300" %>
-    <%= link_to "⭐ Fidelidade", fidelidade_path, class: "block text-white hover:text-yellow-300" %>
-    <%= link_to "📞 Contato", contato_path, class: "block text-white hover:text-yellow-300" %>
+    <a href="/simular-frete" class="block text-white hover:text-yellow-300">🧮 Simular Frete</a>
+    <a href="/fidelidade" class="block text-white hover:text-yellow-300">⭐ Fidelidade</a>
+    <a href="/contato" class="block text-white hover:text-yellow-300">📞 Contato</a>
 
-    <% if respond_to?(:cliente_signed_in?) && cliente_signed_in? %>
-      <%= link_to "👤 Área do Cliente",
-                  clientes_root_path,
-                  class: "block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg mt-2 text-center" %>
-    <% else %>
-      <% cliente_login_path =
-           respond_to?(:new_cliente_session_path) ? new_cliente_session_path : "/clientes/sign_in" %>
+    <a href="/clientes" class="block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg mt-2 text-center">
+      👤 Área do Cliente
+    </a>
 
-      <%= link_to "🔐 Login Cliente",
-                  cliente_login_path,
-                  class: "block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg mt-2 text-center" %>
-    <% end %>
-
-    <% if respond_to?(:transportador_signed_in?) && transportador_signed_in? %>
-      <%= link_to "🚛 Área do Transportador",
-                  transportadores_root_path,
-                  class: "block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg mt-2 text-center" %>
-    <% else %>
-      <% transportador_login_path =
-           respond_to?(:new_transportador_session_path) ? new_transportador_session_path : "/transportadores/sign_in" %>
-
-      <%= link_to "🔑 Login Transportador",
-                  transportador_login_path,
-                  class: "block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg mt-2 text-center" %>
-    <% end %>
+    <a href="/transportadores" class="block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg mt-2 text-center">
+      🚛 Área do Transportador
+    </a>
   </div>
 </nav>
