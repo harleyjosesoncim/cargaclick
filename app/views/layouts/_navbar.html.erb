@@ -5,46 +5,80 @@
       🚚 <span>CargaClick</span>
     <% end %>
 
+    <!-- MENU DESKTOP -->
     <div class="hidden md:flex items-center space-x-6 text-white font-medium">
-      
+
       <%= link_to "🧮 Simular Frete", simular_frete_path, class: "hover:text-yellow-300 transition" %>
+      <%= link_to "⭐ Fidelidade", fidelidade_path, class: "hover:text-yellow-300 transition" %>
+      <%= link_to "📞 Contato", contato_path, class: "hover:text-yellow-300 transition" %>
 
-      <%= link_to "⭐ Fidelidade", "#", class: "hover:text-yellow-300 transition" %>
-
-      <a href="/contato" class="hover:text-yellow-300 transition">📞 Contato</a>
-
+      <%# ===== CLIENTE ===== %>
       <% if respond_to?(:cliente_signed_in?) && cliente_signed_in? %>
-        <%= link_to "👤 Área do Cliente", clientes_root_path, class: "bg-white text-purple-800 font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition" %>
+        <%= link_to "👤 Área do Cliente",
+                    clientes_root_path,
+                    class: "bg-white text-purple-800 font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition" %>
       <% else %>
-        <%= link_to "🔐 Login Cliente", new_cliente_session_path, class: "bg-white text-purple-800 font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition" %>
+        <% cliente_login_path =
+             respond_to?(:new_cliente_session_path) ? new_cliente_session_path : "/clientes/sign_in" %>
+
+        <%= link_to "🔐 Login Cliente",
+                    cliente_login_path,
+                    class: "bg-white text-purple-800 font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition" %>
       <% end %>
 
+      <%# ===== TRANSPORTADOR ===== %>
       <% if respond_to?(:transportador_signed_in?) && transportador_signed_in? %>
-        <%= link_to "🚛 Área do Transportador", transportadores_root_path, class: "bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-500 transition" %>
+        <%= link_to "🚛 Área do Transportador",
+                    transportadores_root_path,
+                    class: "bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-500 transition" %>
       <% else %>
-        <%= link_to "🔑 Login Transportador", new_transportador_session_path, class: "bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-500 transition" %>
+        <% transportador_login_path =
+             respond_to?(:new_transportador_session_path) ? new_transportador_session_path : "/transportadores/sign_in" %>
+
+        <%= link_to "🔑 Login Transportador",
+                    transportador_login_path,
+                    class: "bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-500 transition" %>
       <% end %>
     </div>
 
-    <button id="navbar-toggle" class="md:hidden text-white text-2xl focus:outline-none" aria-label="Abrir menu">
+    <!-- BOTÃO MOBILE -->
+    <button id="navbar-toggle"
+            class="md:hidden text-white text-2xl focus:outline-none"
+            aria-label="Abrir menu">
       ☰
     </button>
   </div>
 
+  <!-- MENU MOBILE -->
   <div id="navbar-menu" class="hidden md:hidden mt-4 space-y-2 bg-purple-800 rounded-xl p-4 shadow-lg">
     <%= link_to "🧮 Simular Frete", simular_frete_path, class: "block text-white hover:text-yellow-300" %>
     <%= link_to "⭐ Fidelidade", fidelidade_path, class: "block text-white hover:text-yellow-300" %>
-    
+    <%= link_to "📞 Contato", contato_path, class: "block text-white hover:text-yellow-300" %>
+
     <% if respond_to?(:cliente_signed_in?) && cliente_signed_in? %>
-      <%= link_to "👤 Área do Cliente", clientes_root_path, class: "block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg mt-2 text-center" %>
+      <%= link_to "👤 Área do Cliente",
+                  clientes_root_path,
+                  class: "block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg mt-2 text-center" %>
     <% else %>
-      <%= link_to "🔐 Login Cliente", new_cliente_session_path, class: "block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg mt-2 text-center" %>
+      <% cliente_login_path =
+           respond_to?(:new_cliente_session_path) ? new_cliente_session_path : "/clientes/sign_in" %>
+
+      <%= link_to "🔐 Login Cliente",
+                  cliente_login_path,
+                  class: "block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg mt-2 text-center" %>
     <% end %>
 
     <% if respond_to?(:transportador_signed_in?) && transportador_signed_in? %>
-      <%= link_to "🚛 Área do Transportador", transportadores_root_path, class: "block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg mt-2 text-center" %>
+      <%= link_to "🚛 Área do Transportador",
+                  transportadores_root_path,
+                  class: "block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg mt-2 text-center" %>
     <% else %>
-      <%= link_to "🔑 Login Transportador", new_transportador_session_path, class: "block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg mt-2 text-center" %>
+      <% transportador_login_path =
+           respond_to?(:new_transportador_session_path) ? new_transportador_session_path : "/transportadores/sign_in" %>
+
+      <%= link_to "🔑 Login Transportador",
+                  transportador_login_path,
+                  class: "block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg mt-2 text-center" %>
     <% end %>
   </div>
 </nav>
