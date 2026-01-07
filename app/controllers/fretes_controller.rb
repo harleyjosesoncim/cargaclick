@@ -1,113 +1,37 @@
-<nav class="bg-gradient-to-r from-purple-900 to-purple-700 p-4 shadow-lg fixed top-0 left-0 w-full z-50">
-  <div class="max-w-7xl mx-auto flex items-center justify-between">
+class FretesController < ApplicationController
+  # Mesmo que a rota 'index' esteja redirecionando no routes.rb,
+  # manter o método aqui evita erros se você decidir mudar a rota no futuro.
+  def index
+    redirect_to new_frete_path
+  end
 
-    <!-- LOGO -->
-    <a href="/" class="flex items-center gap-2 text-white text-2xl font-extrabold tracking-wide hover:text-purple-200 transition">
-      🚚 <span>CargaClick</span>
-    </a>
+  def new
+    @frete = Frete.new
+  end
 
-    <!-- LINKS DESKTOP -->
-    <div class="hidden md:flex items-center space-x-6 text-white font-medium">
+  def create
+    @frete = Frete.new(frete_params)
+    if @frete.save
+      # Redireciona para o checkout/pagamento após criar
+      redirect_to pagar_frete_path(@frete)
+    else
+      render :new, status: :unprocessable_entity
+    end
+  end
 
-      <!-- Simular Frete (SEMPRE SEGURO) -->
-      <a href="/fretes/new" class="hover:text-yellow-300 transition">
-        🧮 Simular Frete
-      </a>
+  def show
+    @frete = Frete.find(params[:id])
+  end
 
-      <a href="/fidelidade" class="hover:text-yellow-300 transition">
-        ⭐ Fidelidade
-      </a>
+  def pagar
+    @frete = Frete.find(params[:id])
+    # Lógica de integração (Mercado Pago, etc)
+  end
 
-      <a href="/contato" class="hover:text-yellow-300 transition">
-        📞 Contato
-      </a>
+  private
 
-      <!-- CLIENTE -->
-      <% if defined?(cliente_signed_in?) && cliente_signed_in? %>
-        <a href="/clientes"
-           class="bg-white text-purple-800 font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition">
-          👤 Área do Cliente
-        </a>
-      <% else %>
-        <a href="/clientes/sign_in"
-           class="bg-white text-purple-800 font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition">
-          🔐 Login Cliente
-        </a>
-      <% end %>
-
-      <!-- TRANSPORTADOR -->
-      <% if defined?(transportador_signed_in?) && transportador_signed_in? %>
-        <a href="/transportadores"
-           class="bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-500 transition">
-          🚛 Área do Transportador
-        </a>
-      <% else %>
-        <a href="/transportadores/sign_in"
-           class="bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-500 transition">
-          🔑 Login Transportador
-        </a>
-      <% end %>
-    </div>
-
-    <!-- BOTÃO MOBILE -->
-    <button id="navbar-toggle"
-            class="md:hidden text-white text-2xl focus:outline-none"
-            aria-label="Abrir menu">
-      ☰
-    </button>
-  </div>
-
-  <!-- MENU MOBILE -->
-  <div id="navbar-menu"
-       class="hidden md:hidden mt-4 space-y-2 bg-purple-800 rounded-xl p-4 shadow-lg">
-
-    <a href="/fretes/new" class="block text-white hover:text-yellow-300">
-      🧮 Simular Frete
-    </a>
-
-    <a href="/fidelidade" class="block text-white hover:text-yellow-300">
-      ⭐ Fidelidade
-    </a>
-
-    <a href="/contato" class="block text-white hover:text-yellow-300">
-      📞 Contato
-    </a>
-
-    <% if defined?(cliente_signed_in?) && cliente_signed_in? %>
-      <a href="/clientes"
-         class="block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg mt-2">
-        👤 Área do Cliente
-      </a>
-    <% else %>
-      <a href="/clientes/sign_in"
-         class="block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg mt-2">
-        🔐 Login Cliente
-      </a>
-    <% end %>
-
-    <% if defined?(transportador_signed_in?) && transportador_signed_in? %>
-      <a href="/transportadores"
-         class="block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg mt-2">
-        🚛 Área do Transportador
-      </a>
-    <% else %>
-      <a href="/transportadores/sign_in"
-         class="block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg mt-2">
-        🔑 Login Transportador
-      </a>
-    <% end %>
-  </div>
-</nav>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const btn  = document.getElementById("navbar-toggle");
-    const menu = document.getElementById("navbar-menu");
-
-    if (!btn || !menu) return;
-
-    btn.addEventListener("click", function () {
-      menu.classList.toggle("hidden");
-    });
-  });
-</script>
+  def frete_params
+    # Ajuste os campos conforme seu banco de dados
+    params.require(:frete).permit(:origem, :destino, :peso, :comprimento, :altura, :largura)
+  end
+end

@@ -1,20 +1,26 @@
 # frozen_string_literal: true
 
-# 🔒 CATCH DEFINITIVO DE ROTAS ÓRFÃS
-get "/fretes", to: redirect("/fretes/new")
-get "/up", to: redirect("/")
-
 Rails.application.routes.draw do
-  # =====================================================
-  # ROOT (HOME)
-  # =====================================================
-  # Página inicial pública
   root "home#index"
 
   # =====================================================
-  # PÁGINAS INSTITUCIONAIS (PÚBLICAS / ESTÁTICAS)
+  # FRETES — NÚCLEO DO SISTEMA
   # =====================================================
-  # Centraliza páginas simples no HomeController
+  # Definimos o resources primeiro, mas EXCLUÍMOS o index 
+  # para que ele não tente renderizar a view deletada.
+  resources :fretes, except: [:index] do
+    member do
+      get :pagar
+    end
+  end
+
+  # Agora forçamos o redirecionamento do index para o new de forma segura
+  get "/fretes", to: redirect("/fretes/new")
+  get "/simular-frete", to: "fretes#new", as: :simular_frete
+
+  # =====================================================
+  # PÁGINAS INSTITUCIONAIS
+  # =====================================================
   scope controller: :home do
     get :about
     get :contato
@@ -23,14 +29,8 @@ Rails.application.routes.draw do
   end
 
   # =====================================================
-  # CLIENTES
+  # CLIENTES E TRANSPORTADORES
   # =====================================================
-  # Estratégia:
-  # - new / create → cadastro público
-  # - show / edit / update → área autenticada
-  # - index / destroy → administrativo
-  #
-  # Evita conflito de rotas e mantém clareza sem quebrar helpers
   resources :clientes, except: [:new, :create] do
     collection do
       get  :new
@@ -38,72 +38,26 @@ Rails.application.routes.draw do
     end
   end
 
-  # =====================================================
-  # TRANSPORTADORES
-  # =====================================================
-  # Cadastro público separado (landing / formulário)
-  # Não conflita com REST nem com Devise
-  get "/transportadores/cadastro",
-      to: "transportadores#cadastro",
-      as: :cadastro_transportador
-
-  # Painel, edição e gestão
-  # new/create ficam fora (cadastro público acima)
+  get "/transportadores/cadastro", to: "transportadores#cadastro", as: :cadastro_transportador
   resources :transportadores, except: [:new, :create]
 
-# Rota estável para simulação de frete (usada na HOME)
-get "/simular-frete", to: "fretes#new", as: :simular_frete
-
-
-
   # =====================================================
-  # FRETES (🔥 NÚCLEO DO CARGACLICK 🔥)
+  # API E HEALTH
   # =====================================================
-  # ⚠️ SEÇÃO CRÍTICA – NÃO REMOVER
-  #
-  # Garante:
-  # - new_frete_path
-  # - frete_path
-  # - fretes_path
-  # - pagar_frete_path
-  #
-  # Evita:
-  # - erro 500 na home
-  # - quebra de view
-  # - falha no fluxo de simulação
-  #
-  # Sustenta:
-  # - cálculo por CEP / localização
-  # - integração com cotação e pagamento
-  resources :fretes do
-    member do
-      get :pagar
-    end
-  end
-
-  # =====================================================
-  # API (ISOLADA – SEM IMPACTO NO HTML)
-  # =====================================================
-  # Nunca deve interferir nas rotas públicas
   namespace :api, defaults: { format: :json } do
     namespace :transportadores do
       post :optin
     end
   end
 
-  # =====================================================
-  # HEALTH CHECK (BOA PRÁTICA DE PRODUÇÃO)
-  # =====================================================
-  # Usado por monitoramento / load balancer
-  get "/health", to: proc { [200, {}, ["OK"]] }
+  get "/health", to: proc { [200, { "Content-Type" => "text/plain" }, ["OK"]] }
+  get "/up",     to: redirect("/")
 
   # =====================================================
-  # FALLBACK DE SEGURANÇA (ANTI-CRASH)
+  # FALLBACK GLOBAL
   # =====================================================
-  # Evita:
-  # - erro 500 por rota inexistente
-  # - spam de bots (/.well-known, etc.)
-  #
-  # Redireciona para home com UX aceitável
-  match "*path", to: redirect("/"), via: :all
+  # Coloque sempre como a ÚLTIMA rota do arquivo
+  match "*path", to: redirect("/"), via: :all, constraints: lambda { |req|
+    req.path.exclude? 'rails/active_storage' # Evita quebrar uploads
+  }
 end

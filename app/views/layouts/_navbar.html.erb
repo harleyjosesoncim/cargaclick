@@ -1,28 +1,21 @@
-<nav class="bg-purple-800 p-4 shadow-lg fixed top-0 left-0 w-full z-50">
-  <div class="container mx-auto flex items-center justify-between">
+<<nav class="bg-gradient-to-r from-purple-900 to-purple-700 p-4 shadow-lg fixed top-0 left-0 w-full z-50">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
 
     <!-- LOGO -->
-    <a href="/" class="text-white text-2xl font-bold hover:text-purple-200 transition">
-      🚚 CargaClick
+    <a href="/" class="flex items-center gap-2 text-white text-2xl font-extrabold tracking-wide hover:text-purple-200 transition">
+      🚚 <span>CargaClick</span>
     </a>
 
     <!-- LINKS DESKTOP -->
-    <div class="hidden md:flex items-center space-x-6 font-medium text-white">
+    <div class="hidden md:flex items-center space-x-6 text-white font-medium">
 
+      <!-- Simular Frete (sempre seguro) -->
       <a href="/fretes/new" class="hover:text-yellow-300 transition">
-        🚀 Simular Frete
+        🧮 Simular Frete
       </a>
 
       <a href="/fidelidade" class="hover:text-yellow-300 transition">
         ⭐ Fidelidade
-      </a>
-
-      <a href="/relatorios" class="hover:text-yellow-300 transition">
-        📊 Relatórios
-      </a>
-
-      <a href="/about" class="hover:text-yellow-300 transition">
-        ℹ️ Sobre
       </a>
 
       <a href="/contato" class="hover:text-yellow-300 transition">
@@ -30,8 +23,8 @@
       </a>
 
       <!-- CLIENTE -->
-      <% if defined?(cliente_signed_in?) && cliente_signed_in? && defined?(current_cliente) && current_cliente.present? %>
-        <a href="/clientes/<%= current_cliente.id %>"
+      <% if defined?(cliente_signed_in?) && cliente_signed_in? %>
+        <a href="/clientes"
            class="bg-white text-purple-800 font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition">
           👤 Área do Cliente
         </a>
@@ -43,8 +36,8 @@
       <% end %>
 
       <!-- TRANSPORTADOR -->
-      <% if defined?(transportador_signed_in?) && transportador_signed_in? && defined?(current_transportador) && current_transportador.present? %>
-        <a href="/transportadores/<%= current_transportador.id %>"
+      <% if defined?(transportador_signed_in?) && transportador_signed_in? %>
+        <a href="/transportadores"
            class="bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-500 transition">
           🚛 Área do Transportador
         </a>
@@ -56,63 +49,50 @@
       <% end %>
     </div>
 
-    <!-- BOTÃO HAMBÚRGUER -->
+    <!-- BOTÃO MOBILE -->
     <button id="navbar-toggle"
-            class="md:hidden text-white focus:outline-none"
+            class="md:hidden text-white text-2xl focus:outline-none"
             aria-label="Abrir menu">
-      <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16" />
-      </svg>
+      ☰
     </button>
   </div>
 
   <!-- MENU MOBILE -->
   <div id="navbar-menu"
-       class="hidden md:hidden mt-4 space-y-3 bg-purple-700 rounded-lg p-4 shadow-lg text-white">
+       class="hidden md:hidden mt-4 space-y-2 bg-purple-800 rounded-xl p-4 shadow-lg">
 
-    <a href="/fretes/new" class="block hover:text-yellow-300">
-      🚀 Simular Frete
+    <a href="/fretes/new" class="block text-white hover:text-yellow-300">
+      🧮 Simular Frete
     </a>
 
-    <a href="/fidelidade" class="block hover:text-yellow-300">
+    <a href="/fidelidade" class="block text-white hover:text-yellow-300">
       ⭐ Fidelidade
     </a>
 
-    <a href="/relatorios" class="block hover:text-yellow-300">
-      📊 Relatórios
-    </a>
-
-    <a href="/about" class="block hover:text-yellow-300">
-      ℹ️ Sobre
-    </a>
-
-    <a href="/contato" class="block hover:text-yellow-300">
+    <a href="/contato" class="block text-white hover:text-yellow-300">
       📞 Contato
     </a>
 
-    <hr class="border-purple-500">
-
-    <% if defined?(cliente_signed_in?) && cliente_signed_in? && defined?(current_cliente) && current_cliente.present? %>
-      <a href="/clientes/<%= current_cliente.id %>"
-         class="block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg">
+    <% if defined?(cliente_signed_in?) && cliente_signed_in? %>
+      <a href="/clientes"
+         class="block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg mt-2">
         👤 Área do Cliente
       </a>
     <% else %>
       <a href="/clientes/sign_in"
-         class="block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg">
+         class="block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg mt-2">
         🔐 Login Cliente
       </a>
     <% end %>
 
-    <% if defined?(transportador_signed_in?) && transportador_signed_in? && defined?(current_transportador) && current_transportador.present? %>
-      <a href="/transportadores/<%= current_transportador.id %>"
-         class="block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg">
+    <% if defined?(transportador_signed_in?) && transportador_signed_in? %>
+      <a href="/transportadores"
+         class="block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg mt-2">
         🚛 Área do Transportador
       </a>
     <% else %>
       <a href="/transportadores/sign_in"
-         class="block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg">
+         class="block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg mt-2">
         🔑 Login Transportador
       </a>
     <% end %>
@@ -128,12 +108,6 @@
 
     btn.addEventListener("click", function () {
       menu.classList.toggle("hidden");
-    });
-
-    menu.querySelectorAll("a").forEach(function (link) {
-      link.addEventListener("click", function () {
-        menu.classList.add("hidden");
-      });
     });
   });
 </script>
