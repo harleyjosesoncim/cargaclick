@@ -2,65 +2,57 @@
   <div class="container mx-auto flex items-center justify-between">
 
     <!-- LOGO -->
-    <%= link_to "CargaClick 🚚",
-          home_link_path,
-          class: "text-white text-2xl font-bold hover:text-purple-200 transition" %>
+    <a href="/" class="text-white text-2xl font-bold hover:text-purple-200 transition">
+      🚚 CargaClick
+    </a>
 
     <!-- LINKS DESKTOP -->
     <div class="hidden md:flex items-center space-x-6 font-medium text-white">
 
-      <%# Simular Frete (somente se existir) %>
-      <% if respond_to?(:new_frete_path) %>
-        <%= link_to "Simular Frete",
-              new_frete_path,
-              class: "hover:text-yellow-300 transition" %>
-      <% end %>
+      <a href="/fretes/new" class="hover:text-yellow-300 transition">
+        🚀 Simular Frete
+      </a>
 
-      <% if respond_to?(:fidelidade_path) %>
-        <%= link_to "Fidelidade",
-              fidelidade_path,
-              class: "hover:text-yellow-300 transition" %>
-      <% end %>
+      <a href="/fidelidade" class="hover:text-yellow-300 transition">
+        ⭐ Fidelidade
+      </a>
 
-      <% if respond_to?(:relatorios_path) %>
-        <%= link_to "Relatórios",
-              relatorios_path,
-              class: "hover:text-yellow-300 transition" %>
-      <% end %>
+      <a href="/relatorios" class="hover:text-yellow-300 transition">
+        📊 Relatórios
+      </a>
 
-      <% if respond_to?(:about_path) %>
-        <%= link_to "Sobre",
-              about_path,
-              class: "hover:text-yellow-300 transition" %>
-      <% end %>
+      <a href="/about" class="hover:text-yellow-300 transition">
+        ℹ️ Sobre
+      </a>
 
-      <% if respond_to?(:contato_path) %>
-        <%= link_to "Contato",
-              contato_path,
-              class: "hover:text-yellow-300 transition" %>
-      <% end %>
+      <a href="/contato" class="hover:text-yellow-300 transition">
+        📞 Contato
+      </a>
 
       <!-- CLIENTE -->
-      <% if respond_to?(:cliente_signed_in?) && cliente_signed_in? && respond_to?(:current_cliente) && current_cliente.present? %>
-        <%= link_to "Área do Cliente",
-              cliente_path(current_cliente),
-              class: "bg-white text-purple-800 font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition" %>
-      <% elsif respond_to?(:new_cliente_session_path) %>
-        <%= link_to "Login Cliente",
-              new_cliente_session_path,
-              class: "bg-white text-purple-800 font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition" %>
+      <% if defined?(cliente_signed_in?) && cliente_signed_in? && defined?(current_cliente) && current_cliente.present? %>
+        <a href="/clientes/<%= current_cliente.id %>"
+           class="bg-white text-purple-800 font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition">
+          👤 Área do Cliente
+        </a>
+      <% else %>
+        <a href="/clientes/sign_in"
+           class="bg-white text-purple-800 font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition">
+          🔐 Login Cliente
+        </a>
       <% end %>
 
       <!-- TRANSPORTADOR -->
-      <% if respond_to?(:transportador_signed_in?) && transportador_signed_in? &&
-            respond_to?(:current_transportador) && current_transportador.present? %>
-        <%= link_to "Área do Transportador",
-              transportador_path(current_transportador),
-              class: "bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-500 transition" %>
-      <% elsif respond_to?(:new_transportador_session_path) %>
-        <%= link_to "Login Transportador",
-              new_transportador_session_path,
-              class: "bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-500 transition" %>
+      <% if defined?(transportador_signed_in?) && transportador_signed_in? && defined?(current_transportador) && current_transportador.present? %>
+        <a href="/transportadores/<%= current_transportador.id %>"
+           class="bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-500 transition">
+          🚛 Área do Transportador
+        </a>
+      <% else %>
+        <a href="/transportadores/sign_in"
+           class="bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-500 transition">
+          🔑 Login Transportador
+        </a>
       <% end %>
     </div>
 
@@ -77,48 +69,52 @@
 
   <!-- MENU MOBILE -->
   <div id="navbar-menu"
-       class="hidden md:hidden mt-4 space-y-2 bg-purple-700 rounded-lg p-4 shadow-lg">
+       class="hidden md:hidden mt-4 space-y-3 bg-purple-700 rounded-lg p-4 shadow-lg text-white">
 
-    <% if respond_to?(:new_frete_path) %>
-      <%= link_to "Simular Frete", new_frete_path, class: "block text-white hover:text-yellow-300" %>
+    <a href="/fretes/new" class="block hover:text-yellow-300">
+      🚀 Simular Frete
+    </a>
+
+    <a href="/fidelidade" class="block hover:text-yellow-300">
+      ⭐ Fidelidade
+    </a>
+
+    <a href="/relatorios" class="block hover:text-yellow-300">
+      📊 Relatórios
+    </a>
+
+    <a href="/about" class="block hover:text-yellow-300">
+      ℹ️ Sobre
+    </a>
+
+    <a href="/contato" class="block hover:text-yellow-300">
+      📞 Contato
+    </a>
+
+    <hr class="border-purple-500">
+
+    <% if defined?(cliente_signed_in?) && cliente_signed_in? && defined?(current_cliente) && current_cliente.present? %>
+      <a href="/clientes/<%= current_cliente.id %>"
+         class="block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg">
+        👤 Área do Cliente
+      </a>
+    <% else %>
+      <a href="/clientes/sign_in"
+         class="block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg">
+        🔐 Login Cliente
+      </a>
     <% end %>
 
-    <% if respond_to?(:fidelidade_path) %>
-      <%= link_to "Fidelidade", fidelidade_path, class: "block text-white hover:text-yellow-300" %>
-    <% end %>
-
-    <% if respond_to?(:relatorios_path) %>
-      <%= link_to "Relatórios", relatorios_path, class: "block text-white hover:text-yellow-300" %>
-    <% end %>
-
-    <% if respond_to?(:about_path) %>
-      <%= link_to "Sobre", about_path, class: "block text-white hover:text-yellow-300" %>
-    <% end %>
-
-    <% if respond_to?(:contato_path) %>
-      <%= link_to "Contato", contato_path, class: "block text-white hover:text-yellow-300" %>
-    <% end %>
-
-    <% if respond_to?(:cliente_signed_in?) && cliente_signed_in? &&
-          respond_to?(:current_cliente) && current_cliente.present? %>
-      <%= link_to "Área do Cliente",
-            cliente_path(current_cliente),
-            class: "block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg mt-2" %>
-    <% elsif respond_to?(:new_cliente_session_path) %>
-      <%= link_to "Login Cliente",
-            new_cliente_session_path,
-            class: "block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg mt-2" %>
-    <% end %>
-
-    <% if respond_to?(:transportador_signed_in?) && transportador_signed_in? &&
-          respond_to?(:current_transportador) && current_transportador.present? %>
-      <%= link_to "Área do Transportador",
-            transportador_path(current_transportador),
-            class: "block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg mt-2" %>
-    <% elsif respond_to?(:new_transportador_session_path) %>
-      <%= link_to "Login Transportador",
-            new_transportador_session_path,
-            class: "block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg mt-2" %>
+    <% if defined?(transportador_signed_in?) && transportador_signed_in? && defined?(current_transportador) && current_transportador.present? %>
+      <a href="/transportadores/<%= current_transportador.id %>"
+         class="block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg">
+        🚛 Área do Transportador
+      </a>
+    <% else %>
+      <a href="/transportadores/sign_in"
+         class="block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg">
+        🔑 Login Transportador
+      </a>
     <% end %>
   </div>
 </nav>
