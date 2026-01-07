@@ -47,6 +47,11 @@ Rails.application.routes.draw do
   # new/create ficam fora (cadastro público acima)
   resources :transportadores, except: [:new, :create]
 
+# Rota estável para simulação de frete (usada na HOME)
+get "/simular-frete", to: "fretes#new", as: :simular_frete
+
+
+
   # =====================================================
   # FRETES (🔥 NÚCLEO DO CARGACLICK 🔥)
   # =====================================================

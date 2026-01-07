@@ -4,8 +4,6 @@ class FretesController < ApplicationController
   # =====================================================
   # AUTENTICAÇÃO / AUTORIZAÇÃO
   # =====================================================
-  # Mantém login apenas onde é realmente necessário.
-  # Isso evita erro 500 ao renderizar a home ou rotas públicas.
   before_action :authenticate_cliente!, except: [:index, :new, :show]
   before_action :set_frete, only: [:show, :edit, :update, :destroy, :pagar]
   before_action :authorize_frete!, only: [:edit, :update, :destroy, :pagar]
@@ -13,23 +11,20 @@ class FretesController < ApplicationController
   # =====================================================
   # INDEX
   # =====================================================
-  # Nunca renderiza lista — sempre direciona ao fluxo principal.
-  # Blindado para nunca gerar 500.
+  # Nunca renderiza lista.
+  # Redireciona de forma 100% segura (sem helper quebrar).
   def index
-    redirect_to new_frete_path
+    redirect_to safe_new_frete_path
   end
 
   # =====================================================
   # SHOW
   # =====================================================
-  # Público para visualização básica.
-  # Se quiser restringir no futuro, basta exigir autenticação aqui.
   def show; end
 
   # =====================================================
   # NEW
   # =====================================================
-  # Deve funcionar mesmo sem login (evita quebra da Home).
   def new
     @frete = Frete.new
   end
@@ -47,18 +42,17 @@ class FretesController < ApplicationController
         Frete.new(attrs.except(:cliente_id))
       end
 
-    ActiveRecord::Base.transaction(requires_new: true) do
+    ActiveRecord::Base.transaction do
       @frete.save!
 
-      # Criação idempotente da cotação (se existir associação)
       if @frete.respond_to?(:cotacao) && @frete.cotacao.blank?
         @frete.create_cotacao!(
           cliente_id: current_cliente&.id,
-          origem:     @frete.cep_origem,
-          destino:    @frete.cep_destino,
-          peso:       @frete.peso,
-          volume:     @frete.try(:volume),
-          status:     "pendente"
+          origem: @frete.cep_origem,
+          destino: @frete.cep_destino,
+          peso: @frete.peso,
+          volume: @frete.try(:volume),
+          status: "pendente"
         )
       end
     end
@@ -66,7 +60,7 @@ class FretesController < ApplicationController
     redirect_to @frete, notice: "✅ Solicitação enviada com sucesso."
 
   rescue ActiveRecord::RecordInvalid => e
-    Rails.logger.error("[fretes#create] RecordInvalid: #{e.record.errors.full_messages.join(', ')}")
+    Rails.logger.error("[fretes#create] #{e.record.errors.full_messages.join(', ')}")
     flash.now[:alert] = "Erro ao salvar o frete."
     render :new, status: :unprocessable_entity
 
@@ -99,10 +93,10 @@ class FretesController < ApplicationController
   # =====================================================
   def destroy
     @frete.destroy!
-    redirect_to new_frete_path, notice: "🗑️ Frete removido com sucesso."
+    redirect_to safe_new_frete_path, notice: "🗑️ Frete removido com sucesso."
   rescue StandardError => e
     Rails.logger.error("[fretes#destroy] #{e.class}: #{e.message}")
-    redirect_to new_frete_path, alert: "Erro ao remover o frete."
+    redirect_to safe_new_frete_path, alert: "Erro ao remover o frete."
   end
 
   # =====================================================
@@ -119,14 +113,12 @@ class FretesController < ApplicationController
     host = ENV["APP_HOST"].presence || request.base_url
 
     preference = sdk.preference.create(
-      items: [
-        {
-          title: "Frete CargaClick",
-          quantity: 1,
-          currency_id: "BRL",
-          unit_price: (@frete.valor_estimado || 0).to_f
-        }
-      ],
+      items: [{
+        title: "Frete CargaClick",
+        quantity: 1,
+        currency_id: "BRL",
+        unit_price: (@frete.valor_estimado || 0).to_f
+      }],
       back_urls: {
         success: "#{host}/pagamento/sucesso",
         failure: "#{host}/pagamento/falha",
@@ -155,6 +147,7 @@ class FretesController < ApplicationController
   # =====================================================
   private
 
+  # 🔒 BUSCA SEGURA
   def set_frete
     @frete =
       if cliente_signed_in?
@@ -163,9 +156,46 @@ class FretesController < ApplicationController
         Frete.find(params[:id])
       end
   rescue ActiveRecord::RecordNotFound
-    redirect_to new_frete_path, alert: "⚠️ Frete não encontrado."
+    redirect_to safe_new_frete_path, alert: "⚠️ Frete não encontrado."
   end
 
+  # 🔒 AUTORIZAÇÃO
   def authorize_frete!
     return unless cliente_signed_in?
     return if @frete.cliente_id == current_cliente.id
+
+    redirect_to safe_new_frete_path, alert: "Você não tem permissão para este frete."
+  end
+
+  # =====================================================
+  # 🔥 MÉTODO CRÍTICO — NUNCA QUEBRA
+  # =====================================================
+  def safe_new_frete_path
+    respond_to?(:new_frete_path) ? new_frete_path : "/fretes/new"
+  end
+
+  # PARAMS
+  def frete_params
+    params.require(:frete).permit(
+      :cliente_id, :transportador_id,
+      :cep_origem, :cep_destino, :descricao,
+      :peso, :largura, :altura, :profundidade,
+      :valor_estimado, :status
+    )
+  end
+
+  def normalized_frete_params
+    p = frete_params.to_h.symbolize_keys
+    %i[peso largura altura profundidade valor_estimado].each do |k|
+      p[k] = normalize_decimal(p[k]) if p.key?(k)
+    end
+    p
+  end
+
+  def normalize_decimal(value)
+    return nil if value.blank?
+    BigDecimal(value.to_s.tr(",", "."))
+  rescue ArgumentError
+    nil
+  end
+end

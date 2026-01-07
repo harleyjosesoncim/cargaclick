@@ -1,0 +1,12 @@
+def set_frete
+  return if params[:id].blank?
+
+  @frete =
+    if cliente_signed_in?
+      current_cliente.fretes.find_by(id: params[:id])
+    else
+      Frete.find_by(id: params[:id])
+    end
+
+  redirect_to new_frete_path, alert: "⚠️ Frete não encontrado." unless @frete
+end
