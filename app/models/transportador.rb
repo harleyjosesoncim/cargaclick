@@ -1,3 +1,17 @@
 class Transportador < ApplicationRecord
-  validates :nome, :telefone, :cidade, :tipo_veiculo, presence: true
+  # ============================
+  # VALIDAÇÕES
+  # ============================
+  validates :nome, :telefone, presence: true
+
+  validates :cidade, :tipo_veiculo,
+            presence: true,
+            if: :ativo?
+
+  # ============================
+  # ATIVAÇÃO
+  # ============================
+  def ativo?
+    activated_at.present?
+  end
 end
