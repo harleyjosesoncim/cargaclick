@@ -1,21 +1,27 @@
+# frozen_string_literal: true
+
 class HomeController < ApplicationController
-  # Tela inicial
+  # Páginas públicas — nunca exigir autenticação aqui
+  skip_before_action :authenticate_cliente!, raise: false
+  skip_before_action :authenticate_transportador!, raise: false
+
+  # Landing page
   def index
   end
 
-  # Sobre
+  # Página institucional
   def about
   end
 
-  # Contato
+  # Página de contato
   def contato
   end
 
-  # Fidelidade
+  # Programa de fidelidade
   def fidelidade
   end
 
-  # Relatórios
+  # Relatórios públicos (se forem privados, mover depois)
   def relatorios
   end
 end
