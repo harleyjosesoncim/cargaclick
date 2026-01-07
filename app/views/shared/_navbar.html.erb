@@ -1,90 +1,50 @@
-<!-- Navbar responsivo CargaClick -->
-<header class="sticky top-0 z-50 bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md"
-        data-controller="mobile-menu">
+<!-- Navbar responsivo CargaClick | Production Safe -->
+<header class="sticky top-0 z-50 bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md">
   <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
 
     <!-- Logo -->
     <div class="flex-shrink-0">
-      <%= link_to "CargaClick 🚛", root_path,
-          class: "text-xl font-bold tracking-tight text-white hover:text-yellow-300 transition-colors" %>
+      <a href="/"
+         class="text-xl font-bold tracking-tight text-white hover:text-yellow-300 transition-colors">
+        CargaClick 🚛
+      </a>
     </div>
 
     <!-- Links (desktop) -->
     <div class="hidden md:flex items-center gap-6">
-      <%= link_to "Clientes", clientes_path, class: "hover:text-yellow-300 transition-colors" %>
-      <%= link_to "Transportadores", transportadores_path, class: "hover:text-yellow-300 transition-colors" %>
-      <%= link_to "Fretes", fretes_path, class: "hover:text-yellow-300 transition-colors" %>
-      <%= link_to "Novo Frete", new_frete_path,
-            class: "bg-yellow-400 text-blue-900 font-semibold px-3 py-1.5 rounded-lg hover:bg-yellow-500 transition" %>
-      <%= link_to "Minhas Cotações", cotacoes_path, class: "hover:text-yellow-300 transition-colors" %>
-      <%= link_to "Administração", admin_root_path, class: "hover:text-yellow-300 transition-colors" %>
+      <a href="/clientes" class="hover:text-yellow-300 transition-colors">Clientes</a>
+      <a href="/transportadores" class="hover:text-yellow-300 transition-colors">Transportadores</a>
+      <a href="/fretes" class="hover:text-yellow-300 transition-colors">Fretes</a>
+      <a href="/fretes/new"
+         class="bg-yellow-400 text-blue-900 font-semibold px-3 py-1.5 rounded-lg hover:bg-yellow-500 transition">
+        Novo Frete
+      </a>
+      <a href="/cotacoes" class="hover:text-yellow-300 transition-colors">Cotações</a>
+      <a href="/admin" class="hover:text-yellow-300 transition-colors">Admin</a>
     </div>
 
-    <!-- Autenticação (desktop) -->
+    <!-- Autenticação (desktop – neutra) -->
     <div class="hidden md:flex items-center gap-4">
-      <% if cliente_signed_in? %>
-        <span class="text-white/90">👋 <%= current_cliente.nome.presence || current_cliente.email %></span>
-        <%= link_to "Sair", destroy_cliente_session_path, method: :delete,
-              class: "bg-red-500 text-white px-3 py-1.5 rounded-lg hover:bg-red-600 transition" %>
-      <% else %>
-        <%= link_to "Entrar", new_cliente_session_path, class: "hover:text-yellow-300 transition-colors" %>
-        <%= link_to "Registrar", new_cliente_registration_path,
-              class: "bg-green-500 text-white px-3 py-1.5 rounded-lg hover:bg-green-600 transition" %>
-      <% end %>
+      <a href="/clientes/sign_in" class="hover:text-yellow-300 transition-colors">Entrar</a>
+      <a href="/clientes/sign_up"
+         class="bg-green-500 text-white px-3 py-1.5 rounded-lg hover:bg-green-600 transition">
+        Registrar
+      </a>
     </div>
 
-    <!-- Botão hamburger (mobile) -->
+    <!-- Botão hamburger -->
     <button type="button"
+            id="mobile-toggle"
             class="md:hidden inline-flex items-center justify-center rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-white/60"
-            aria-label="Abrir menu" aria-controls="mobile-menu" aria-expanded="false"
-            data-mobile-menu-target="button"
-            data-action="click->mobile-menu#toggle keydown.esc@window->mobile-menu#close turbo:before-visit@window->mobile-menu#close">
-      <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path stroke-linecap="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-      </svg>
+            aria-label="Abrir menu">
+      ☰
     </button>
   </nav>
 
-  <!-- Overlay (bloqueia clique no fundo) -->
-  <div class="hidden fixed inset-0 z-40 bg-black/40 backdrop-blur-sm md:hidden"
-       data-mobile-menu-target="overlay"
-       data-action="click->mobile-menu#close"></div>
-
-  <!-- Painel do menu (mobile) -->
+  <!-- Menu Mobile -->
   <div id="mobile-menu"
-       class="hidden fixed top-16 inset-x-0 z-50 md:hidden mx-3 rounded-2xl bg-white text-gray-800 shadow-2xl ring-1 ring-black/5 overflow-hidden"
-       data-mobile-menu-target="panel">
-    <div class="p-2 divide-y divide-gray-100">
-      <div class="py-2 grid">
-        <%= link_to "Clientes", clientes_path, class: "px-4 py-3 rounded-xl hover:bg-gray-100",
-              data: { action: "click->mobile-menu#close" } %>
-        <%= link_to "Transportadores", transportadores_path, class: "px-4 py-3 rounded-xl hover:bg-gray-100",
-              data: { action: "click->mobile-menu#close" } %>
-        <%= link_to "Fretes", fretes_path, class: "px-4 py-3 rounded-xl hover:bg-gray-100",
-              data: { action: "click->mobile-menu#close" } %>
-        <%= link_to "Novo Frete", new_frete_path, class: "px-4 py-3 rounded-xl bg-yellow-400 text-blue-900 font-semibold hover:bg-yellow-500",
-              data: { action: "click->mobile-menu#close" } %>
-        <%= link_to "Minhas Cotações", cotacoes_path, class: "px-4 py-3 rounded-xl hover:bg-gray-100",
-              data: { action: "click->mobile-menu#close" } %>
-        <%= link_to "Administração", admin_root_path, class: "px-4 py-3 rounded-xl hover:bg-gray-100",
-              data: { action: "click->mobile-menu#close" } %>
-      </div>
-
-      <div class="py-2 grid">
-        <% if cliente_signed_in? %>
-          <span class="px-4 py-2 text-gray-600">👋 <%= current_cliente.nome.presence || current_cliente.email %></span>
-          <%= link_to "Sair", destroy_cliente_session_path, method: :delete,
-                class: "mt-2 px-4 py-3 rounded-xl bg-red-500 text-white hover:bg-red-600",
-                data: { action: "click->mobile-menu#close" } %>
-        <% else %>
-          <%= link_to "Login Cliente", new_cliente_session_path,
-                class: "px-4 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700",
-                data: { action: "click->mobile-menu#close" } %>
-          <%= link_to "Registrar", new_cliente_registration_path,
-                class: "mt-2 px-4 py-3 rounded-xl bg-green-500 text-white hover:bg-green-600",
-                data: { action: "click->mobile-menu#close" } %>
-        <% end %>
-      </div>
-    </div>
-  </div>
-</header>
+       class="hidden fixed top-16 inset-x-0 z-50 md:hidden mx-3 rounded-2xl bg-white text-gray-800 shadow-2xl overflow-hidden">
+    <div class="p-2 grid divide-y divide-gray-100">
+      <a href="/clientes" class="px-4 py-3 hover:bg-gray-100">Clientes</a>
+      <a href="/transportadores" class="px-4 py-3 hover:bg-gray-100">Transportadores</a>
+      <a href="/fretes" class="px-4 py-3 hover:bg-gray-100"
