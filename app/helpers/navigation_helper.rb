@@ -1,86 +1,40 @@
 # app/helpers/navigation_helper.rb
+# Helper central para evitar "pontas soltas" (helpers de rota inexistentes)
+# e padronizar navegação (mobile-first).
+
 module NavigationHelper
-  # =====================================================
-  # LINK PRINCIPAL ("INÍCIO")
-  # =====================================================
-  #
-  # GARANTIAS:
-  # - Nunca chama métodos inexistentes
-  # - Nunca chama rotas inexistentes
-  # - Nunca usa send
-  # - Não assume Devise
-  # - Fallback absoluto garantido
-  #
-  def home_link_path
-    cliente_area_path ||
-      transportador_area_path ||
-      root_path
+  # Retorna o primeiro helper de rota disponível.
+  # Ex.: nav_path(:root_path, :home_path, fallback: "/")
+  def nav_path(*helpers, fallback: "/")
+    helpers.flatten.compact.each do |h|
+      next unless h.is_a?(Symbol)
+      next unless respond_to?(h)
+      return public_send(h)
+    end
+    fallback
   rescue StandardError
-    root_path
+    fallback
   end
 
-  # =====================================================
-  # LINK ATIVO
-  # =====================================================
-  def active_link_class(path, active: "text-yellow-300", inactive: "")
-    current_page?(path) ? active : inactive
-  rescue StandardError
-    inactive
-  end
-
-  private
-
-  # =====================================================
-  # CONTEXTO: CLIENTE
-  # =====================================================
-
-  def cliente_area_path
-    return unless cliente_logado?
-    return unless route_exists?(:cliente_path)
-    return unless respond_to?(:current_cliente)
-
-    cliente = current_cliente
-    return unless cliente&.id
-
-    cliente_path(cliente)
-  rescue StandardError
-    nil
-  end
-
-  def cliente_logado?
-    respond_to?(:cliente_signed_in?) && cliente_signed_in?
+  # true se o helper de rota existe no contexto atual (views/helpers)
+  def route_exists?(helper_sym)
+    helper_sym.is_a?(Symbol) && respond_to?(helper_sym)
   rescue StandardError
     false
   end
 
-  # =====================================================
-  # CONTEXTO: TRANSPORTADOR
-  # =====================================================
+  # Classe de item ativo (para menu/navbar/footer)
+  def nav_active_class(target_path)
+    return "" if target_path.blank?
 
-  def transportador_area_path
-    return unless transportador_logado?
-    return unless route_exists?(:transportador_path)
-    return unless respond_to?(:current_transportador)
+    current = request.path.to_s
+    target  = target_path.to_s
 
-    transportador = current_transportador
-    return unless transportador&.id
+    return "text-yellow-300" if current == target
+    return "text-yellow-300" if target != "/" && current.start_with?(target)
 
-    transportador_path(transportador)
+    ""
   rescue StandardError
-    nil
-  end
-
-  def transportador_logado?
-    respond_to?(:transportador_signed_in?) && transportador_signed_in?
-  rescue StandardError
-    false
-  end
-
-  # =====================================================
-  # SEGURANÇA
-  # =====================================================
-
-  def route_exists?(route_helper)
-    Rails.application.routes.url_helpers.respond_to?(route_helper)
+    ""
   end
 end

@@ -1,29 +1,17 @@
-<div class="max-w-4xl mx-auto mt-8">
-  <h1 class="text-2xl font-bold text-blue-800 mb-4">📍 Rastreamento do Frete</h1>
+<div class="max-w-4xl mx-auto mt-8 px-4">
+  <h1 class="text-2xl font-bold mb-2">Rastreamento (offline-safe)</h1>
+  <p class="text-gray-700 mb-4">
+    Esta tela está em modo <strong>offline-safe</strong> (sem dependências externas em runtime).
+    Para ativar mapa, use assets locais (Leaflet local/tiles locais) ou outro provider controlado.
+  </p>
 
-  <div class="bg-white rounded-xl shadow p-4 mb-4">
-    <p><strong>Origem:</strong> <%= @frete.cep_origem %></p>
-    <p><strong>Destino:</strong> <%= @frete.cep_destino %></p>
-    <p><strong>Status:</strong> <%= @frete.entregue? ? "Entregue ✅" : "Em trânsito 🚚" %></p>
+  <div class="bg-white rounded-xl shadow p-4">
+    <p class="text-sm text-gray-600">Frete:</p>
+    <p class="font-semibold"><%= @frete&.origem %> → <%= @frete&.destino %></p>
+
+    <div class="mt-4 flex gap-2">
+      <%= link_to "Voltar", request.referer.presence || inicio_path, class: "px-4 py-2 rounded bg-gray-200 hover:bg-gray-300" %>
+      <%= link_to "Início", inicio_path, class: "px-4 py-2 rounded bg-purple-700 text-white hover:bg-purple-800" %>
+    </div>
   </div>
-
-  <div id="map" class="w-full h-[400px] rounded-xl shadow border"></div>
 </div>
-
-<%= javascript_include_tag "https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" %>
-<%= stylesheet_link_tag "https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" %>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const map = L.map('map').setView([-23.5, -46.6], 10); // Posição inicial genérica (SP)
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; OpenStreetMap'
-    }).addTo(map);
-
-    // Marcadores fictícios — substitua por coordenadas reais se disponíveis
-    L.marker([-23.5, -46.6]).addTo(map).bindPopup("Origem").openPopup();
-    L.marker([-23.6, -46.7]).addTo(map).bindPopup("Destino");
-  });
-</script>

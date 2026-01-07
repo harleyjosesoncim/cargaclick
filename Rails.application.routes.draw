@@ -1,0 +1,12 @@
+Rails.application.routes.draw do
+  root "home#index"
+
+  # páginas do site (para não quebrar o navbar)
+  get "/sobre",   to: "pages#about",   as: :about
+  get "/contato", to: "pages#contact", as: :contact
+
+  # Exemplo (mantenha sua regra se você já usa):
+  # get "/fretes", to: redirect("/fretes/new")
+
+  # ...suas outras rotas...
+end

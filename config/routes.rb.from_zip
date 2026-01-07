@@ -1,0 +1,9 @@
+
+Rails.application.routes.draw do
+  root "home#index"
+
+  get "/cliente", to: "cliente#index"
+  get "/transportador", to: "transportador#index"
+  get "/fretes", to: "fretes#index"
+  get "/admin", to: "admin#index"
+end

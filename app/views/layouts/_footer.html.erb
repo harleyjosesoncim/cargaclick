@@ -1,44 +1,61 @@
 <%# app/views/layouts/_footer.html.erb %>
-<footer class="bg-gradient-to-r from-purple-700 to-purple-900 text-white py-6 mt-12 rounded-t-lg shadow-inner">
-  <div class="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between">
-    <!-- Logo + Marca -->
-    <div class="mb-4 md:mb-0 text-center md:text-left">
-      <h2 class="text-xl font-extrabold tracking-wide">CargaClick 🚛</h2>
-      <p class="text-sm text-gray-300">Conectando clientes e transportadores</p>
+<%# Footer sem rotas inexistentes (evita 500 por helper não definido) %>
+
+<% inicio_path  = nav_path(:root_path, :home_link_path, fallback: "/") %>
+<% sim_path     = nav_path(:new_frete_path, :new_calculo_path, :new_simulacao_path, fallback: inicio_path) %>
+<% contato_path = nav_path(:contato_path, :new_contato_path, :new_contatos_path, fallback: inicio_path) %>
+
+<footer class="bg-gradient-to-r from-purple-700 to-purple-900 text-white py-6 mt-12 rounded-t-2xl shadow-inner">
+  <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+    <!-- Marca -->
+    <div class="text-center md:text-left">
+      <div class="flex items-center justify-center md:justify-start gap-2">
+        <span class="text-2xl">🚛</span>
+        <h2 class="text-xl font-extrabold tracking-wide">CargaClick</h2>
+      </div>
+      <p class="text-sm text-gray-200/80">Conectando clientes e transportadores</p>
     </div>
 
     <!-- Links rápidos -->
-    <ul class="flex flex-wrap justify-center md:justify-end space-x-6 text-sm font-semibold">
+    <ul class="flex flex-wrap justify-center md:justify-end gap-x-6 gap-y-2 text-sm font-semibold">
       <li>
-        <%= link_to "Início",
-                    home_link_path,
-                    class: "hover:text-yellow-300 transition duration-300 #{active_link_class(home_link_path)}" %>
+        <%= link_to "Início", inicio_path, class: "hover:text-yellow-300 transition duration-200 #{nav_active_class(inicio_path)}" %>
       </li>
       <li>
-        <%= link_to "Fidelidade",
-                    fidelidade_path,
-                    class: "hover:text-yellow-300 transition duration-300 #{active_link_class(fidelidade_path)}" %>
+        <%= link_to "Simular frete", sim_path, class: "hover:text-yellow-300 transition duration-200 #{nav_active_class(sim_path)}" %>
       </li>
+
+      <% if route_exists?(:fidelidade_path) %>
+        <li>
+          <%= link_to "Fidelidade", fidelidade_path, class: "hover:text-yellow-300 transition duration-200 #{nav_active_class(fidelidade_path)}" %>
+        </li>
+      <% end %>
+
+      <%# Sobre (somente se existir) %>
+      <% if route_exists?(:about_path) %>
+        <li>
+          <%= link_to "Sobre", about_path, class: "hover:text-yellow-300 transition duration-200 #{nav_active_class(about_path)}" %>
+        </li>
+      <% elsif route_exists?(:sobre_path) %>
+        <li>
+          <%= link_to "Sobre", sobre_path, class: "hover:text-yellow-300 transition duration-200 #{nav_active_class(sobre_path)}" %>
+        </li>
+      <% end %>
+
+      <%# Relatórios (somente se existir) %>
+      <% if route_exists?(:relatorios_path) %>
+        <li>
+          <%= link_to "Relatórios", relatorios_path, class: "hover:text-yellow-300 transition duration-200 #{nav_active_class(relatorios_path)}" %>
+        </li>
+      <% end %>
+
       <li>
-        <%= link_to "Relatórios",
-                    relatorios_path,
-                    class: "hover:text-yellow-300 transition duration-300 #{active_link_class(relatorios_path)}" %>
-      </li>
-      <li>
-        <%= link_to "Sobre",
-                    about_path,
-                    class: "hover:text-yellow-300 transition duration-300 #{active_link_class(about_path)}" %>
-      </li>
-      <li>
-        <%= link_to "Contato",
-                    contato_path,
-                    class: "hover:text-yellow-300 transition duration-300 #{active_link_class(contato_path)}" %>
+        <%= link_to "Contato", contato_path, class: "hover:text-yellow-300 transition duration-200 #{nav_active_class(contato_path)}" %>
       </li>
     </ul>
   </div>
 
-  <!-- Direitos autorais -->
-  <div class="mt-6 border-t border-purple-600 pt-4 text-center text-sm text-gray-300">
+  <div class="mt-6 border-t border-purple-600/60 pt-4 text-center text-sm text-gray-200/80">
     © <%= Time.current.year %> <strong>CargaClick</strong>. Todos os direitos reservados.
   </div>
 </footer>
