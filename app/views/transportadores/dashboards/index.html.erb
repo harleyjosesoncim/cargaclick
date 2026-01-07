@@ -1,0 +1,45 @@
+<div class="min-h-screen bg-gray-50 pt-24 pb-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <header class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <h1 class="text-3xl font-extrabold text-purple-900">Área do Transportador</h1>
+        <p class="text-gray-600">Bem-vindo, <%= current_transportador.nome %>! Veja as oportunidades de hoje.</p>
+      </div>
+      <div class="flex gap-2">
+        <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-800">
+          ● Online e Disponível
+        </span>
+      </div>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <p class="text-sm font-medium text-gray-500 uppercase">Ganhos do Mês</p>
+        <p class="text-2xl font-bold text-purple-700">R$ 0,00</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <p class="text-sm font-medium text-gray-500 uppercase">Viagens Realizadas</p>
+        <p class="text-2xl font-bold text-gray-900">0</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <p class="text-sm font-medium text-gray-500 uppercase">Avaliação</p>
+        <p class="text-2xl font-bold text-yellow-500">5.0 ⭐</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+        <h2 class="text-xl font-bold text-gray-800">🚚 Fretes Próximos a Você</h2>
+        <button class="text-purple-600 hover:text-purple-800 text-sm font-semibold">Ver todos</button>
+      </div>
+      
+      <div class="p-6 text-center py-20">
+        <div class="text-5?xl mb-4 text-gray-300">📍</div>
+        <p class="text-gray-500 font-medium">Buscando as melhores cargas na sua região...</p>
+        <p class="text-sm text-gray-400">Novas cargas aparecerão aqui em tempo real.</p>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,20 +1,32 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  # =====================================================
+  # DASHBOARDS E ÁREAS RESTRITAS (Ajustado)
+  # =====================================================
+  namespace :clientes do
+    root to: "dashboards#index" # Cria o clientes_root_path
+  end
+
+  namespace :transportadores do
+    root to: "dashboards#index" # Cria o transportadores_root_path
+  end
+
+  # =====================================================
+  # PÁGINA INICIAL
+  # =====================================================
   root "home#index"
 
   # =====================================================
   # FRETES — NÚCLEO DO SISTEMA
   # =====================================================
-  # Definimos o resources primeiro, mas EXCLUÍMOS o index 
-  # para que ele não tente renderizar a view deletada.
   resources :fretes, except: [:index] do
     member do
       get :pagar
     end
   end
 
-  # Agora forçamos o redirecionamento do index para o new de forma segura
+  # Redirecionamento seguro para evitar erro 500
   get "/fretes", to: redirect("/fretes/new")
   get "/simular-frete", to: "fretes#new", as: :simular_frete
 
@@ -29,7 +41,7 @@ Rails.application.routes.draw do
   end
 
   # =====================================================
-  # CLIENTES E TRANSPORTADORES
+  # CLIENTES E TRANSPORTADORES (CRUD)
   # =====================================================
   resources :clientes, except: [:new, :create] do
     collection do
@@ -54,10 +66,9 @@ Rails.application.routes.draw do
   get "/up",     to: redirect("/")
 
   # =====================================================
-  # FALLBACK GLOBAL
+  # FALLBACK GLOBAL (Última rota sempre)
   # =====================================================
-  # Coloque sempre como a ÚLTIMA rota do arquivo
   match "*path", to: redirect("/"), via: :all, constraints: lambda { |req|
-    req.path.exclude? 'rails/active_storage' # Evita quebrar uploads
+    req.path.exclude? 'rails/active_storage'
   }
 end
