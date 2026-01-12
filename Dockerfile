@@ -95,7 +95,7 @@ USER appuser
 # Garantir diretórios de pid/log em runtime
 RUN mkdir -p tmp/pids log
 
-EXPOSE 3000
+EXPOSE 10000
 
 # Entrypoint + Puma
 ENTRYPOINT ["dumb-init", "--"]
