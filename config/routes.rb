@@ -1,9 +1,15 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
-  # --- Admin ---
+  # =====================================================
+  # ADMIN (ActiveAdmin)
+  # =====================================================
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
 
-  # --- Auth (Devise) ---
+  # =====================================================
+  # AUTH — CLIENTES (Devise)
+  # =====================================================
   devise_for :clientes, controllers: {
     sessions:      "clientes/sessions",
     registrations: "clientes/registrations",
@@ -11,6 +17,9 @@ Rails.application.routes.draw do
     confirmations: "clientes/confirmations"
   }
 
+  # =====================================================
+  # AUTH — TRANSPORTADORES (Devise)
+  # =====================================================
   devise_for :transportadores, controllers: {
     sessions:      "transportadores/sessions",
     registrations: "transportadores/registrations",
@@ -18,64 +27,57 @@ Rails.application.routes.draw do
     confirmations: "transportadores/confirmations"
   }
 
-  # --- Landing / Menu inicial ---
+  # =====================================================
+  # LANDING / HOME (ÚNICO ROOT GLOBAL)
+  # =====================================================
   root "landing#index"
   get "/inicio", to: "landing#index", as: :inicio
 
-  # --- Páginas públicas ---
+  # =====================================================
+  # PÁGINAS PÚBLICAS
+  # =====================================================
   get "/sobre",   to: "pages#about",  as: :sobre
   get "/contato", to: "contatos#new", as: :contato
 
-  # Alias compatível (evita quebrar links antigos)
-  get "/about",   to: "pages#about",   as: :about
-  get "/contact", to: "pages#contact", as: :contact
-
-  # Fidelidade (pública + painéis)
-  get "/fidelidade",               to: "home#fidelidade", as: :fidelidade
-  get "/fidelidade/cliente",       to: "fidelidade#cliente", as: :fidelidade_cliente
-  get "/fidelidade/transportador", to: "fidelidade#transportador", as: :fidelidade_transportador
-
-  # Relatórios
-  get  "/relatorios",             to: "relatorios#index",        as: :relatorios
-  get  "/relatorios/ganhos",      to: "relatorios#ganhos",       as: :relatorios_ganhos
-  get  "/relatorios/avaliacoes",  to: "relatorios#avaliacoes",   as: :relatorios_avaliacoes
-  get  "/relatorios/estatisticas",to: "relatorios#estatisticas", as: :relatorios_estatisticas
-  post "/relatorios/periodo",     to: "relatorios#set_periodo",  as: :relatorios_set_periodo
-
-  # --- Ação principal ---
+  # =====================================================
+  # SIMULAÇÃO DE FRETE (PÚBLICA)
+  # =====================================================
   get "/simular-frete", to: "fretes#new", as: :simular_frete
 
-  # Conveniência (URLs do menu, sem looping)
-  get "/cliente",       to: redirect("/clientes")
-  get "/transportador", to: redirect("/transportadores")
+  # =====================================================
+  # DASHBOARDS (ROTAS EXPLÍCITAS)
+  # =====================================================
+  get "/cliente/dashboard",
+      to: "clientes/dashboards#index",
+      as: :cliente_dashboard
 
-  # Dashboards (painéis)
-  namespace :clientes do
-    root to: "dashboards#index"
-  end
+  get "/transportador/dashboard",
+      to: "transportadores/dashboards#index",
+      as: :transportador_dashboard
 
-  namespace :transportadores do
-    root to: "dashboards#index"
-  end
+  # =====================================================
+  # TRANSPORTADOR — COMPLETAR PERFIL
+  # =====================================================
+  get "/transportadores/completar_perfil",
+      to: "transportadores#completar_perfil",
+      as: :completar_perfil_transportador
 
-  # --- Fretes ---
-  # GET /fretes vira entrada para simulação (mas POST /fretes continua para create)
-  get "/fretes", to: redirect("/simular-frete"), as: :fretes
+  patch "/transportadores/atualizar_perfil",
+        to: "transportadores#atualizar_perfil",
+        as: :atualizar_perfil_transportador
 
-  resources :fretes, except: [:index] do
+  # =====================================================
+  # FRETES (CORE DO SISTEMA)
+  # =====================================================
+  resources :fretes do
     member do
       get :chat
       get :rastreamento
     end
   end
 
-  # Outros recursos usados por telas
-  resources :cotacoes
-  resources :pagamentos
-  resources :propostas
-  resources :chats, only: %i[index show create]
-  resources :messages, only: %i[create]
-
-  # Bolsão
-  get "/bolsao", to: "bolsao#index", as: :bolsao
+  # =====================================================
+  # FALLBACK — 404 CONTROLADO (SEM QUEBRAR PRODUÇÃO)
+  # =====================================================
+  match "*path", to: "errors#not_found", via: :all
 end

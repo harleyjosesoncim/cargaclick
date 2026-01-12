@@ -1,0 +1,114 @@
+nano config/routes.rb# frozen_string_literal: true
+
+Rails.application.routes.draw do
+  # =====================================================
+  # ADMIN (ActiveAdmin)
+  # =====================================================
+  devise_for :admin_users, ActiveAdmin::Devise.config
+  ActiveAdmin.routes(self)
+
+  # =====================================================
+  # AUTENTICAÇÃO (Devise por perfil)
+  # =====================================================
+  devise_for :clientes, controllers: {
+    sessions:      "clientes/sessions",
+    registrations: "clientes/registrations",
+    passwords:     "clientes/passwords",
+    confirmations: "clientes/confirmations"
+  }
+
+  devise_for :transportadores, controllers: {
+    sessions:      "transportadores/sessions",
+    registrations: "transportadores/registrations",
+    passwords:     "transportadores/passwords",
+    confirmations: "transportadores/confirmations"
+  }
+
+  # =====================================================
+  # LANDING / INÍCIO
+  # =====================================================
+  root "landing#index"
+  get "/inicio", to: "landing#index", as: :inicio
+
+  # =====================================================
+  # PÁGINAS PÚBLICAS (SEO / NUNCA quebram layout)
+  # =====================================================
+  get "/sobre",   to: "pages#about",  as: :sobre
+  get "/contato", to: "contatos#new", as: :contato
+
+  # Aliases antigos (SEO / links externos)
+  get "/about",   to: redirect("/sobre")
+  get "/contact", to: redirect("/contato")
+
+  # =====================================================
+  # FIDELIDADE
+  # =====================================================
+  get "/fidelidade",               to: "home#fidelidade",          as: :fidelidade
+  get "/fidelidade/cliente",       to: "fidelidade#cliente",       as: :fidelidade_cliente
+  get "/fidelidade/transportador", to: "fidelidade#transportador", as: :fidelidade_transportador
+
+  # =====================================================
+  # RELATÓRIOS
+  # =====================================================
+  get  "/relatorios",              to: "relatorios#index",        as: :relatorios
+  get  "/relatorios/ganhos",       to: "relatorios#ganhos",       as: :relatorios_ganhos
+  get  "/relatorios/avaliacoes",   to: "relatorios#avaliacoes",   as: :relatorios_avaliacoes
+  get  "/relatorios/estatisticas", to: "relatorios#estatisticas", as: :relatorios_estatisticas
+  post "/relatorios/periodo",      to: "relatorios#set_periodo",  as: :relatorios_set_periodo
+
+  # =====================================================
+  # SIMULAÇÃO DE FRETE (rota clara, sem redirect)
+  # =====================================================
+  get "/simular-frete", to: "fretes#new", as: :simular_frete
+
+  # =====================================================
+  # PAINÉIS (Dashboards)
+  # =====================================================
+  namespace :clientes do
+    root to: "dashboards#index", as: :root
+  end
+
+  namespace :transportadores do
+    root to: "dashboards#index", as: :root
+  end
+
+  # =====================================================
+  # FRETES (NÚCLEO DO SISTEMA)
+  # =====================================================
+  resources :fretes do
+    member do
+      get :chat
+      get :rastreamento
+    end
+  end
+
+  # =====================================================
+  # OUTROS RECURSOS (CRUDs)
+  # =====================================================
+  resources :cotacoes
+  resources :pagamentos
+  resources :propostas
+
+  resources :chats,    only: %i[index show]
+  resources :messages, only: %i[create]
+
+  # =====================================================
+  # BOLSÃO
+  # =====================================================
+  get "/bolsao", to: "bolsao#index", as: :bolsao
+
+  # =====================================================
+  # WEBHOOKS (PAGAMENTOS – API ONLY)
+  # ⚠️ NUNCA colocar abaixo do fallback
+  # =====================================================
+  namespace :webhooks do
+    namespace :pix do
+      post "/efi", to: "pix#efi"
+    end
+  end
+
+  # =====================================================
+  # FALLBACK (evita erro 500 em rota inexistente)
+  # =====================================================
+  match "*path", to: "errors#not_found", via: :all
+end

@@ -7,7 +7,7 @@ class TransportadoresController < ApplicationController
 
   protect_from_forgery except: :optin
 
-  # Transportador precisa estar autenticado para painel
+  # Transportador precisa estar autenticado
   before_action :authenticate_transportador!,
                 except: %i[cadastro optin]
 
@@ -22,18 +22,21 @@ class TransportadoresController < ApplicationController
   before_action :authorize_transportador!,
                 only: %i[show edit update]
 
+  # Completar perfil (Pix + CEP)
+  before_action :authenticate_transportador!,
+                only: %i[completar_perfil atualizar_perfil]
+
   # =====================================================
   # AÇÕES PÚBLICAS
   # =====================================================
 
   # GET /transportadores/cadastro
-  # Formulário público
   def cadastro
     @transportador = Transportador.new
   end
 
   # POST /api/transportadores/optin
-  # Cadastro via Discord / API com LGPD
+  # Cadastro via Discord / API (LGPD)
   def optin
     return consentimento_invalido unless consentimento_valido?
 
@@ -50,7 +53,7 @@ class TransportadoresController < ApplicationController
   end
 
   # =====================================================
-  # AÇÕES PRIVADAS (PERMANENTE)
+  # AÇÕES PRIVADAS (LOGADO)
   # =====================================================
 
   # ADMIN
@@ -58,7 +61,7 @@ class TransportadoresController < ApplicationController
     @transportadores = Transportador.order(created_at: :desc)
   end
 
-  # PAINEL DO TRANSPORTADOR
+  # PAINEL BÁSICO
   def show; end
 
   def edit; end
@@ -73,7 +76,30 @@ class TransportadoresController < ApplicationController
     end
   end
 
+  # =====================================================
+  # COMPLETAR PERFIL (PIX + CEP)
+  # =====================================================
+
+  # GET /transportadores/completar_perfil
+  def completar_perfil
+    # apenas renderiza a view
+  end
+
+  # PATCH /transportadores/atualizar_perfil
+  def atualizar_perfil
+    if current_transportador.update(transportador_perfil_params)
+      redirect_to transportador_path(current_transportador),
+                  notice: "Perfil atualizado com sucesso."
+    else
+      flash.now[:alert] = "Não foi possível salvar. Verifique os dados."
+      render :completar_perfil, status: :unprocessable_entity
+    end
+  end
+
+  # =====================================================
   # ADMIN
+  # =====================================================
+
   def destroy
     @transportador.destroy
     redirect_to root_path, notice: "Transportador removido com sucesso."
@@ -120,6 +146,14 @@ class TransportadoresController < ApplicationController
       :valor_km, :valor_fixo,
       :observacoes,
       :password, :password_confirmation
+    )
+  end
+
+  def transportador_perfil_params
+    params.require(:transportador).permit(
+      :cep,
+      :pix_type,
+      :pix_key
     )
   end
 

@@ -1,17 +1,21 @@
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-  <div class="bg-white rounded-3xl shadow-2xl p-8 sm:p-10 max-w-md w-full border border-blue-200">
+<div role="main" aria-labelledby="cadastro_heading"
+     class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+  <div class="bg-white rounded-3xl shadow-2xl p-8 sm:p-10 w-full max-w-md border border-blue-200">
 
-    <div class="flex items-center justify-center mb-6">
+    <!-- Ícone ilustrativo -->
+    <div class="flex items-center justify-center mb-6" aria-hidden="true">
       <div class="text-4xl text-blue-600">🧾</div>
     </div>
 
-    <h2 class="text-2xl font-bold text-center text-blue-700 mb-6">
+    <!-- Título -->
+    <h1 id="cadastro_heading" class="text-2xl font-bold text-center text-blue-700 mb-6">
       Cadastro de Cliente
-    </h2>
+    </h1>
 
-    <% if resource.errors.any? %>
-      <div class="mb-4 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg p-3">
-        <p class="font-semibold mb-1">Revise os campos abaixo:</p>
+    <!-- Mensagens de erro -->
+    <% if resource&.errors&.any? %>
+      <div class="mb-4 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg p-3" role="alert">
+        <p class="font-semibold mb-2">Por favor, corrija os seguintes erros:</p>
         <ul class="list-disc list-inside text-xs">
           <% resource.errors.full_messages.each do |msg| %>
             <li><%= msg %></li>
@@ -20,83 +24,96 @@
       </div>
     <% end %>
 
-    <%= form_for(resource,
-                 as: resource_name,
-                 url: registration_path(resource_name),
-                 html: { autocomplete: "off", class: "space-y-5" }) do |f| %>
+    <!-- Formulário de cadastro -->
+    <%= form_for(
+          resource,
+          as: resource_name,
+          url: registration_path(resource_name),
+          html: { autocomplete: "off", class: "space-y-5" }
+        ) do |f| %>
 
-      <!-- Nome -->
+      <!-- Nome completo -->
       <div>
         <%= f.label :nome, "Nome completo", class: "block text-sm font-medium text-gray-700 mb-1" %>
         <%= f.text_field :nome,
-                         autofocus: true,
-                         autocomplete: "name",
-                         required: true,
-                         class: "w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+              autofocus: true,
+              required: true,
+              autocomplete: "name",
+              class: "w-full border rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400
+                     focus:outline-none focus:ring-2 focus:ring-blue-500" %>
       </div>
 
       <!-- Telefone -->
       <div>
         <%= f.label :telefone, "Telefone / WhatsApp", class: "block text-sm font-medium text-gray-700 mb-1" %>
         <%= f.telephone_field :telefone,
-                              placeholder: "(15) 99999-9999",
-                              class: "w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+              placeholder: "(15) 99999-9999",
+              autocomplete: "tel",
+              class: "w-full border rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400
+                     focus:outline-none focus:ring-2 focus:ring-blue-500" %>
       </div>
 
-      <!-- Cidade -->
+      <!-- CEP -->
       <div>
-        <%= f.label :cidade, "Cidade", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= f.text_field :cidade,
-                         placeholder: "Sorocaba / SP",
-                         class: "w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+        <%= f.label :cep, "CEP", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.text_field :cep,
+              placeholder: "18000-000",
+              inputmode: "numeric",
+              pattern: "\\d{5}-\\d{3}",
+              class: "w-full border rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400
+                     focus:outline-none focus:ring-2 focus:ring-blue-500" %>
       </div>
 
       <!-- E-mail -->
       <div>
         <%= f.label :email, "E-mail", class: "block text-sm font-medium text-gray-700 mb-1" %>
         <%= f.email_field :email,
-                          autocomplete: "email",
-                          required: true,
-                          class: "w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+              required: true,
+              autocomplete: "email",
+              class: "w-full border rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400
+                     focus:outline-none focus:ring-2 focus:ring-blue-500" %>
       </div>
 
       <!-- Senha -->
       <div>
         <%= f.label :password, "Senha", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <% if @minimum_password_length %>
+        <% if defined?(@minimum_password_length) && @minimum_password_length.present? %>
           <p class="text-xs text-gray-500 mb-1">
             Mínimo de <%= @minimum_password_length %> caracteres.
           </p>
         <% end %>
         <%= f.password_field :password,
-                             autocomplete: "new-password",
-                             required: true,
-                             class: "w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+              required: true,
+              autocomplete: "new-password",
+              class: "w-full border rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400
+                     focus:outline-none focus:ring-2 focus:ring-blue-500" %>
       </div>
 
       <!-- Confirmação de senha -->
       <div>
         <%= f.label :password_confirmation, "Confirmação de senha", class: "block text-sm font-medium text-gray-700 mb-1" %>
         <%= f.password_field :password_confirmation,
-                             autocomplete: "new-password",
-                             required: true,
-                             class: "w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+              required: true,
+              autocomplete: "new-password",
+              class: "w-full border rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400
+                     focus:outline-none focus:ring-2 focus:ring-blue-500" %>
       </div>
 
-      <!-- Botão -->
+      <!-- Botão de envio -->
       <div>
         <%= f.submit "Criar conta",
-                     class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow" %>
+              class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4
+                     rounded-lg shadow transition disabled:opacity-60 disabled:cursor-not-allowed" %>
       </div>
+
     <% end %>
 
+    <!-- Link para login -->
     <div class="mt-6 text-center text-sm text-gray-600">
       Já tem cadastro?
-      <%= link_to "Entrar", new_cliente_session_path, class: "text-blue-600 hover:underline font-medium" %>
+      <%= link_to "Entrar", new_cliente_session_path,
+            class: "text-blue-600 hover:underline font-medium" %>
     </div>
 
-    <div class="mt-4">
-      <%= render "clientes/shared/links" %>
-    </div>
   </div>
 </div>

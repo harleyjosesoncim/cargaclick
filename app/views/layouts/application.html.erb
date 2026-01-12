@@ -4,47 +4,60 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Tema p/ mobile (barra do navegador) -->
+    <!-- Tema do navegador (mobile) -->
     <meta name="theme-color" content="#0b132b" media="(prefers-color-scheme: dark)">
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 
-    <!-- SEO & Social -->
-    <%= render_meta_tags(
-          title:       content_for?(:title)       ? yield(:title)       : "CargaClick 🚚",
-          description: content_for?(:description) ? yield(:description) : "Conectando clientes e transportadores de forma simples e eficiente.",
-          image:       asset_url("cargaclick_og.png"),
-          url:         request.original_url
-        ) %>
+    <!-- SEO básico e social -->
+    <%# Protegido contra ausência de meta_tags %>
+    <% if respond_to?(:render_meta_tags) %>
+      <%= render_meta_tags(
+            title:       content_for?(:title)       ? yield(:title)       : "CargaClick",
+            description: content_for?(:description) ? yield(:description) : "Conectando clientes e transportadores de forma simples e eficiente.",
+            image:       asset_path("cargaclick_og.png"),
+            url:         request.original_url
+          ) %>
+    <% else %>
+      <title>CargaClick</title>
+      <meta name="description" content="Conectando clientes e transportadores de forma simples e eficiente.">
+    <% end %>
+
     <link rel="canonical" href="<%= request.original_url %>">
 
     <!-- Segurança -->
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <!-- Leaflet assets -->
-    <meta name="leaflet-icon"     content="<%= asset_path('marker-icon.png') %>">
-    <meta name="leaflet-icon-2x"  content="<%= asset_path('marker-icon-2x.png') %>">
-    <meta name="leaflet-shadow"   content="<%= asset_path('marker-shadow.png') %>">
+    <!-- Leaflet (somente se assets existirem) -->
+    <% begin %>
+      <% leaflet_icon = asset_path("marker-icon.png") %>
+      <meta name="leaflet-icon"    content="<%= leaflet_icon %>">
+      <meta name="leaflet-icon-2x" content="<%= asset_path('marker-icon-2x.png') %>">
+      <meta name="leaflet-shadow"  content="<%= asset_path('marker-shadow.png') %>">
+    <% rescue %>
+      <%# Assets do Leaflet não disponíveis – ignorado com segurança %>
+    <% end %>
 
-    <!-- Styles -->
+    <!-- Estilos -->
     <%= stylesheet_link_tag "leaflet", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
 
-    <!-- JS principal -->
+    <!-- JavaScript principal -->
     <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
 
-    <!-- Alpine.js (usado para interações leves no mobile) -->
-    
+    <!-- Head extra por página -->
     <%= yield :head %>
   </head>
 
   <body class="bg-gray-100 dark:bg-gray-900 min-h-screen font-sans antialiased flex flex-col">
 
     <!-- HEADER / NAVBAR -->
-    <header role="banner">
-      <%= render "layouts/navbar" %>
-    </header>
+    <% if lookup_context.exists?("layouts/navbar") %>
+      <header role="banner">
+        <%= render "layouts/navbar" %>
+      </header>
+    <% end %>
 
     <!-- FLASH MESSAGES -->
     <% if lookup_context.exists?("shared/flash") %>
@@ -54,15 +67,19 @@
     <% end %>
 
     <!-- CONTEÚDO PRINCIPAL -->
+    <!-- pt-24 evita que o conteúdo fique escondido atrás do navbar fixo -->
     <main class="flex-1 w-full px-4 pt-24 pb-8 md:container md:mx-auto">
       <%= yield %>
     </main>
 
     <!-- FOOTER -->
-    <footer>
-      <%= render "layouts/footer" %>
-    </footer>
+    <% if lookup_context.exists?("layouts/footer") %>
+      <footer>
+        <%= render "layouts/footer" %>
+      </footer>
+    <% end %>
 
+    <!-- JS extra por página -->
     <%= yield :body_end %>
   </body>
 </html>

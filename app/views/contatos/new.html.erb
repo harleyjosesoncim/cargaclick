@@ -1,21 +1,25 @@
-<!-- app/views/contatos/new.html.erb -->
-<h1 class="text-2xl font-bold mb-4">Fale Conosco</h1>
+<div class="min-h-[70vh] flex items-center justify-center px-4">
+  <div class="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8 max-w-md w-full text-center">
 
-<%= form_with model: @contato, class: "max-w-lg mx-auto bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md" do |f| %>
-  <div class="mb-4">
-    <%= f.label :nome, class: "block font-semibold mb-1" %>
-    <%= f.text_field :nome, class: "w-full p-2 border rounded" %>
+    <div class="mx-auto mb-4 w-20 h-20 rounded-full bg-purple-700 flex items-center justify-center text-white text-3xl font-bold">
+      C
+    </div>
+
+    <h1 class="text-2xl font-bold text-gray-800 dark:text-white">
+      CargaClick
+    </h1>
+
+    <p class="mt-2 text-gray-600 dark:text-gray-300">
+      Entre em contato pelo e-mail:
+    </p>
+
+    <p class="mt-4">
+      <a href="mailto:sac.cargaclick@gmail.com"
+         class="text-purple-700 font-semibold text-lg hover:underline">
+        sac.cargaclick@gmail.com
+      </a>
+    </p>
+
   </div>
+</div>
 
-  <div class="mb-4">
-    <%= f.label :email, class: "block font-semibold mb-1" %>
-    <%= f.email_field :email, class: "w-full p-2 border rounded" %>
-  </div>
-
-  <div class="mb-4">
-    <%= f.label :mensagem, class: "block font-semibold mb-1" %>
-    <%= f.text_area :mensagem, rows: 4, class: "w-full p-2 border rounded" %>
-  </div>
-
-  <%= f.submit "Enviar", class: "bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-800" %>
-<% end %>

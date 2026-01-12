@@ -11,84 +11,90 @@ class Frete < ApplicationRecord
   has_one  :cotacao, dependent: :destroy
 
   # ==========================================================
-  # ENUM STATUS
+  # ENUMS (ALINHADOS AO BANCO)
   # ==========================================================
+
+  # Coluna: status (já existente no banco)
   enum status: {
-    pendente:      "pendente",
-    aceito:        "aceito",
-    em_andamento:  "em_andamento",
-    concluido:     "concluido",
-    cancelado:     "cancelado"
-  }
+    pendente:     "pendente",
+    aceito:       "aceito",
+    em_andamento: "em_andamento",
+    concluido:    "concluido",
+    cancelado:    "cancelado"
+  }, _prefix: :frete
+
+  # Coluna: status_pagamento (migration AddPixPinEComissaoToFretes)
+  enum status_pagamento: {
+    aguardando_pagamento: "aguardando_pagamento",
+    pago:                 "pago",
+    liberado:             "liberado",
+    cancelado:            "cancelado"
+  }, _prefix: :pagamento
+
+  # Coluna: pin_status
+  enum pin_status: {
+    pendente:   "pendente",
+    confirmado: "confirmado",
+    expirado:   "expirado"
+  }, _prefix: :pin
 
   # ==========================================================
-  # VALIDAÇÕES
+  # CALLBACKS
   # ==========================================================
-  validates :origem, :destino, presence: true
-
-  validates :valor_estimado, :valor_final,
-            numericality: { greater_than_or_equal_to: 0 },
-            allow_nil: true
-
-  validates :largura, :altura, :profundidade, :peso_aproximado,
-            numericality: { greater_than_or_equal_to: 0 },
-            allow_nil: true
+  before_create :gerar_pin_entrega
+  before_validation :definir_comissao_padrao, on: :create
 
   # ==========================================================
-  # 🔄 COMPATIBILIDADE COM CÓDIGO LEGADO
-  # (NÃO REMOVER – evita retrabalho)
+  # 🔐 PIN DE ENTREGA
   # ==========================================================
-  def cep_origem
-    origem
+  def gerar_pin_entrega
+    self.pin_entrega     ||= SecureRandom.random_number(10_000).to_s.rjust(4, "0")
+    self.pin_status      ||= "pendente"
+    self.tentativas_pin  ||= 0
   end
 
-  def cep_origem=(valor)
-    self.origem = valor
+  def confirmar_entrega!(pin_informado)
+    return false if pin_expirado?
+    return false if tentativas_pin >= 3
+
+    if pin_entrega == pin_informado
+      update!(
+        pin_status:       "confirmado",
+        entregue_em:      Time.current,
+        status:           "concluido",
+        status_pagamento: "liberado"
+      )
+      true
+    else
+      increment!(:tentativas_pin)
+      expirar_pin! if tentativas_pin >= 3
+      false
+    end
   end
 
-  def cep_destino
-    destino
-  end
-
-  def cep_destino=(valor)
-    self.destino = valor
-  end
-
-  def peso
-    peso_aproximado
-  end
-
-  def peso=(valor)
-    self.peso_aproximado = valor
+  def expirar_pin!
+    update!(pin_status: "expirado")
   end
 
   # ==========================================================
-  # 💰 VALOR USADO EM PAGAMENTO (SAFE)
+  # 💰 MONETIZAÇÃO / SPLIT
+  # ==========================================================
+  def definir_comissao_padrao
+    self.comissao_percentual ||= transportador&.respond_to?(:fidelidade?) && transportador.fidelidade? ? 5.0 : 8.0
+  end
+
+  def calcular_split!
+    base = valor_final || valor_estimado
+    return if base.blank?
+
+    self.valor_comissao      = (base * comissao_percentual / 100).round(2)
+    self.valor_transportador = (base - valor_comissao).round(2)
+  end
+
+  # ==========================================================
+  # 💳 VALOR TOTAL (USADO NO PIX)
   # ==========================================================
   def valor_total
-    valor_final.presence ||
-      valor_estimado.presence ||
-      BigDecimal("0")
-  end
-
-  # ==========================================================
-  # 🧠 DESCRIÇÃO PADRÃO (UI / BOT / LOGS)
-  # ==========================================================
-  def descricao
-    "Frete #{origem} → #{destino}"
-  end
-
-  # ==========================================================
-  # 📏 CÁLCULO DE VALOR POR DISTÂNCIA (ORS)
-  # ==========================================================
-  VALOR_POR_KM = 2.50
-
-  def calcular_valor!(distancia_km)
-    return if distancia_km.blank?
-
-    update!(
-      distancia_km: distancia_km,
-      valor_estimado: (distancia_km * VALOR_POR_KM).round(2)
-    )
+    valor_final.presence || valor_estimado.presence || 0
   end
 end

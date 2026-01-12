@@ -1,0 +1,31 @@
+<h1 class="text-xl font-bold mb-4">Detalhes do Frete</h1>
+
+<% if @frete.present? %>
+
+  <p><strong>Origem:</strong> <%= @frete.origem %></p>
+  <p><strong>Destino:</strong> <%= @frete.destino %></p>
+
+  <p>
+    <strong>Distância:</strong>
+    <%= @frete.distancia_km.present? ? "#{@frete.distancia_km} km" : "Não informada" %>
+  </p>
+
+  <p>
+    <strong>Valor Total:</strong>
+    <% if @frete.valor_total.present? %>
+      R$ <%= number_to_currency(@frete.valor_total, unit: "") %>
+    <% else %>
+      <span class="text-gray-500">Não informado</span>
+    <% end %>
+  </p>
+
+  <p><strong>Status:</strong> <%= @frete.status || "indefinido" %></p>
+
+<% else %>
+  <p class="text-red-600">Frete não encontrado.</p>
+<% end %>
+
+<hr class="my-4">
+
+<%= link_to "Voltar", root_path, class: "text-blue-600 underline" %>
+

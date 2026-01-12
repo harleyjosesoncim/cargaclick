@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_07_063925) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_10_144826) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -153,7 +153,21 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_07_063925) do
     t.string "status", default: "pendente"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "pix_txid"
+    t.text "pix_copia_cola"
+    t.text "pix_qr_code"
+    t.string "status_pagamento", default: "pendente", null: false
+    t.string "pin_entrega"
+    t.integer "tentativas_pin", default: 0, null: false
+    t.datetime "entregue_em"
+    t.decimal "comissao_percentual", precision: 5, scale: 2
+    t.decimal "valor_comissao", precision: 10, scale: 2
+    t.decimal "valor_transportador", precision: 10, scale: 2
+    t.string "pin_status", default: "pendente", null: false
     t.index ["cliente_id"], name: "index_fretes_on_cliente_id"
+    t.index ["pin_status"], name: "index_fretes_on_pin_status"
+    t.index ["pix_txid"], name: "index_fretes_on_pix_txid", unique: true
+    t.index ["status_pagamento"], name: "index_fretes_on_status_pagamento"
     t.index ["transportador_id"], name: "index_fretes_on_transportador_id"
   end
 

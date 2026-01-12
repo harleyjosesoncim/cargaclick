@@ -1,16 +1,24 @@
+# frozen_string_literal: true
+
 class Transportador < ApplicationRecord
-  # ============================
-  # VALIDAÇÕES
-  # ============================
-  validates :nome, :telefone, presence: true
+  # =====================================================
+  # DEVISE
+  # =====================================================
+  devise :database_authenticatable,
+         :registerable,
+         :recoverable,
+         :rememberable,
+         :validatable
 
-  validates :cidade, :tipo_veiculo,
-            presence: true,
-            if: :ativo?
+  # =====================================================
+  # VALIDAÇÕES BÁSICAS
+  # =====================================================
+  validates :nome, presence: true
+  validates :telefone, presence: true
 
-  # ============================
-  # ATIVAÇÃO
-  # ============================
+  # =====================================================
+  # STATUS / ATIVAÇÃO
+  # =====================================================
   def ativo?
     activated_at.present?
   end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class PagamentosController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: %i[webhook ping]
+  skip_before_action :verify_authenticity_token, only: %i[webhook ping pix_efi]
   before_action :set_pagamento, only: %i[show update cancelar liberar]
 
   # ===============================================================
@@ -14,7 +14,7 @@ class PagamentosController < ApplicationController
   def show; end
 
   # ===============================================================
-  # CHECKOUT
+  # CHECKOUT (LEGADO / ATUAL)
   # ===============================================================
   # POST /pagamentos/checkout?frete_id=123
   def checkout
@@ -29,7 +29,6 @@ class PagamentosController < ApplicationController
     pagamento = Pagamento.find_or_initialize_by(frete: frete, transportador: transportador)
     pagamento.cliente = cliente
 
-    # Mantém compatibilidade com colunas/aliases
     pagamento.valor_total = calcular_valor_final(frete, cliente)
     pagamento.comissao_cargaclick ||= 0
     pagamento.valor_liquido ||= pagamento.valor_total
@@ -37,6 +36,7 @@ class PagamentosController < ApplicationController
     pagamento.save!
 
     service = PagamentoPixService.new
+
     result =
       if cliente.respond_to?(:assinante?) && cliente.assinante?
         service.checkout_assinante(frete, cliente, transportador, pagamento)
@@ -59,9 +59,8 @@ class PagamentosController < ApplicationController
   end
 
   # ===============================================================
-  # ATUALIZAÇÃO DE STATUS (UI/Turbo)
+  # ATUALIZAÇÃO DE STATUS
   # ===============================================================
-  # PATCH /pagamentos/:id?status=escrow|cancelado|confirmado|estornado
   def update
     status = params[:status].to_s
 
@@ -105,7 +104,6 @@ class PagamentosController < ApplicationController
   # ===============================================================
   # ESCROW / REPASSE
   # ===============================================================
-  # POST /pagamentos/:id/liberar
   def liberar
     unless autorizado_para_liberar?(@pagamento)
       return respond_to do |format|
@@ -135,11 +133,11 @@ class PagamentosController < ApplicationController
   end
 
   # ===============================================================
-  # CALLBACKS DO GATEWAY
+  # CALLBACKS LEGADOS
   # ===============================================================
   def retorno
     PagamentoPixService.new.retorno(params)
-    redirect_to root_path, notice: "Pagamento processado. Se aprovado, os contatos foram liberados."
+    redirect_to root_path, notice: "Pagamento processado."
   end
 
   def webhook
@@ -151,6 +149,36 @@ class PagamentosController < ApplicationController
     head :ok
   end
 
+  # ===============================================================
+  # PIX EFI (NOVO – ISOLADO – SEM IMPACTO NO CHECKOUT ATUAL)
+  # ===============================================================
+  # POST /pagamentos/pix_efi?frete_id=123
+  def pix_efi
+    frete = Frete.find(params[:frete_id])
+
+    service = Pix::EfiService.new(frete: frete)
+    service.criar_cobranca!
+
+    render json: {
+      success: true,
+      frete_id: frete.id,
+      pix: {
+        txid:       frete.pix_txid,
+        qr_code:    frete.pix_qr_code,
+        copia_cola: frete.pix_copia_cola,
+        status:     frete.status_pagamento
+      }
+    }
+  rescue Pix::EfiService::Error => e
+    render json: { success: false, error: e.message }, status: :unprocessable_entity
+  rescue => e
+    Rails.logger.error("[PIX][EFI][PAGAMENTOS] #{e.class} - #{e.message}")
+    render json: { success: false, error: "Erro interno ao gerar Pix" }, status: :internal_server_error
+  end
+
+  # ===============================================================
+  # PRIVATES
+  # ===============================================================
   private
 
   def set_pagamento
@@ -165,26 +193,20 @@ class PagamentosController < ApplicationController
   end
 
   def identificar_transportador(frete)
-    return frete.transportador if frete.respond_to?(:transportador) && frete.transportador.present?
-    nil
+    frete.transportador if frete.respond_to?(:transportador)
   end
 
   def calcular_valor_final(frete, _cliente)
-    # Usa o valor já consolidado no Frete (valor_final/estimado).
-    frete.valor_total.to_d
+    frete.valor_final || frete.valor_estimado
   end
 
   def autorizado_para_liberar?(pagamento)
-    # Admin pode liberar sempre
-    if respond_to?(:admin_user_signed_in?) && admin_user_signed_in?
-      return true
-    end
+    return true if respond_to?(:admin_user_signed_in?) && admin_user_signed_in?
 
-    # Cliente dono do frete pode liberar
     if respond_to?(:cliente_signed_in?) && cliente_signed_in?
-      return pagamento.cliente_id.present? && current_cliente.id == pagamento.cliente_id
+      pagamento.cliente_id.present? && current_cliente.id == pagamento.cliente_id
+    else
+      false
     end
-
-    false
   end
 end

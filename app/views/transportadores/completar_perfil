@@ -1,0 +1,64 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+  <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-6">
+
+    <h1 class="text-2xl font-bold text-center mb-2">
+      Completar perfil
+    </h1>
+
+    <p class="text-center text-gray-600 mb-6">
+      Para receber entregas e pagamentos, informe seu CEP e sua chave Pix.
+    </p>
+
+    <%= form_with model: current_transportador,
+                  url: atualizar_perfil_transportador_path,
+                  method: :patch,
+                  local: true do |f| %>
+
+      <!-- CEP -->
+      <div class="mb-4">
+        <%= f.label :cep, "CEP de atuação", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.text_field :cep,
+              placeholder: "Ex: 18050-000",
+              class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500",
+              required: true %>
+      </div>
+
+      <!-- Tipo Pix -->
+      <div class="mb-4">
+        <%= f.label :pix_type, "Tipo da chave Pix", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.select :pix_type,
+              options_for_select([
+                ["CPF", "cpf"],
+                ["CNPJ", "cnpj"],
+                ["E-mail", "email"],
+                ["Telefone", "telefone"],
+                ["Chave aleatória", "aleatoria"]
+              ], current_transportador.pix_type),
+              { prompt: "Selecione o tipo" },
+              class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm",
+              required: true %>
+      </div>
+
+      <!-- Chave Pix -->
+      <div class="mb-6">
+        <%= f.label :pix_key, "Chave Pix", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.text_field :pix_key,
+              placeholder: "Digite sua chave Pix",
+              class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm",
+              required: true %>
+      </div>
+
+      <!-- Botões -->
+      <div class="flex flex-col gap-3">
+        <%= f.submit "Salvar e começar a trabalhar",
+              class: "w-full bg-indigo-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-indigo-700 transition" %>
+
+        <%= link_to "Voltar ao início",
+              inicio_path,
+              class: "w-full text-center text-indigo-600 hover:underline" %>
+      </div>
+
+    <% end %>
+
+  </div>
+</div>

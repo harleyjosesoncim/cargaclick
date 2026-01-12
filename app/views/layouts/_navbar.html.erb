@@ -1,26 +1,40 @@
 <nav class="bg-gradient-to-r from-purple-900 to-purple-700 p-4 shadow-lg fixed top-0 left-0 w-full z-50">
   <div class="max-w-7xl mx-auto flex items-center justify-between">
 
-    <a href="/" class="flex items-center gap-2 text-white text-2xl font-extrabold tracking-wide hover:text-purple-200 transition">
+    <!-- Logo -->
+    <%= link_to root_path,
+          class: "flex items-center gap-2 text-white text-2xl font-extrabold tracking-wide hover:text-purple-200 transition" do %>
       🚚 <span>CargaClick</span>
-    </a>
+    <% end %>
 
     <!-- Desktop -->
     <div class="hidden md:flex items-center space-x-6 text-white font-medium">
-      <a href="/simular-frete" class="hover:text-yellow-300 transition">🧮 Simular Frete</a>
-      <a href="/fidelidade" class="hover:text-yellow-300 transition">⭐ Fidelidade</a>
-      <a href="/contato" class="hover:text-yellow-300 transition">📞 Contato</a>
+      <%= link_to "🧮 Simular Frete", simular_frete_path, class: "hover:text-yellow-300 transition" %>
+      <%= link_to "⭐ Fidelidade", fidelidade_path, class: "hover:text-yellow-300 transition" %>
+      <%= link_to "📞 Contato", contato_path, class: "hover:text-yellow-300 transition" %>
 
-      <a href="/clientes" class="bg-white text-purple-800 font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition">
-        👤 Área do Cliente
-      </a>
+      <% if defined?(transportador_signed_in?) && transportador_signed_in? %>
+        <%= link_to "🚛 Painel do Transportador",
+              transportadores_root_path,
+              class: "bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-500 transition" %>
 
-      <a href="/transportadores" class="bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-500 transition">
-        🚛 Área do Transportador
-      </a>
+      <% elsif defined?(cliente_signed_in?) && cliente_signed_in? %>
+        <%= link_to "👤 Painel do Cliente",
+              clientes_root_path,
+              class: "bg-white text-purple-800 font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition" %>
+
+      <% else %>
+        <%= link_to "👤 Cliente",
+              new_cliente_session_path,
+              class: "bg-white text-purple-800 font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition" %>
+
+        <%= link_to "🚛 Transportador",
+              new_transportador_session_path,
+              class: "bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-500 transition" %>
+      <% end %>
     </div>
 
-    <!-- Mobile button -->
+    <!-- Mobile toggle -->
     <button id="navbar-toggle" class="md:hidden text-white text-2xl focus:outline-none">
       ☰
     </button>
@@ -28,16 +42,28 @@
 
   <!-- Mobile menu -->
   <div id="navbar-menu" class="hidden md:hidden mt-4 space-y-2 bg-purple-800 rounded-xl p-4 shadow-lg">
-    <a href="/simular-frete" class="block text-white hover:text-yellow-300">🧮 Simular Frete</a>
-    <a href="/fidelidade" class="block text-white hover:text-yellow-300">⭐ Fidelidade</a>
-    <a href="/contato" class="block text-white hover:text-yellow-300">📞 Contato</a>
+    <%= link_to "🧮 Simular Frete", simular_frete_path, class: "block text-white hover:text-yellow-300" %>
+    <%= link_to "⭐ Fidelidade", fidelidade_path, class: "block text-white hover:text-yellow-300" %>
+    <%= link_to "📞 Contato", contato_path, class: "block text-white hover:text-yellow-300" %>
 
-    <a href="/clientes" class="block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg mt-2 text-center">
-      👤 Área do Cliente
-    </a>
+    <% if defined?(transportador_signed_in?) && transportador_signed_in? %>
+      <%= link_to "🚛 Painel do Transportador",
+            transportadores_root_path,
+            class: "block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg mt-2 text-center" %>
 
-    <a href="/transportadores" class="block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg mt-2 text-center">
-      🚛 Área do Transportador
-    </a>
+    <% elsif defined?(cliente_signed_in?) && cliente_signed_in? %>
+      <%= link_to "👤 Painel do Cliente",
+            clientes_root_path,
+            class: "block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg mt-2 text-center" %>
+
+    <% else %>
+      <%= link_to "👤 Cliente",
+            new_cliente_session_path,
+            class: "block bg-white text-purple-800 font-bold py-2 px-4 rounded-lg mt-2 text-center" %>
+
+      <%= link_to "🚛 Transportador",
+            new_transportador_session_path,
+            class: "block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg mt-2 text-center" %>
+    <% end %>
   </div>
 </nav>

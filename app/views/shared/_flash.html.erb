@@ -1,25 +1,32 @@
 <!-- app/views/shared/_flash.html.erb -->
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 space-y-3">
-  <% flash.each do |key, message| %>
-    <% next if message.blank? %>
+<% if flash.present? %>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 space-y-3">
 
-    <% css_class, icon = case key.to_sym
-      when :notice  then ["alert-success", "✅"]
-      when :success then ["alert-success", "✅"]
-      when :alert   then ["alert-error", "❌"]
-      when :error   then ["alert-error", "❌"]
-      when :warning then ["alert-warning", "⚠️"]
-      else               ["alert-info", "ℹ️"]
-    end %>
+    <% flash.each do |key, message| %>
+      <% next if message.blank? %>
 
-    <div class="alert <%= css_class %>">
-      <p class="font-medium flex items-center gap-2">
-        <span><%= icon %></span>
-        <%= sanitize(message) %>
-      </p>
-      <button type="button" class="alert-close" onclick="this.parentElement.remove()">✖</button>
-    </div>
-  <% end %>
-</div>
+      <% css_class, icon = case key.to_sym
+        when :notice, :success
+          ["alert-success", "✅"]
+        when :alert, :error
+          ["alert-error", "❌"]
+        when :warning
+          ["alert-warning", "⚠️"]
+        else
+          ["alert-info", "ℹ️"]
+      end %>
+
+      <div class="alert <%= css_class %>">
+        <p class="font-medium flex items-center gap-2">
+          <span aria-hidden="true"><%= icon %></span>
+          <span><%= h(message) %></span>
+        </p>
+      </div>
+
+    <% end %>
+
+  </div>
+<% end %>
+
 
 
