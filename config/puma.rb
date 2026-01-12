@@ -24,7 +24,7 @@ threads min_threads, max_threads
 # - Usa `port` por padrão. Se PUMA_BIND estiver definido, usa `bind`.
 #   Ex.: PUMA_BIND=tcp://0.0.0.0:3000  ou  unix://tmp/sockets/puma.sock
 # --------------------------------------------------
-port Integer(ENV.fetch("PORT", 3000))
+port Integer(ENV.fetch("PORT", 10000))
 bind_url = ENV.fetch("PUMA_BIND", "").strip
 unless bind_url.empty?
   if bind_url.start_with?("unix://")
