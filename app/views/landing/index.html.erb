@@ -1,98 +1,96 @@
-<div class="min-h-[75vh] flex items-center justify-center px-4 py-10">
-  <div class="w-full max-w-5xl">
+<div class="min-h-[75vh] flex items-center justify-center px-4 py-10 bg-gray-50">
+  <div class="w-full max-w-6xl">
 
-    <!-- Logo + título -->
-    <div class="text-center mb-10">
-      <div class="mx-auto w-24 h-24 rounded-2xl bg-purple-700 flex items-center justify-center shadow-lg">
-        <span class="text-white text-3xl font-extrabold">CC</span>
+    <!-- LOGO / HERO -->
+    <div class="text-center mb-12">
+      <div class="mx-auto w-24 h-24 rounded-3xl bg-gradient-to-br from-purple-700 to-indigo-600
+                  flex items-center justify-center shadow-xl hover:scale-105 transition">
+        <span class="text-white text-3xl font-extrabold tracking-wide">CC</span>
       </div>
-      <h1 class="mt-4 text-3xl md:text-4xl font-extrabold tracking-tight">
+
+      <h1 class="mt-6 text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900">
         CargaClick
       </h1>
-      <p class="mt-2 text-gray-600">
-        Mobile-first. Sem botões perdidos. Offline-safe.
+
+      <p class="mt-3 text-gray-600 max-w-xl mx-auto">
+        Fretes simples, rápidos e sem atrito.
+      </p>
+
+      <!-- Easter egg sutil -->
+      <p class="mt-1 text-xs text-gray-400 italic">
+        🚚 feito para rodar liso, até em estrada ruim
       </p>
     </div>
 
-    <!-- Cards principais -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <!-- CARDS -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
       <!-- CLIENTE -->
-      <div class="bg-white rounded-2xl shadow p-5">
-        <h2 class="text-xl font-bold">Cliente</h2>
+      <div class="bg-white rounded-3xl shadow-lg p-6 hover:shadow-xl transition">
+        <h2 class="text-lg font-bold text-gray-900">Cliente</h2>
         <p class="text-sm text-gray-600 mt-1">
-          Entrar, cadastrar e simular em poucos toques.
+          Simule, contrate e acompanhe seu frete.
         </p>
 
-        <div class="mt-4 flex flex-col gap-2">
-          <%= link_to "Entrar (Cliente)",
+        <div class="mt-5 flex flex-col gap-3">
+          <%= link_to "Entrar",
                 new_cliente_session_path,
-                class: "w-full text-center px-4 py-2 rounded bg-purple-700 text-white hover:bg-purple-800" %>
+                class: "w-full text-center py-2 rounded-xl bg-purple-700 text-white font-semibold hover:bg-purple-800 transition" %>
 
-          <%= link_to "Cadastrar (Cliente)",
+          <%= link_to "Criar conta",
                 new_cliente_registration_path,
-                class: "w-full text-center px-4 py-2 rounded bg-gray-100 hover:bg-gray-200" %>
-
-          <%= link_to "Painel do Cliente",
-                clientes_root_path,
-                class: "w-full text-center px-4 py-2 rounded bg-gray-50 hover:bg-gray-100" %>
+                class: "w-full text-center py-2 rounded-xl bg-gray-100 hover:bg-gray-200 transition" %>
         </div>
       </div>
 
-      <!-- TRANSPORTADOR (SEM DEVISE DIRETO) -->
-      <div class="bg-white rounded-2xl shadow p-5">
-        <h2 class="text-xl font-bold">Transportador</h2>
+      <!-- TRANSPORTADOR -->
+      <div class="bg-white rounded-3xl shadow-lg p-6 hover:shadow-xl transition relative">
+
+        <!-- Easter egg visual -->
+        <span class="absolute top-3 right-4 text-xs text-purple-600 font-semibold">
+          PRO
+        </span>
+
+        <h2 class="text-lg font-bold text-gray-900">Transportador</h2>
         <p class="text-sm text-gray-600 mt-1">
-          Cadastrar, receber oportunidades e acompanhar.
+          Receba oportunidades e aumente sua renda.
         </p>
 
-        <div class="mt-4 flex flex-col gap-2">
-          <%= link_to "Área do Transportador",
-                transportador_path,
-                class: "w-full text-center px-4 py-2 rounded bg-purple-700 text-white hover:bg-purple-800" %>
+        <div class="mt-5 flex flex-col gap-3">
+          <%= link_to "Entrar",
+                new_transportador_session_path,
+                class: "w-full text-center py-2 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition" %>
 
-          <%= link_to "Cadastro do Transportador",
-                transportador_path,
-                class: "w-full text-center px-4 py-2 rounded bg-gray-100 hover:bg-gray-200" %>
-
-          <%= link_to "Painel do Transportador",
-                transportadores_root_path,
-                class: "w-full text-center px-4 py-2 rounded bg-gray-50 hover:bg-gray-100" %>
+          <%= link_to "Cadastrar",
+                new_transportador_registration_path,
+                class: "w-full text-center py-2 rounded-xl bg-gray-100 hover:bg-gray-200 transition" %>
         </div>
       </div>
 
-      <!-- AÇÕES RÁPIDAS -->
-      <div class="bg-white rounded-2xl shadow p-5">
-        <h2 class="text-xl font-bold">Ações rápidas</h2>
+      <!-- AÇÃO PRINCIPAL -->
+      <div class="bg-white rounded-3xl shadow-lg p-6 hover:shadow-xl transition">
+        <h2 class="text-lg font-bold text-gray-900">Simulação rápida</h2>
         <p class="text-sm text-gray-600 mt-1">
-          Sempre com Início / Voltar. Sem looping.
+          Comece sem cadastro.
         </p>
 
-        <div class="mt-4 flex flex-col gap-2">
-          <%= link_to "Simular Frete",
+        <div class="mt-5 flex flex-col gap-3">
+          <%= link_to "Simular frete",
                 simular_frete_path,
-                class: "w-full text-center px-4 py-2 rounded bg-yellow-400 hover:bg-yellow-500 font-semibold" %>
-
-          <%= link_to "Fidelidade",
-                fidelidade_path,
-                class: "w-full text-center px-4 py-2 rounded bg-gray-100 hover:bg-gray-200" %>
+                class: "w-full text-center py-3 rounded-xl bg-yellow-400 hover:bg-yellow-500 font-semibold transition" %>
 
           <%= link_to "Contato",
                 contato_path,
-                class: "w-full text-center px-4 py-2 rounded bg-gray-100 hover:bg-gray-200" %>
-
-          <%= link_to "Admin",
-                "/admin",
-                class: "w-full text-center px-4 py-2 rounded bg-gray-900 text-white hover:bg-black" %>
+                class: "w-full text-center py-2 rounded-xl bg-gray-100 hover:bg-gray-200 transition" %>
         </div>
       </div>
+
     </div>
 
-    <!-- Rodapé -->
-    <div class="mt-10 text-center text-xs text-gray-500">
-      <p>
-        Offline-safe: sem Alpine, Tailwind CDN ou Leaflet em runtime.
-      </p>
+    <!-- FOOTER / EASTER EGG -->
+    <div class="mt-12 text-center text-xs text-gray-400">
+      Produção-safe • Devise-safe • Mobile-first  
+      <span class="block mt-1">✨ nenhum botão deixado para trás</span>
     </div>
 
   </div>
