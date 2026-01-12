@@ -1,9 +1,119 @@
-<div class="mb-6">
-  <h1 class="text-2xl font-bold text-gray-800">
-    Olá, <%= current_transportador.nome %>
-  </h1>
+<div class="min-h-screen bg-gray-50 px-4 py-6">
 
-  <p class="text-gray-600 text-sm">
-    Painel do transportador
-  </p>
+  <!-- Header -->
+  <div class="max-w-md mx-auto text-center mb-6">
+    <h1 class="text-2xl font-extrabold text-purple-700 flex items-center justify-center gap-2">
+      🛵 Área do Transportador
+    </h1>
+    <p class="text-sm text-gray-500 mt-1">
+      Trabalhe com mais autonomia e aproveite melhor cada frete ✨
+    </p>
+  </div>
+
+  <!-- Card principal (guia rápido) -->
+  <div class="max-w-md mx-auto bg-white rounded-2xl shadow-lg p-6 mb-6">
+    <h2 class="text-base font-bold text-gray-800 mb-4 flex items-center gap-2">
+      🧭 Comece por aqui
+    </h2>
+
+    <ol class="space-y-3 text-sm text-gray-600">
+      <li class="flex gap-2 items-start">
+        <span class="font-bold text-purple-700">1.</span>
+        Complete seu perfil com seus dados e o tipo de veículo 🚚
+      </li>
+      <li class="flex gap-2 items-start">
+        <span class="font-bold text-purple-700">2.</span>
+        Receba solicitações compatíveis com sua região e capacidade 📍
+      </li>
+      <li class="flex gap-2 items-start">
+        <span class="font-bold text-purple-700">3.</span>
+        Escolha o frete, realize a entrega e receba pelo serviço 💰
+      </li>
+    </ol>
+  </div>
+
+  <!-- Vantagens do CargaClick -->
+  <div class="max-w-md mx-auto bg-white rounded-2xl shadow p-6 mb-6">
+    <h3 class="text-sm font-bold text-gray-800 mb-4 flex items-center gap-2">
+      🚀 Por que o CargaClick é vantajoso para você?
+    </h3>
+
+    <ul class="space-y-3 text-sm text-gray-600">
+      <li class="flex gap-2 items-start">
+        <span>💰</span>
+        <span>
+          <strong>Mais ganho por frete:</strong>
+          você vê o valor antes de aceitar e decide se compensa.
+        </span>
+      </li>
+
+      <li class="flex gap-2 items-start">
+        <span>📍</span>
+        <span>
+          <strong>Menos deslocamento vazio:</strong>
+          priorizamos fretes próximos à sua região.
+        </span>
+      </li>
+
+      <li class="flex gap-2 items-start">
+        <span>🤝</span>
+        <span>
+          <strong>Negociação direta:</strong>
+          sem intermediações desnecessárias.
+        </span>
+      </li>
+
+      <li class="flex gap-2 items-start">
+        <span>🕒</span>
+        <span>
+          <strong>Liberdade total:</strong>
+          você escolhe quando e quais fretes aceitar.
+        </span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Ação principal -->
+  <div class="max-w-md mx-auto mb-6">
+    <%= link_to "✨ Completar meu cadastro",
+        nav_path(:edit_transportador_registration_path, fallback: contato_path),
+        class: "block w-full text-center bg-purple-700 hover:bg-purple-800 text-white font-semibold py-3 rounded-xl transition" %>
+  </div>
+
+  <!-- Indicadores simples -->
+  <div class="max-w-md mx-auto grid grid-cols-2 gap-4 mb-6">
+    <div class="bg-white rounded-xl shadow p-4 text-center">
+      <p class="text-xs text-gray-500 mb-1">🚚 Fretes disponíveis</p>
+      <p class="text-lg font-bold text-gray-400">Em breve</p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-4 text-center">
+      <p class="text-xs text-gray-500 mb-1">💰 Ganhos</p>
+      <p class="text-lg font-bold text-gray-400">—</p>
+    </div>
+  </div>
+
+  <!-- Aviso -->
+  <div class="max-w-md mx-auto bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-center mb-6">
+    <p class="text-sm text-yellow-800 font-medium">
+      ⏳ Estamos começando
+    </p>
+    <p class="text-xs text-yellow-700 mt-1">
+      Assim que surgirem fretes na sua região, eles aparecerão aqui 😉
+    </p>
+  </div>
+
+  <!-- Ações secundárias -->
+  <div class="max-w-md mx-auto space-y-3">
+    <% if route_exists?(:fidelidade_path) %>
+      <%= link_to "⭐ Minha fidelidade",
+          fidelidade_path,
+          class: "block w-full text-center border border-purple-700 text-purple-700 hover:bg-purple-50 font-semibold py-3 rounded-xl transition" %>
+    <% end %>
+
+    <%= link_to "⬅ Voltar ao início",
+        inicio_path,
+        class: "block w-full text-center text-gray-600 hover:text-purple-700 font-semibold py-2 transition" %>
+  </div>
+
 </div>

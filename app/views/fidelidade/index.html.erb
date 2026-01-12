@@ -53,4 +53,20 @@
   </div>
 
 </div>
+<!-- Ações -->
+<div class="max-w-md mx-auto mt-6 space-y-3">
+  <%= link_to "Voltar ao Início",
+      inicio_path,
+      class: "block w-full bg-purple-700 hover:bg-purple-800 text-white font-semibold py-3 rounded-xl text-center transition" %>
+
+  <% if cliente_signed_in? %>
+    <%= link_to "Meus Fretes",
+        clientes_dashboard_path,
+        class: "block w-full border border-purple-700 text-purple-700 hover:bg-purple-50 font-semibold py-3 rounded-xl text-center transition" %>
+  <% elsif transportador_signed_in? %>
+    <%= link_to "Fretes Disponíveis",
+        transportadores_dashboard_path,
+        class: "block w-full border border-purple-700 text-purple-700 hover:bg-purple-50 font-semibold py-3 rounded-xl text-center transition" %>
+  <% end %>
+</div>
 
