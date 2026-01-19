@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_19_130911) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_19_164930) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -164,6 +164,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_19_130911) do
     t.decimal "valor_comissao", precision: 10, scale: 2
     t.decimal "valor_transportador", precision: 10, scale: 2
     t.string "pin_status", default: "pendente", null: false
+    t.decimal "peso", precision: 10, scale: 2
+    t.decimal "volume", precision: 10, scale: 2
     t.index ["cliente_id"], name: "index_fretes_on_cliente_id"
     t.index ["pin_status"], name: "index_fretes_on_pin_status"
     t.index ["pix_txid"], name: "index_fretes_on_pix_txid", unique: true
