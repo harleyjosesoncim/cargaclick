@@ -1,4 +1,10 @@
 # app/services/calcular_frete.rb
+
+# ===== requires obrigatórios em produção =====
+require "net/http"
+require "json"
+require "uri"
+
 class CalcularFrete
   # ============================
   # CONSTANTES DE NEGÓCIO
@@ -32,7 +38,7 @@ class CalcularFrete
     erros = validar_parametros
     return resposta_erro("Parâmetros inválidos", erros) if erros.any?
 
-    distancia_km = calcular_distancia_estimada
+    distancia_km = calcular_distancia
     breakdown    = calcular_breakdown(distancia_km)
 
     resposta_sucesso(
@@ -50,7 +56,7 @@ class CalcularFrete
   private
 
   # ==================================================
-  # NORMALIZAÇÃO DE DADOS (ANTI-SURPRESA)
+  # NORMALIZAÇÃO
   # ==================================================
   def normalizar_texto(valor)
     valor.to_s.strip
@@ -58,32 +64,70 @@ class CalcularFrete
 
   def normalizar_numero(valor)
     Float(valor)
-  rescue StandardError
+  rescue
     0.0
   end
 
   # ==================================================
-  # VALIDAÇÃO DE CONTRATO
+  # VALIDAÇÃO
   # ==================================================
   def validar_parametros
     erros = []
-
     erros << "Origem inválida"  if @origem.blank?
     erros << "Destino inválido" if @destino.blank?
     erros << "Peso inválido"    if @peso <= 0
-
     erros
   end
 
   # ==================================================
-  # DISTÂNCIA (FALLBACK SEGURO)
+  # DISTÂNCIA (ORS + FALLBACK)
   # ==================================================
-  # OBS: aqui entra ORS futuramente
-  def calcular_distancia_estimada
-    distancia_placeholder
+  def calcular_distancia
+    return distancia_placeholder if ENV["OPENROUTESERVICE_API_KEY"].blank?
+
+    coords_origem  = geocodificar(@origem)
+    coords_destino = geocodificar(@destino)
+
+    return distancia_placeholder if coords_origem.nil? || coords_destino.nil?
+
+    distancia_ors(coords_origem, coords_destino)
   rescue StandardError => e
-    Rails.logger.warn("[CalcularFrete][DISTANCIA][FALLBACK] #{e.message}")
+    Rails.logger.warn("[CalcularFrete][ORS][FALLBACK] #{e.message}")
     distancia_placeholder
+  end
+
+  def geocodificar(endereco)
+    uri = URI("https://api.openrouteservice.org/geocode/search")
+    uri.query = URI.encode_www_form(
+      api_key: ENV["OPENROUTESERVICE_API_KEY"],
+      text: endereco,
+      size: 1
+    )
+
+    res = Net::HTTP.get_response(uri)
+    return nil unless res.is_a?(Net::HTTPSuccess)
+
+    body = JSON.parse(res.body)
+    body.dig("features", 0, "geometry", "coordinates")
+  end
+
+  def distancia_ors(origem, destino)
+    uri = URI("https://api.openrouteservice.org/v2/directions/driving-car")
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+
+    req = Net::HTTP::Post.new(uri)
+    req["Authorization"] = ENV["OPENROUTESERVICE_API_KEY"]
+    req["Content-Type"]  = "application/json"
+
+    req.body = { coordinates: [origem, destino] }.to_json
+
+    res = http.request(req)
+    raise "Erro ORS" unless res.is_a?(Net::HTTPSuccess)
+
+    body = JSON.parse(res.body)
+    metros = body.dig("features", 0, "properties", "segments", 0, "distance")
+    metros.to_f / 1000.0
   end
 
   def distancia_placeholder
@@ -92,48 +136,36 @@ class CalcularFrete
   end
 
   # ==================================================
-  # BREAKDOWN DO CÁLCULO (AUDITÁVEL)
+  # BREAKDOWN (AUDITÁVEL)
   # ==================================================
   def calcular_breakdown(distancia_km)
     valor_por_km = distancia_km * PRECO_BASE_KM
     valor_base   = [valor_por_km, TAXA_MINIMA].max
-
-    # Reservado para regras futuras
-    ajuste_fidelidade   = 0.0
-    comissao_plataforma = 0.0
 
     {
       preco_por_km: PRECO_BASE_KM,
       distancia_km: distancia_km.round(2),
       valor_por_km: valor_por_km.round(2),
       taxa_minima: TAXA_MINIMA,
-      ajuste_fidelidade: ajuste_fidelidade,
-      comissao_plataforma: comissao_plataforma,
-      valor_final: (valor_base + ajuste_fidelidade + comissao_plataforma).round(2)
+      ajuste_fidelidade: 0.0,
+      comissao_plataforma: 0.0,
+      valor_final: valor_base.round(2)
     }
   end
 
   # ==================================================
-  # RESPOSTAS PADRONIZADAS
+  # RESPOSTAS PADRÃO
   # ==================================================
   def resposta_sucesso(payload = {})
-    {
-      sucesso: true,
-      mensagem: "Simulação realizada com sucesso",
-      **payload
-    }
+    { sucesso: true, mensagem: "Simulação realizada com sucesso", **payload }
   end
 
   def resposta_erro(mensagem, detalhes = nil)
-    {
-      sucesso: false,
-      mensagem: mensagem,
-      detalhes: detalhes
-    }
+    { sucesso: false, mensagem: mensagem, detalhes: detalhes }
   end
 
   # ==================================================
-  # LOGGING DE PRODUÇÃO (CONTROLADO)
+  # LOG
   # ==================================================
   def log_erro_fatal(exception)
     Rails.logger.error(
