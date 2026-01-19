@@ -2,29 +2,27 @@
 
 class TransportadoresController < ApplicationController
   # =====================================================
-  # SEGURANÇA
+  # SEGURANÇA / AUTENTICAÇÃO
   # =====================================================
 
+  # Opt-in via API não usa CSRF (Discord / bots / integrações)
   protect_from_forgery except: :optin
 
-  # Transportador precisa estar autenticado
+  # Devise – transportador precisa estar logado
   before_action :authenticate_transportador!,
                 except: %i[cadastro optin]
 
-  # Apenas admin pode listar ou excluir
-  before_action :require_admin!, only: %i[index destroy]
+  # Apenas admin pode listar e excluir
+  before_action :require_admin!,
+                only: %i[index destroy]
 
-  # Carrega transportador quando necessário
+  # Carrega registro quando necessário
   before_action :set_transportador,
                 only: %i[show edit update destroy]
 
-  # Transportador comum só acessa o próprio registro
+  # Transportador comum só pode acessar o próprio registro
   before_action :authorize_transportador!,
                 only: %i[show edit update]
-
-  # Completar perfil (Pix + CEP)
-  before_action :authenticate_transportador!,
-                only: %i[completar_perfil atualizar_perfil]
 
   # =====================================================
   # AÇÕES PÚBLICAS
@@ -36,20 +34,21 @@ class TransportadoresController < ApplicationController
   end
 
   # POST /api/transportadores/optin
-  # Cadastro via Discord / API (LGPD)
+  # Cadastro simplificado via API / Discord (LGPD)
   def optin
-    return consentimento_invalido unless consentimento_valido?
+    return render_consentimento_invalido unless consentimento_valido?
 
     transportador = build_transportador
 
     if transportador.save
-      render json: sucesso(transportador), status: :created
+      render json: resposta_sucesso(transportador), status: :created
     else
-      render json: erro_validacao(transportador), status: :unprocessable_entity
+      render json: resposta_erro_validacao(transportador),
+             status: :unprocessable_entity
     end
   rescue StandardError => e
-    Rails.logger.error "[OPTIN TRANSPORTADOR] #{e.class} - #{e.message}"
-    render json: erro_interno, status: :internal_server_error
+    Rails.logger.error("[TransportadoresController#optin] #{e.class}: #{e.message}")
+    render json: resposta_erro_interno, status: :internal_server_error
   end
 
   # =====================================================
@@ -61,14 +60,14 @@ class TransportadoresController < ApplicationController
     @transportadores = Transportador.order(created_at: :desc)
   end
 
-  # PAINEL BÁSICO
+  # PAINEL
   def show; end
 
   def edit; end
 
   def update
     if @transportador.update(transportador_params)
-      redirect_to transportador_path(@transportador),
+      redirect_to @transportador,
                   notice: "Dados atualizados com sucesso."
     else
       flash.now[:alert] = "Não foi possível atualizar os dados."
@@ -82,16 +81,18 @@ class TransportadoresController < ApplicationController
 
   # GET /transportadores/completar_perfil
   def completar_perfil
-    # apenas renderiza a view
+    @transportador = current_transportador
   end
 
   # PATCH /transportadores/atualizar_perfil
   def atualizar_perfil
-    if current_transportador.update(transportador_perfil_params)
-      redirect_to transportador_path(current_transportador),
+    @transportador = current_transportador
+
+    if @transportador.update(transportador_perfil_params)
+      redirect_to @transportador,
                   notice: "Perfil atualizado com sucesso."
     else
-      flash.now[:alert] = "Não foi possível salvar. Verifique os dados."
+      flash.now[:alert] = "Erro ao salvar perfil. Verifique os dados."
       render :completar_perfil, status: :unprocessable_entity
     end
   end
@@ -110,42 +111,56 @@ class TransportadoresController < ApplicationController
   # =====================================================
   private
 
-  # ---------- LGPD ----------
+  # -----------------------------------------------------
+  # LGPD
+  # -----------------------------------------------------
   def consentimento_valido?
     params[:consentimento].to_s == "on"
   end
 
-  def consentimento_invalido
+  def render_consentimento_invalido
     render json: {
       success: false,
-      error: "Consentimento obrigatório (LGPD)"
+      error: "Consentimento obrigatório conforme LGPD"
     }, status: :unprocessable_entity
   end
 
-  # ---------- BUILD ----------
+  # -----------------------------------------------------
+  # BUILD (OPT-IN)
+  # -----------------------------------------------------
   def build_transportador
     Transportador.new(
-      nome: params[:nome],
-      telefone: params[:telefone],
-      email: params[:email],
-      cidade: params[:cidade],
+      nome:         params[:nome],
+      email:        params[:email],
+      telefone:     params[:telefone],
+      cidade:       params[:cidade],
       tipo_veiculo: params[:tipo_veiculo],
-      capacidade: params[:capacidade],
-      origem: params[:origem].presence || "discord",
-      status: "pendente"
+      capacidade:   params[:capacidade],
+      origem:       params[:origem].presence || "optin_api",
+      status:       "pendente"
     )
   end
 
-  # ---------- PARAMS ----------
+  # -----------------------------------------------------
+  # STRONG PARAMS
+  # -----------------------------------------------------
   def transportador_params
     params.require(:transportador).permit(
-      :nome, :email, :telefone, :whatsapp,
-      :cidade, :cep,
-      :cpf, :cnpj,
-      :tipo_veiculo, :capacidade,
-      :valor_km, :valor_fixo,
+      :nome,
+      :email,
+      :telefone,
+      :whatsapp,
+      :cidade,
+      :cep,
+      :cpf,
+      :cnpj,
+      :tipo_veiculo,
+      :capacidade,
+      :valor_km,
+      :valor_fixo,
       :observacoes,
-      :password, :password_confirmation
+      :password,
+      :password_confirmation
     )
   end
 
@@ -157,15 +172,19 @@ class TransportadoresController < ApplicationController
     )
   end
 
-  # ---------- LOAD ----------
+  # -----------------------------------------------------
+  # LOAD
+  # -----------------------------------------------------
   def set_transportador
     @transportador = Transportador.find_by(id: params[:id])
-    return if @transportador
+    return if @transportador.present?
 
     redirect_to root_path, alert: "Transportador não encontrado."
   end
 
-  # ---------- AUTH ----------
+  # -----------------------------------------------------
+  # AUTORIZAÇÃO
+  # -----------------------------------------------------
   def authorize_transportador!
     return if current_transportador == @transportador
     return if current_transportador&.admin?
@@ -182,8 +201,10 @@ class TransportadoresController < ApplicationController
     redirect_to root_path, alert: "Acesso restrito ao administrador."
   end
 
-  # ---------- RESPONSES ----------
-  def sucesso(transportador)
+  # -----------------------------------------------------
+  # RESPONSES (API)
+  # -----------------------------------------------------
+  def resposta_sucesso(transportador)
     {
       success: true,
       id: transportador.id,
@@ -192,7 +213,7 @@ class TransportadoresController < ApplicationController
     }
   end
 
-  def erro_validacao(transportador)
+  def resposta_erro_validacao(transportador)
     {
       success: false,
       error: "Erro de validação",
@@ -200,10 +221,10 @@ class TransportadoresController < ApplicationController
     }
   end
 
-  def erro_interno
+  def resposta_erro_interno
     {
       success: false,
-      error: "Erro interno ao processar cadastro"
+      error: "Erro interno ao processar solicitação"
     }
   end
 end

@@ -2,7 +2,7 @@
 
 class Frete < ApplicationRecord
   # ==========================================================
-  # ASSOCIAÇÕES
+  # 📎 ASSOCIAÇÕES
   # ==========================================================
   belongs_to :cliente
   belongs_to :transportador, optional: true
@@ -11,10 +11,9 @@ class Frete < ApplicationRecord
   has_one  :cotacao, dependent: :destroy
 
   # ==========================================================
-  # ENUMS (STRING-BACKED, ALINHADOS AO BANCO)
+  # 🎛️ ENUMS (string-backed, com prefixos para evitar conflitos)
   # ==========================================================
 
-  # Coluna: status (string, default definido no banco)
   enum status: {
     pendente:     "pendente",
     aceito:       "aceito",
@@ -23,7 +22,6 @@ class Frete < ApplicationRecord
     cancelado:    "cancelado"
   }, _prefix: :frete
 
-  # Coluna: status_pagamento (string, default = "pendente")
   enum status_pagamento: {
     pendente:  "pendente",
     pago:      "pago",
@@ -31,7 +29,6 @@ class Frete < ApplicationRecord
     cancelado: "cancelado"
   }, _prefix: :pagamento
 
-  # Coluna: pin_status (string, default = "pendente")
   enum pin_status: {
     pendente:   "pendente",
     confirmado: "confirmado",
@@ -39,7 +36,7 @@ class Frete < ApplicationRecord
   }, _prefix: :pin
 
   # ==========================================================
-  # CALLBACKS (PREVISÍVEIS E SEGURAS)
+  # 🔄 CALLBACKS
   # ==========================================================
   before_create     :gerar_pin_entrega
   before_validation :definir_comissao_padrao, on: :create
@@ -55,8 +52,7 @@ class Frete < ApplicationRecord
   end
 
   def confirmar_entrega!(pin_informado)
-    return false if pin_expirado?
-    return false if tentativas_pin >= 3
+    return false if pin_expirado? || tentativas_pin >= 3
 
     if pin_entrega == pin_informado
       update!(
@@ -78,14 +74,10 @@ class Frete < ApplicationRecord
   end
 
   # ==========================================================
-  # 💰 MONETIZAÇÃO / SPLIT
+  # 💰 MONETIZAÇÃO / SPLIT DE VALORES
   # ==========================================================
   def definir_comissao_padrao
-    self.comissao_percentual ||= if transportador&.respond_to?(:fidelidade?) && transportador.fidelidade?
-                                   5.0
-                                 else
-                                   8.0
-                                 end
+    self.comissao_percentual ||= transportador&.try(:fidelidade?) ? 5.0 : 8.0
   end
 
   def calcular_split!
@@ -104,7 +96,7 @@ class Frete < ApplicationRecord
   end
 
   # ==========================================================
-  # 🔎 HELPERS INTERNOS (PRIVATE)
+  # 🔎 HELPERS PRIVADOS
   # ==========================================================
   private
 

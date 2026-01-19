@@ -1,0 +1,6 @@
+class AddStatusPagamentoToFretes < ActiveRecord::Migration[7.1]
+  def change
+    add_column :fretes, :status_pagamento, :integer, default: 0, null: false
+    add_index  :fretes, :status_pagamento
+  end
+end
