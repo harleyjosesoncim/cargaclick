@@ -11,9 +11,10 @@ class Frete < ApplicationRecord
   has_one  :cotacao, dependent: :destroy
 
   # ==========================================================
-  # 🎛️ ENUMS (string-backed, com prefixos para evitar conflitos)
+  # 🎛️ ENUMS (prefixados, prontos para produção)
   # ==========================================================
 
+  # Coluna: status (string)
   enum status: {
     pendente:     "pendente",
     aceito:       "aceito",
@@ -22,13 +23,15 @@ class Frete < ApplicationRecord
     cancelado:    "cancelado"
   }, _prefix: :frete
 
+  # Coluna: status_pagamento (integer — corrigido)
   enum status_pagamento: {
-    pendente:  "pendente",
-    pago:      "pago",
-    liberado:  "liberado",
-    cancelado: "cancelado"
+    pendente: 0,
+    pago: 1,
+    liberado: 2,
+    cancelado: 3
   }, _prefix: :pagamento
 
+  # Coluna: pin_status (string)
   enum pin_status: {
     pendente:   "pendente",
     confirmado: "confirmado",
@@ -59,7 +62,7 @@ class Frete < ApplicationRecord
         pin_status:       "confirmado",
         entregue_em:      Time.current,
         status:           "concluido",
-        status_pagamento: "liberado"
+        status_pagamento: :liberado
       )
       true
     else
