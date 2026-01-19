@@ -24,3 +24,41 @@
         <span class="font-semibold">Distância estimada:</span>
         <span><%= @resultado[:distancia_km] %> km</span>
       </div>
+
+      <div class="flex justify-between">
+        <span class="font-semibold">Valor estimado:</span>
+        <span class="text-green-600 font-bold">
+          R$ <%= number_to_currency(@resultado[:valor], unit: "", separator: ",", delimiter: ".") %>
+        </span>
+      </div>
+
+    </div>
+
+    <div class="mt-8 flex justify-between">
+      <%= link_to "Nova simulação",
+            simular_frete_path,
+            class: "px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700" %>
+
+      <%= link_to "Solicitar frete",
+            new_frete_path,
+            class: "px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-semibold" %>
+    </div>
+
+  <% else %>
+
+    <div class="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg">
+      <p class="font-semibold mb-1">Não foi possível calcular o frete.</p>
+      <p>
+        <%= @resultado[:mensagem] rescue "Erro inesperado ao processar a simulação." %>
+      </p>
+    </div>
+
+    <div class="mt-6">
+      <%= link_to "Voltar",
+            simular_frete_path,
+            class: "px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700" %>
+    </div>
+
+  <% end %>
+
+</div>
