@@ -11,10 +11,10 @@ class Frete < ApplicationRecord
   has_one  :cotacao, dependent: :destroy
 
   # ==========================================================
-  # ENUMS (ALINHADOS AO BANCO)
+  # ENUMS (STRING-BACKED, ALINHADOS AO BANCO)
   # ==========================================================
 
-  # Coluna: status (já existente no banco)
+  # Coluna: status (string, default definido no banco)
   enum status: {
     pendente:     "pendente",
     aceito:       "aceito",
@@ -23,15 +23,15 @@ class Frete < ApplicationRecord
     cancelado:    "cancelado"
   }, _prefix: :frete
 
-  # Coluna: status_pagamento (migration AddPixPinEComissaoToFretes)
+  # Coluna: status_pagamento (string, default = "pendente")
   enum status_pagamento: {
-    aguardando_pagamento: "aguardando_pagamento",
-    pago:                 "pago",
-    liberado:             "liberado",
-    cancelado:            "cancelado"
+    pendente:  "pendente",
+    pago:      "pago",
+    liberado:  "liberado",
+    cancelado: "cancelado"
   }, _prefix: :pagamento
 
-  # Coluna: pin_status
+  # Coluna: pin_status (string, default = "pendente")
   enum pin_status: {
     pendente:   "pendente",
     confirmado: "confirmado",
@@ -39,18 +39,19 @@ class Frete < ApplicationRecord
   }, _prefix: :pin
 
   # ==========================================================
-  # CALLBACKS
+  # CALLBACKS (PREVISÍVEIS E SEGURAS)
   # ==========================================================
-  before_create :gerar_pin_entrega
+  before_create     :gerar_pin_entrega
   before_validation :definir_comissao_padrao, on: :create
+  before_save       :calcular_split!, if: :base_para_split_presente?
 
   # ==========================================================
   # 🔐 PIN DE ENTREGA
   # ==========================================================
   def gerar_pin_entrega
-    self.pin_entrega     ||= SecureRandom.random_number(10_000).to_s.rjust(4, "0")
-    self.pin_status      ||= "pendente"
-    self.tentativas_pin  ||= 0
+    self.pin_entrega    ||= SecureRandom.random_number(10_000).to_s.rjust(4, "0")
+    self.pin_status     ||= "pendente"
+    self.tentativas_pin ||= 0
   end
 
   def confirmar_entrega!(pin_informado)
@@ -80,21 +81,38 @@ class Frete < ApplicationRecord
   # 💰 MONETIZAÇÃO / SPLIT
   # ==========================================================
   def definir_comissao_padrao
-    self.comissao_percentual ||= transportador&.respond_to?(:fidelidade?) && transportador.fidelidade? ? 5.0 : 8.0
+    self.comissao_percentual ||= if transportador&.respond_to?(:fidelidade?) && transportador.fidelidade?
+                                   5.0
+                                 else
+                                   8.0
+                                 end
   end
 
   def calcular_split!
-    base = valor_final || valor_estimado
-    return if base.blank?
+    base = base_para_split
+    return if base.zero?
 
     self.valor_comissao      = (base * comissao_percentual / 100).round(2)
     self.valor_transportador = (base - valor_comissao).round(2)
   end
 
   # ==========================================================
-  # 💳 VALOR TOTAL (USADO NO PIX)
+  # 💳 VALORES
   # ==========================================================
   def valor_total
+    base_para_split
+  end
+
+  # ==========================================================
+  # 🔎 HELPERS INTERNOS (PRIVATE)
+  # ==========================================================
+  private
+
+  def base_para_split
     valor_final.presence || valor_estimado.presence || 0
+  end
+
+  def base_para_split_presente?
+    valor_final.present? || valor_estimado.present?
   end
 end
