@@ -1,80 +1,122 @@
 # app/services/calcular_frete.rb
 class CalcularFrete
+  # ============================
+  # CONSTANTES DE NEGÓCIO
+  # ============================
   PRECO_BASE_KM = 2.50 # R$/km
   TAXA_MINIMA   = 30.0 # R$
 
-  # Interface pública
+  # ============================
+  # INTERFACE PÚBLICA (ESTÁVEL)
+  # ============================
   def self.call(params)
     new(params).call
   end
 
+  # ============================
+  # INICIALIZAÇÃO DEFENSIVA
+  # ============================
   def initialize(params)
     params ||= {}
 
-    @origem       = params[:origem].to_s.strip
-    @destino      = params[:destino].to_s.strip
-    @peso         = params[:peso].to_f
-    @tipo_veiculo = params[:tipo_veiculo].to_s.strip
+    @origem       = normalizar_texto(params[:origem])
+    @destino      = normalizar_texto(params[:destino])
+    @peso         = normalizar_numero(params[:peso])
+    @tipo_veiculo = normalizar_texto(params[:tipo_veiculo])
   end
 
-  # ==================================================
-  # Execução principal
-  # ==================================================
+  # ============================
+  # EXECUÇÃO PRINCIPAL
+  # ============================
   def call
     erros = validar_parametros
-    return erro("Parâmetros inválidos", erros) if erros.any?
+    return resposta_erro("Parâmetros inválidos", erros) if erros.any?
 
     distancia_km = calcular_distancia_estimada
-    valor        = calcular_valor(distancia_km)
+    breakdown    = calcular_breakdown(distancia_km)
 
-    sucesso(
+    resposta_sucesso(
       origem: @origem,
       destino: @destino,
       distancia_km: distancia_km.round(2),
-      valor: valor.round(2)
+      valor: breakdown[:valor_final],
+      breakdown: breakdown
     )
   rescue StandardError => e
-    Rails.logger.error(
-      "[CalcularFrete][FATAL] #{e.class}: #{e.message}\n#{e.backtrace&.first(5)&.join("\n")}"
-    )
-    erro("Erro interno ao simular frete")
+    log_erro_fatal(e)
+    resposta_erro("Erro interno ao simular frete")
   end
 
   private
 
   # ==================================================
-  # Validação (NÃO levanta exception)
+  # NORMALIZAÇÃO DE DADOS (ANTI-SURPRESA)
+  # ==================================================
+  def normalizar_texto(valor)
+    valor.to_s.strip
+  end
+
+  def normalizar_numero(valor)
+    Float(valor)
+  rescue StandardError
+    0.0
+  end
+
+  # ==================================================
+  # VALIDAÇÃO DE CONTRATO
   # ==================================================
   def validar_parametros
     erros = []
+
     erros << "Origem inválida"  if @origem.blank?
     erros << "Destino inválido" if @destino.blank?
     erros << "Peso inválido"    if @peso <= 0
+
     erros
   end
 
   # ==================================================
-  # Distância (placeholder seguro)
+  # DISTÂNCIA (FALLBACK SEGURO)
   # ==================================================
-  # Substituir futuramente por OpenRouteService / Google Maps
+  # OBS: aqui entra ORS futuramente
   def calcular_distancia_estimada
-    # heurística simples e determinística para MVP
+    distancia_placeholder
+  rescue StandardError => e
+    Rails.logger.warn("[CalcularFrete][DISTANCIA][FALLBACK] #{e.message}")
+    distancia_placeholder
+  end
+
+  def distancia_placeholder
     base_km = 20 + rand(30..90)
-    base_km + (@peso / 10.0)
+    (base_km + (@peso / 10.0)).to_f
   end
 
   # ==================================================
-  # Valor
+  # BREAKDOWN DO CÁLCULO (AUDITÁVEL)
   # ==================================================
-  def calcular_valor(distancia_km)
-    valor = distancia_km * PRECO_BASE_KM
-    valor < TAXA_MINIMA ? TAXA_MINIMA : valor
+  def calcular_breakdown(distancia_km)
+    valor_por_km = distancia_km * PRECO_BASE_KM
+    valor_base   = [valor_por_km, TAXA_MINIMA].max
+
+    # Reservado para regras futuras
+    ajuste_fidelidade   = 0.0
+    comissao_plataforma = 0.0
+
+    {
+      preco_por_km: PRECO_BASE_KM,
+      distancia_km: distancia_km.round(2),
+      valor_por_km: valor_por_km.round(2),
+      taxa_minima: TAXA_MINIMA,
+      ajuste_fidelidade: ajuste_fidelidade,
+      comissao_plataforma: comissao_plataforma,
+      valor_final: (valor_base + ajuste_fidelidade + comissao_plataforma).round(2)
+    }
   end
 
   # ==================================================
-  # Helpers de retorno (contrato fixo)
+  # RESPOSTAS PADRONIZADAS
   # ==================================================
-  def sucesso(payload = {})
+  def resposta_sucesso(payload = {})
     {
       sucesso: true,
       mensagem: "Simulação realizada com sucesso",
@@ -82,11 +124,21 @@ class CalcularFrete
     }
   end
 
-  def erro(mensagem, detalhes = nil)
+  def resposta_erro(mensagem, detalhes = nil)
     {
       sucesso: false,
       mensagem: mensagem,
       detalhes: detalhes
     }
+  end
+
+  # ==================================================
+  # LOGGING DE PRODUÇÃO (CONTROLADO)
+  # ==================================================
+  def log_erro_fatal(exception)
+    Rails.logger.error(
+      "[CalcularFrete][FATAL] #{exception.class}: #{exception.message}\n" \
+      "#{exception.backtrace&.first(5)&.join("\n")}"
+    )
   end
 end

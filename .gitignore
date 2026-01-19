@@ -1,109 +1,107 @@
 # ===============================================================
 # Rails / Ruby
 # ===============================================================
-/.bundle/                  # Dependências locais do bundler
-/vendor/bundle/            # Gems instaladas no vendor
-/log/*                     # Logs (ignora tudo)
-!/log/.keep                # Exceto placeholder .keep
-/tmp/*                     # Arquivos temporários
-!/tmp/.keep                # Exceto placeholder .keep
-/db/*.sqlite3              # Bancos SQLite locais (não usados em prod)
+
+/.bundle/
+/vendor/bundle/
+/log/*
+!/log/.keep
+/tmp/*
+!/tmp/.keep
+/db/*.sqlite3
 /db/*.sqlite3-journal
-/byebug_history            # Histórico do Byebug
-*.gem                      # Gems empacotadas
-*.log                      # Logs adicionais
-*.out                      # Saídas diversas
+.byebug_history
+*.gem
+*.log
+*.out
 
 # ===============================================================
-# Assets / Frontend
+# Node / Frontend
 # ===============================================================
-/node_modules/             # Dependências Node
-/yarn-error.log
-/yarn-debug.log*
-/pnpm-debug.log*
+
+/node_modules/
+yarn-error.log
+yarn-debug.log*
+pnpm-debug.log*
+package-lock.json
 .yarn-integrity
 
-# Assets gerados automaticamente (Rails/Tailwind/Sprockets/Webpacker)
+# Assets compilados (Rails / Tailwind / Webpacker / Propshaft)
 public/assets
 public/packs
 public/packs-test
 /app/assets/builds/*
-!/app/assets/builds/.keep  # Mantém o marcador vazio
-
-# ===============================================================
-# Configuração / Credenciais
-# ===============================================================
-.env                       # Variáveis de ambiente locais
-.env.*                     # Todas variantes (.env.development etc.)
-!.env.example              # Mantém apenas o exemplo
-/config/master.key         # Chave mestra do Rails
-/config/credentials/*.key  # Chaves individuais
-
-# ===============================================================
-# Testes / Cobertura
-# ===============================================================
-/coverage/                 # Relatórios de cobertura
-/spec/examples.txt         # Histórico de execução do RSpec
-
-# ===============================================================
-# Sistema / Editor
-# ===============================================================
-.DS_Store                  # MacOS
-Thumbs.db                  # Windows
-.idea/                     # JetBrains
-.vscode/                   # VS Code
-*.swp                      # Arquivos de swap do Vim
-
-# ===============================================================
-# Active Storage
-# ===============================================================
-/storage/*                 # Uploads locais
-!/storage/.keep            # Placeholder para manter a pasta
-
-# ===============================================================
-# Outros
-# ===============================================================
-*.zip                      # Arquivos compactados
-*.tar.gz
-*.bak                      # Backups
-*.pub                      # Chaves públicas
-ghp_*                      # Tokens do GitHub Pages
-
-/app/assets/builds/*
 !/app/assets/builds/.keep
-/config/master.key
 
-# --- harden: não versionar caches/artefatos ---
+# ===============================================================
+# Variáveis de ambiente / Segredos
+# ===============================================================
+
+.env
+.env.*
+!.env.example
+/config/master.key
+/config/credentials/*.key
+
+# ===============================================================
+# Testes / Coverage / CI
+# ===============================================================
+
+/coverage/
+/spec/examples.txt
+/playwright-report/
+
+# ===============================================================
+# Uploads locais (Active Storage)
+# ===============================================================
+
+/storage/*
+!/storage/.keep
+
+# ===============================================================
+# Logs e robôs auxiliares
+# ===============================================================
+
+*.log
+lead_bot/*.log
+
+# ===============================================================
+# Sistema / IDEs / Editores
+# ===============================================================
+
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ===============================================================
+# Scripts e ferramentas locais (NÃO produção)
+# ===============================================================
+
+/scripts/
+seed-postgres.js
+_export_core/
+
+# ===============================================================
+# Artefatos / Backups
+# ===============================================================
+
+*.zip
+*.tar.gz
+*.bak
+*.pub
+ghp_*
+
+# ===============================================================
+# Segurança extra (defesa em profundidade)
+# ===============================================================
+
 /tmp/*
 !/tmp/.keep
 /log/*
 !/log/.keep
-/storage/*
-!/storage/.keep
 /public/assets
 /node_modules
-.byebug_history
-/config/master.key
-.env
-.env.*
 /vendor/bundle
-# --- rails/node ---
-/node_modules
-/log
-/tmp
-/public/assets
-/storage/*
-!/storage/.keep
-.env
-.env.*
-# logs específicos
-lead_bot/*.log
-
-node_modules/
-/tmp/
-
-package-lock.json
-
-# Artifacts
-*.zip
-_export_core/
