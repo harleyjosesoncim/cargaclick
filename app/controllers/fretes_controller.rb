@@ -5,19 +5,22 @@ class FretesController < ApplicationController
   # ============================
   # SIMULAÇÃO / CRIAÇÃO (PÚBLICO)
   # ============================
+
+  # Formulário público
   def new
     @frete = Frete.new
   end
 
+  # Criação real do frete
   def create
     @frete = Frete.new(frete_params)
 
-    # offline-safe: cálculo local, se existir
+    # Cálculo offline-safe (não pode quebrar)
     if @frete.respond_to?(:calcular_valor) && @frete.valor.blank?
       begin
         @frete.valor = @frete.calcular_valor
       rescue StandardError => e
-        Rails.logger.warn("[FretesController] Falha no cálculo do valor: #{e.message}")
+        Rails.logger.warn("[FretesController#create] Falha no cálculo local: #{e.message}")
       end
     end
 
@@ -30,9 +33,31 @@ class FretesController < ApplicationController
   end
 
   # ============================
+  # SIMULAÇÃO DE FRETE (PÚBLICO)
+  # ============================
+
+  def simular
+    resultado = CalcularFrete.call(params)
+
+    if resultado[:sucesso]
+      @resultado = resultado
+      render :simular
+    else
+      Rails.logger.warn("[FretesController#simular] #{resultado[:erro]}")
+      flash[:alert] = resultado[:mensagem] || "Não foi possível simular o frete."
+      redirect_to simular_frete_path
+    end
+  rescue StandardError => e
+    Rails.logger.error("[FretesController#simular][500] #{e.class}: #{e.message}")
+    redirect_to inicio_path, alert: "Erro interno ao simular frete."
+  end
+
+  # ============================
   # VISUALIZAÇÃO / EDIÇÃO
   # ============================
+
   def show; end
+
   def edit; end
 
   def update
@@ -47,6 +72,7 @@ class FretesController < ApplicationController
   # ============================
   # REMOÇÃO
   # ============================
+
   def destroy
     @frete.destroy
     redirect_to inicio_path, notice: "Frete removido."
@@ -55,10 +81,13 @@ class FretesController < ApplicationController
   # ============================
   # FUNCIONALIDADES EXTRAS
   # ============================
-  def chat; end
+
+  def chat
+    # preparado para Action Cable
+  end
 
   def rastreamento
-    # offline-safe: view faz fallback sem Leaflet/CDN
+    # offline-safe: view deve ter fallback sem JS/CDN
   end
 
   private
@@ -66,6 +95,7 @@ class FretesController < ApplicationController
   # ============================
   # BUSCA SEGURA (ANTI-500)
   # ============================
+
   def set_frete
     @frete = Frete.find_by(id: params[:id])
 
@@ -77,6 +107,7 @@ class FretesController < ApplicationController
   # ============================
   # STRONG PARAMS DEFENSIVO
   # ============================
+
   def frete_params
     params.fetch(:frete, {}).permit(
       :origem,
