@@ -2,25 +2,22 @@
 class FretesController < ApplicationController
   before_action :set_frete, only: %i[show edit update destroy chat rastreamento]
 
-  # ============================
-  # SIMULAÇÃO / CRIAÇÃO (PÚBLICO)
-  # ============================
-
-  # Formulário público
+  # ==================================================
+  # FORMULÁRIO PÚBLICO (CRIAÇÃO)
+  # ==================================================
   def new
     @frete = Frete.new
   end
 
-  # Criação real do frete
   def create
     @frete = Frete.new(frete_params)
 
-    # Cálculo offline-safe (não pode quebrar)
+    # Cálculo local defensivo (NUNCA quebra fluxo)
     if @frete.respond_to?(:calcular_valor) && @frete.valor.blank?
       begin
         @frete.valor = @frete.calcular_valor
       rescue StandardError => e
-        Rails.logger.warn("[FretesController#create] Falha no cálculo local: #{e.message}")
+        Rails.logger.warn("[FretesController#create] Cálculo local falhou: #{e.message}")
       end
     end
 
@@ -32,32 +29,40 @@ class FretesController < ApplicationController
     end
   end
 
-  # ============================
+  # ==================================================
   # SIMULAÇÃO DE FRETE (PÚBLICO)
-  # ============================
-
+  # ==================================================
   def simular
-    resultado = CalcularFrete.call(params)
+    parametros_simulacao = {
+      origem: params[:origem],
+      destino: params[:destino],
+      peso: params[:peso],
+      tipo_veiculo: params[:tipo_veiculo]
+    }
+
+    resultado = CalcularFrete.call(parametros_simulacao)
 
     if resultado[:sucesso]
       @resultado = resultado
-      render :simular
+      render :simular, status: :ok
     else
-      Rails.logger.warn("[FretesController#simular] #{resultado[:erro]}")
-      flash[:alert] = resultado[:mensagem] || "Não foi possível simular o frete."
-      redirect_to simular_frete_path
+      Rails.logger.warn(
+        "[FretesController#simular] Falha: #{resultado[:mensagem]} | #{resultado[:detalhes]}"
+      )
+      flash.now[:alert] = resultado[:mensagem] || "Não foi possível simular o frete."
+      render :simular, status: :unprocessable_entity
     end
   rescue StandardError => e
-    Rails.logger.error("[FretesController#simular][500] #{e.class}: #{e.message}")
-    redirect_to inicio_path, alert: "Erro interno ao simular frete."
+    Rails.logger.error(
+      "[FretesController#simular][FATAL] #{e.class}: #{e.message}\n#{e.backtrace&.first(5)&.join("\n")}"
+    )
+    render "errors/500", status: :internal_server_error
   end
 
-  # ============================
-  # VISUALIZAÇÃO / EDIÇÃO
-  # ============================
-
+  # ==================================================
+  # CRUD
+  # ==================================================
   def show; end
-
   def edit; end
 
   def update
@@ -69,45 +74,32 @@ class FretesController < ApplicationController
     end
   end
 
-  # ============================
-  # REMOÇÃO
-  # ============================
-
   def destroy
     @frete.destroy
     redirect_to inicio_path, notice: "Frete removido."
   end
 
-  # ============================
+  # ==================================================
   # FUNCIONALIDADES EXTRAS
-  # ============================
-
-  def chat
-    # preparado para Action Cable
-  end
-
-  def rastreamento
-    # offline-safe: view deve ter fallback sem JS/CDN
-  end
+  # ==================================================
+  def chat; end
+  def rastreamento; end
 
   private
 
-  # ============================
+  # ==================================================
   # BUSCA SEGURA (ANTI-500)
-  # ============================
-
+  # ==================================================
   def set_frete
     @frete = Frete.find_by(id: params[:id])
-
     return if @frete.present?
 
     redirect_to inicio_path, alert: "Frete não encontrado."
   end
 
-  # ============================
-  # STRONG PARAMS DEFENSIVO
-  # ============================
-
+  # ==================================================
+  # STRONG PARAMS
+  # ==================================================
   def frete_params
     params.fetch(:frete, {}).permit(
       :origem,
