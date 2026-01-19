@@ -30,3 +30,7 @@ end
 puts "✅ Admin Master criado ou já existia"
 
 AdminUser.create!(email: 'admin@example.com', password: 'password', password_confirmation: 'password') if Rails.env.development?
+User.find_or_create_by!(email: 'teste@cargaclick.com') do |u|
+  u.password = '123456'
+  u.password_confirmation = '123456'
+end

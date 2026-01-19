@@ -1,0 +1,24 @@
+<div class="max-w-xl mx-auto bg-white shadow-xl rounded-2xl p-6 mt-10">
+
+  <h1 class="text-2xl font-extrabold text-purple-800 mb-4">
+    💳 Confirmar Pagamento
+  </h1>
+
+  <%= render "pagamentos/resumo", frete: @frete,
+        taxa: @taxa,
+        valor_transportador: @valor_transportador %>
+
+  <div class="mt-6">
+    <%= button_to "🚀 Pagar com Pix",
+        criar_pagamento_path(@frete),
+        method: :post,
+        class: "w-full bg-green-600 hover:bg-green-700
+                text-white font-bold py-3 rounded-xl
+                transition shadow-lg" %>
+  </div>
+
+  <p class="text-xs text-gray-500 text-center mt-4">
+    Pagamento seguro via Pix • Confirmação automática
+  </p>
+
+</div>

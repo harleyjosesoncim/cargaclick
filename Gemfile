@@ -33,6 +33,7 @@ group :production do
   gem "puma_worker_killer", "~> 0.3"
   gem "rack-attack", "~> 6.7"
   gem "rack-timeout", "~> 0.7"
+  
 end
 
 # === Development Environment ===
@@ -53,7 +54,7 @@ group :test do
   gem "faker"
   gem "capybara"
   gem "selenium-webdriver"
-end
+  end
 
 # Windows (opcional, se rodar fora do WSL)
 gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]

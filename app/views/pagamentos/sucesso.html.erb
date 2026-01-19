@@ -1,0 +1,18 @@
+<div class="max-w-md mx-auto bg-white shadow-xl rounded-2xl p-6 mt-10 text-center">
+
+  <div class="text-4xl mb-3">✅</div>
+
+  <h1 class="text-2xl font-extrabold text-green-700 mb-2">
+    Pagamento Confirmado
+  </h1>
+
+  <p class="text-gray-600 mb-6">
+    Seu frete foi ativado automaticamente.
+  </p>
+
+  <%= link_to "📍 Acompanhar Frete",
+      frete_path(@frete),
+      class: "inline-block bg-purple-700 hover:bg-purple-800
+              text-white font-bold px-6 py-3 rounded-xl transition" %>
+
+</div>
