@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_19_164930) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_20_202137) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -76,6 +76,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_19_164930) do
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
+    t.integer "status_cadastro", default: 1, null: false
     t.index ["cnpj"], name: "index_clientes_on_cnpj", unique: true, where: "(cnpj IS NOT NULL)"
     t.index ["cpf"], name: "index_clientes_on_cpf", unique: true, where: "(cpf IS NOT NULL)"
     t.index ["email"], name: "index_clientes_on_email", unique: true
@@ -301,6 +302,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_19_164930) do
     t.string "placa_veiculo"
     t.datetime "activated_at"
     t.datetime "last_alert_at"
+    t.integer "status_cadastro", default: 1, null: false
     t.index ["activated_at"], name: "index_transportadores_on_activated_at"
     t.index ["confirmation_token"], name: "index_transportadores_on_confirmation_token", unique: true
     t.index ["documento"], name: "index_transportadores_on_documento", unique: true

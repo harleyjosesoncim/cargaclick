@@ -23,7 +23,7 @@ class Frete < ApplicationRecord
     cancelado:    "cancelado"
   }, _prefix: :frete
 
-  # 🔴 COLUNA INTEGER — CAUSA DO ERRO 500 (AGORA CORRIGIDA)
+  # Coluna: status_pagamento (integer)
   enum status_pagamento: {
     pendente:  0,
     pago:      1,
@@ -39,13 +39,13 @@ class Frete < ApplicationRecord
   }, _prefix: :pin
 
   # ==========================================================
-  # ✅ VALIDAÇÕES (PRODUÇÃO)
+  # ✅ VALIDAÇÕES
   # ==========================================================
   validates :status, :status_pagamento, :pin_status, presence: true
   validates :tentativas_pin, numericality: { greater_than_or_equal_to: 0 }
 
   # ==========================================================
-  # 🔄 CALLBACKS (CONTROLADOS)
+  # 🔄 CALLBACKS
   # ==========================================================
   before_validation :definir_defaults, on: :create
   before_save       :calcular_split!, if: :base_para_split_presente?
@@ -89,35 +89,34 @@ class Frete < ApplicationRecord
 
   # ---------- Defaults seguros ----------
   def definir_defaults
-    self.pin_entrega        ||= gerar_pin
-    self.pin_status         ||= "pendente"
-    self.status             ||= "pendente"
-    self.status_pagamento   ||= 0 # integer
-    self.tentativas_pin     ||= 0
-    self.comissao_percentual ||= comissao_padrao
+    self.pin_entrega         ||= gerar_pin
+    self.pin_status          ||= "pendente"
+    self.status              ||= "pendente"
+    self.status_pagamento    ||= 0
+    self.tentativas_pin      ||= 0
+    self.comissao_percentual ||= ComissaoCalculator.percentual_para(transportador)
   end
 
+  # ---------- PIN ----------
   def gerar_pin
     SecureRandom.random_number(10_000).to_s.rjust(4, "0")
   end
 
-  # ---------- PIN ----------
   def incrementar_tentativa!
     increment!(:tentativas_pin)
     expirar_pin! if tentativas_pin >= 3
   end
 
-  # ---------- Comissão ----------
-  def comissao_padrao
-    transportador&.respond_to?(:fidelidade?) && transportador.fidelidade? ? 5.0 : 8.0
-  end
-
-  # ---------- Split ----------
+  # ---------- Split / Comissão ----------
   def calcular_split!
     base = base_para_split
-    return if base.zero? || comissao_percentual.blank?
+    return if base.zero?
 
-    self.valor_comissao      = (base * comissao_percentual / 100).round(2)
+    percentual = comissao_percentual.presence ||
+                 ComissaoCalculator.percentual_para(transportador)
+
+    self.comissao_percentual = percentual
+    self.valor_comissao      = (base * percentual / 100.0).round(2)
     self.valor_transportador = (base - valor_comissao).round(2)
   end
 

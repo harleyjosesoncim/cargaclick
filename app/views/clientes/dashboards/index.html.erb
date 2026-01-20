@@ -1,18 +1,49 @@
+<%= render "shared/cadastro_progress", usuario: current_cliente %>
+
 <div class="min-h-screen bg-slate-50 pt-24 pb-12">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    
+  <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
+  💡 <strong>Transparência CargaClick:</strong><br>
+  Este frete inclui uma taxa de <strong><%= ComissaoCalculator.percentual_para(@frete.transportador) %>%</strong>
+  destinada à manutenção da plataforma, segurança e suporte.
+</div>
+
+
+    <!-- Mensagem amigável para cadastro básico -->
+    <% if current_cliente&.basico? %>
+      <div class="mb-6 bg-yellow-50 border border-yellow-200 rounded-2xl px-6 py-4 flex items-start gap-3">
+        <div class="text-2xl">⚠️</div>
+        <div>
+          <p class="font-semibold text-yellow-800">
+            Falta pouco para liberar tudo 🚀
+          </p>
+          <p class="text-sm text-yellow-700">
+            Complete seu cadastro para fechar pedidos, pagar fretes e acompanhar tudo em tempo real.
+            Leva menos de <strong>2 minutos</strong> ⏱️
+          </p>
+        </div>
+      </div>
+    <% end %>
+
     <header class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       <div>
-        <h1 class="text-3xl font-extrabold text-slate-900">Minha Área</h1>
-        <p class="text-slate-600">Olá, <%= current_cliente.nome %>! Acompanhe seus pedidos de frete.</p>
+        <h1 class="text-3xl font-extrabold text-slate-900">
+          Minha Área 👋
+        </h1>
+        <p class="text-slate-600">
+          Olá, <strong><%= current_cliente.nome %></strong>!  
+          Aqui você acompanha seus pedidos de frete e novidades 📦
+        </p>
       </div>
       <div>
-        <%= link_to simular_frete_path, class: "inline-flex items-center px-6 py-3 rounded-xl bg-purple-700 text-white font-bold shadow-lg hover:bg-purple-800 transition transform hover:-translate-y-1" do %>
-          <span>+ Novo Pedido</span>
+        <%= link_to simular_frete_path,
+            class: "inline-flex items-center px-6 py-3 rounded-xl bg-purple-700 text-white font-bold shadow-lg hover:bg-purple-800 transition transform hover:-translate-y-1" do %>
+          <span>➕ Novo Pedido</span>
         <% end %>
       </div>
     </header>
 
+    <!-- Cards de resumo -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10">
       <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4">
         <div class="bg-blue-100 p-3 rounded-full text-blue-600">📦</div>
@@ -21,6 +52,7 @@
           <p class="text-xl font-black text-slate-800">0</p>
         </div>
       </div>
+
       <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4">
         <div class="bg-green-100 p-3 rounded-full text-green-600">✅</div>
         <div>
@@ -28,6 +60,7 @@
           <p class="text-xl font-black text-slate-800">0</p>
         </div>
       </div>
+
       <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4">
         <div class="bg-purple-100 p-3 rounded-full text-purple-600">✨</div>
         <div>
@@ -37,11 +70,13 @@
       </div>
     </div>
 
+    <!-- Histórico -->
     <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-      <div class="px-8 py-6 border-b border-slate-50">
+      <div class="px-8 py-6 border-b border-slate-50 flex items-center gap-2">
         <h2 class="text-lg font-bold text-slate-800">Histórico de Pedidos</h2>
+        <span class="text-slate-400 text-sm">(em breve 👀)</span>
       </div>
-      
+
       <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead>
@@ -55,14 +90,26 @@
           <tbody class="divide-y divide-slate-100">
             <tr>
               <td colspan="4" class="px-8 py-20 text-center">
-                <div class="text-slate-300 text-4xl mb-3">🔍</div>
-                <p class="text-slate-500">Você ainda não realizou nenhum pedido.</p>
-                <%= link_to "Começar agora", simular_frete_path, class: "text-purple-600 font-bold hover:underline mt-2 inline-block" %>
+                <div class="text-slate-300 text-5xl mb-4">🕊️</div>
+                <p class="text-slate-500 mb-2">
+                  Nenhum pedido por aqui ainda.
+                </p>
+                <p class="text-sm text-slate-400 mb-4">
+                  Que tal criar o primeiro agora? 😉
+                </p>
+                <%= link_to "Começar agora 🚚",
+                      simular_frete_path,
+                      class: "text-purple-600 font-bold hover:underline inline-block" %>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
+    </div>
+
+    <!-- Easter egg discreto -->
+    <div class="mt-10 text-center text-xs text-slate-400">
+      💡 Dica: usuários com cadastro completo têm prioridade nos atendimentos 😉
     </div>
 
   </div>

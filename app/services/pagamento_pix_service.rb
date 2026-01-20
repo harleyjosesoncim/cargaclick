@@ -1,29 +1,25 @@
-# app/services/pagamento_pix_service.rb
 # frozen_string_literal: true
 
 class PagamentoPixService
-  # Comissão padrão apenas como referência textual (regra real está em Taxas::Calculadora)
-  TAXA_CARGACLICK_PADRAO = BigDecimal("0.08")
-
   # ===============================================================
   # CHECKOUTS POR TIPO DE CLIENTE
   # ===============================================================
 
-  # Cliente PF → cobra comissão da plataforma sobre o valor total
-  # A taxa (8% ou 5%) é definida conforme fidelidade do transportador.
+  # Cliente PF
+  # → paga comissão da plataforma conforme regra vigente
+  # → percentual definido EXCLUSIVAMENTE por ComissaoCalculator
   def checkout_pf(frete, cliente, transportador, pagamento)
     valor_total = frete.valor_total.to_d
 
-    # Taxa dinâmica baseada na fidelidade do transportador
-    taxa      = Taxas::Calculadora.taxa_para(transportador)
-    comissao  = Taxas::Calculadora.comissao(valor_total, transportador)
+    percentual = ComissaoCalculator.percentual_para(transportador)
+    comissao   = (valor_total * percentual / 100).round(2)
     valor_liquido = (valor_total - comissao).round(2)
 
     pagamento.update!(
       valor_total:         valor_total,
       valor_liquido:       valor_liquido,
       comissao_cargaclick: comissao,
-      taxa:                taxa,       # se essa coluna ainda não existir em Pagamento, criamos depois via migration
+      taxa:                percentual,
       status:              "pendente"
     )
 
@@ -34,8 +30,10 @@ class PagamentoPixService
     )
   end
 
-  # Cliente PJ assinante → desconto de 5% para o cliente e sem comissão sobre o entregador
-  def checkout_assinante(frete, cliente, transportador, pagamento)
+  # Cliente PJ assinante
+  # → desconto comercial para o cliente
+  # → sem comissão sobre o transportador
+  def checkout_assinante(frete, cliente, _transportador, pagamento)
     valor_total = frete.valor_total.to_d
 
     desconto    = (valor_total * BigDecimal("0.05")).round(2)
@@ -56,8 +54,10 @@ class PagamentoPixService
     )
   end
 
-  # Cliente avulso (sem assinatura) → sem desconto e sem comissão
-  def checkout_avulso(frete, cliente, transportador, pagamento)
+  # Cliente avulso
+  # → sem desconto
+  # → sem comissão
+  def checkout_avulso(frete, _cliente, _transportador, pagamento)
     valor_total = frete.valor_total.to_d
 
     pagamento.update!(
@@ -85,7 +85,7 @@ class PagamentoPixService
 
   def webhook(params)
     topic = params[:type].presence || params[:topic].presence
-    id = params[:id].presence || params.dig(:data, :id)
+    id    = params[:id].presence || params.dig(:data, :id)
 
     case topic
     when "payment"        then marcar_pago_se_aprovado(id)
@@ -109,12 +109,13 @@ class PagamentoPixService
       external_reference: "frete:#{frete_id}",
       auto_return:        "approved",
       notification_url:   Rails.application.routes.url_helpers.pagamentos_webhook_url(
-        host: app_host, protocol: app_protocol
+        host: app_host,
+        protocol: app_protocol
       )
     }
 
-    resp  = mp_sdk.preference.create(pref_data)
-    body  = indifferent(resp, :response)
+    resp = mp_sdk.preference.create(pref_data)
+    body = indifferent(resp, :response)
 
     if (init = indifferent(body, :init_point))
       success(url: init, preference_id: indifferent(body, :id))
@@ -124,7 +125,7 @@ class PagamentoPixService
   end
 
   # ===============================================================
-  # CONFIRMAÇÃO DO PAGAMENTO
+  # CONFIRMAÇÃO DO PAGAMENTO (ESCROW)
   # ===============================================================
   def marcar_pago_se_aprovado(payment_id)
     return if safe_cache_read("mp:paid:#{payment_id}").present?
@@ -136,19 +137,20 @@ class PagamentoPixService
 
     return unless body && status == "approved" && extref.to_s.start_with?("frete:")
 
-    frete_id  = extref.split(":").last
-    frete     = Frete.find_by(id: frete_id)
+    frete_id = extref.split(":").last
+    frete    = Frete.find_by(id: frete_id)
 
-    # Idempotência: primeiro por txid, depois por frete
-    pagamento = Pagamento.find_by(txid: payment_id) || Pagamento.find_by(frete_id: frete_id)
+    pagamento =
+      Pagamento.find_by(txid: payment_id) ||
+      Pagamento.find_by(frete_id: frete_id)
 
     if pagamento
-      attrs = { txid: payment_id, metodo_pagamento: "pix" }
-
-      # Preferência: após aprovado, entra em escrow (retenção) até liberação do repasse
-      attrs[:status] = "escrow"
+      attrs = {
+        txid:             payment_id,
+        metodo_pagamento: "pix",
+        status:           "escrow"
+      }
       attrs[:escrow_at] = Time.current if pagamento.has_attribute?(:escrow_at)
-
       pagamento.update!(attrs)
     else
       attrs = {
@@ -163,11 +165,9 @@ class PagamentoPixService
         txid:                payment_id
       }
       attrs[:escrow_at] = Time.current if Pagamento.new.has_attribute?(:escrow_at)
-
       Pagamento.create!(attrs)
     end
 
-    # Libera o chat/contatos no frete (pagamento já aprovado)
     frete.update(contatos_liberados: true) if frete.present?
 
     safe_cache_write("mp:paid:#{payment_id}", true, expires_in: 3.days)
@@ -176,11 +176,11 @@ class PagamentoPixService
     Rails.logger.error("[MP] erro ao confirmar pagamento: #{e.message}")
   end
 
-
   def processar_merchant_order(merchant_order_id)
     mo_resp = mp_sdk.merchant_order.get(merchant_order_id)
-    mo = indifferent(mo_resp, :response) || {}
-    pays = indifferent(mo, :payments) || []
+    mo      = indifferent(mo_resp, :response) || {}
+    pays    = indifferent(mo, :payments) || []
+
     aprovado = pays.find { |p| indifferent(p, :status) == "approved" }
     marcar_pago_se_aprovado(indifferent(aprovado, :id)) if aprovado
   end
@@ -204,7 +204,6 @@ class PagamentoPixService
     return nil unless obj.is_a?(Hash)
     obj[key] || obj[key.to_s] || obj[key.to_sym]
   end
-
 
   def safe_cache_read(key)
     Rails.cache.read(key)

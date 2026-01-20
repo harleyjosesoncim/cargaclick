@@ -1,0 +1,26 @@
+<% percentual = percentual_cadastro(usuario) %>
+
+<div class="bg-white border rounded-xl p-4 shadow-sm mb-6">
+  <div class="flex items-center justify-between mb-2">
+    <span class="text-sm font-medium text-gray-700">
+      <%= texto_status_cadastro(usuario) %>
+    </span>
+    <span class="text-sm font-semibold text-blue-600">
+      <%= percentual %>%
+    </span>
+  </div>
+
+  <div class="w-full bg-gray-200 rounded-full h-2">
+    <div class="bg-blue-600 h-2 rounded-full transition-all"
+         style="width: <%= percentual %>%"></div>
+  </div>
+
+  <% if percentual < 100 %>
+    <div class="mt-3 text-sm text-gray-600">
+      Complete seu cadastro para liberar todas as funcionalidades.
+      <%= link_to "Completar agora",
+            completar_cadastro_path_for(usuario),
+            class: "text-blue-600 font-medium hover:underline ml-1" %>
+    </div>
+  <% end %>
+</div>

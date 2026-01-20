@@ -84,6 +84,11 @@ Thumbs.db
 seed-postgres.js
 _export_core/
 
+/test-results
+/CargaClick_Auditoria_Pontual
+*.BACKUP
+bin/dev.DISABLED
+
 # ===============================================================
 # Artefatos / Backups
 # ===============================================================

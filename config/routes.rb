@@ -28,7 +28,7 @@ Rails.application.routes.draw do
   }
 
   # =====================================================
-  # LANDING / HOME (ÚNICO ROOT GLOBAL)
+  # LANDING / HOME
   # =====================================================
   root "landing#index"
   get "/inicio", to: "landing#index", as: :inicio
@@ -45,26 +45,28 @@ Rails.application.routes.draw do
   get "/simular-frete", to: "fretes#new", as: :simular_frete
 
   # =====================================================
-  # DASHBOARDS (ROTAS EXPLÍCITAS)
+  # CLIENTES — DASHBOARD E CADASTRO PROGRESSIVO
   # =====================================================
-  get "/cliente/dashboard",
-      to: "clientes/dashboards#index",
-      as: :cliente_dashboard
+  namespace :clientes do
+    # Dashboard
+    get "dashboard", to: "dashboards#index", as: :dashboard
 
-  get "/transportador/dashboard",
-      to: "transportadores/dashboards#index",
-      as: :transportador_dashboard
+    # Completar cadastro (STEP 4)
+    get  "completar_cadastro", to: "cadastro#edit",   as: :completar_cadastro
+    patch "finalizar_cadastro", to: "cadastro#update", as: :finalizar_cadastro
+  end
 
   # =====================================================
-  # TRANSPORTADOR — COMPLETAR PERFIL
+  # TRANSPORTADORES — DASHBOARD E PERFIL
   # =====================================================
-  get "/transportadores/completar_perfil",
-      to: "transportadores#completar_perfil",
-      as: :completar_perfil_transportador
+  namespace :transportadores do
+    # Dashboard
+    get "dashboard", to: "dashboards#index", as: :dashboard
 
-  patch "/transportadores/atualizar_perfil",
-        to: "transportadores#atualizar_perfil",
-        as: :atualizar_perfil_transportador
+    # Completar perfil (fluxo futuro)
+    get  "completar_perfil",  to: "cadastro#edit",   as: :completar_perfil
+    patch "atualizar_perfil", to: "cadastro#update", as: :atualizar_perfil
+  end
 
   # =====================================================
   # FRETES (CORE DO SISTEMA)
@@ -77,7 +79,7 @@ Rails.application.routes.draw do
   end
 
   # =====================================================
-  # FALLBACK — 404 CONTROLADO (SEM QUEBRAR PRODUÇÃO)
+  # FALLBACK — 404 CONTROLADO
   # =====================================================
   match "*path", to: "errors#not_found", via: :all
 end

@@ -1,4 +1,3 @@
-# app/models/cliente.rb
 # frozen_string_literal: true
 
 class Cliente < ApplicationRecord
@@ -9,12 +8,20 @@ class Cliente < ApplicationRecord
   # === ASSOCIAÇÕES ==================================
   has_many :fretes, dependent: :destroy
   has_many :cotacoes, through: :fretes
-  has_many :messages, as: :sender, dependent: :destroy   # 🔗 suporte ao chat
+  has_many :messages, as: :sender, dependent: :destroy
   has_many :pagamentos, through: :fretes
+
+  # === STATUS DE CADASTRO (NOVO) ====================
+  enum status_cadastro: {
+    incompleto: 0,
+    basico: 1,
+    completo: 2
+  }
 
   # === VALIDAÇÕES ===================================
   validates :nome, presence: true, length: { minimum: 2, maximum: 100 }
 
+  # Devise exige email → mantemos
   validates :email,
             presence: true,
             uniqueness: { case_sensitive: false },
@@ -24,28 +31,29 @@ class Cliente < ApplicationRecord
             length: { maximum: 200 },
             allow_blank: true
 
-  # Se o schema tiver cpf/cnpj:
+  # CPF/CNPJ SÓ quando cadastro estiver COMPLETO
   validates :cpf,
             length: { is: 11 },
             numericality: { only_integer: true },
-            allow_blank: true
+            presence: true,
+            if: :cadastro_completo?
 
   validates :cnpj,
             length: { is: 14 },
             numericality: { only_integer: true },
-            allow_blank: true
+            presence: true,
+            if: :cadastro_completo?
 
   # === CALLBACKS =====================================
   before_save :normalize_email
 
   # === ENUMS / TIPOS ================================
   enum tipo: {
-    pf: "pf",   # pessoa física → frete avulso
-    pj: "pj"    # pessoa jurídica → assinante/fidelizado
+    pf: "pf",
+    pj: "pj"
   }, _default: "pf"
 
   # === FIDELIZAÇÃO ==================================
-  # Assinantes PJ têm fidelidade e desconto
   def assinante?
     tipo == "pj" && fidelidade_ativa?
   end
@@ -64,6 +72,10 @@ class Cliente < ApplicationRecord
   end
 
   private
+
+  def cadastro_completo?
+    status_cadastro == "completo"
+  end
 
   def normalize_email
     self.email = email.downcase.strip if email.present?

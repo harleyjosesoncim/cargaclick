@@ -1,0 +1,52 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+  <div class="bg-white rounded-2xl shadow-lg p-8 max-w-xl w-full">
+
+    <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">
+      Complete seu perfil
+    </h2>
+
+    <p class="text-center text-gray-600 mb-6">
+      Precisamos de algumas informações para liberar o aceite de fretes e pagamentos.
+    </p>
+
+    <%= form_with model: @transportador,
+                  url: transportadores_atualizar_perfil_path,
+                  method: :patch,
+                  local: true,
+                  class: "space-y-4" do |f| %>
+
+      <div>
+        <%= f.label :cpf, "CPF", class: "block text-sm font-medium" %>
+        <%= f.text_field :cpf, class: "w-full border rounded px-3 py-2" %>
+      </div>
+
+      <div>
+        <%= f.label :tipo_veiculo, "Tipo de veículo", class: "block text-sm font-medium" %>
+        <%= f.select :tipo_veiculo,
+              ["Moto", "Carro", "Van", "Caminhão"],
+              {}, class: "w-full border rounded px-3 py-2" %>
+      </div>
+
+      <div>
+        <%= f.label :carga_maxima, "Carga máxima (kg)", class: "block text-sm font-medium" %>
+        <%= f.number_field :carga_maxima, class: "w-full border rounded px-3 py-2" %>
+      </div>
+
+      <div>
+        <%= f.label :valor_km, "Valor por km (R$)", class: "block text-sm font-medium" %>
+        <%= f.number_field :valor_km, step: 0.01, class: "w-full border rounded px-3 py-2" %>
+      </div>
+
+      <div>
+        <%= f.label :chave_pix, "Chave Pix", class: "block text-sm font-medium" %>
+        <%= f.text_field :chave_pix, class: "w-full border rounded px-3 py-2" %>
+      </div>
+
+      <div>
+        <%= f.submit "Finalizar perfil",
+              class: "w-full bg-blue-600 text-white font-bold py-3 rounded hover:bg-blue-700" %>
+      </div>
+
+    <% end %>
+  </div>
+</div>
