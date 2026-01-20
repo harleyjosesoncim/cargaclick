@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_20_202137) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_20_231400) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -81,6 +81,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_20_202137) do
     t.index ["cpf"], name: "index_clientes_on_cpf", unique: true, where: "(cpf IS NOT NULL)"
     t.index ["email"], name: "index_clientes_on_email", unique: true
     t.index ["reset_password_token"], name: "index_clientes_on_reset_password_token", unique: true
+    t.index ["status_cadastro"], name: "index_clientes_on_status_cadastro"
     t.index ["tipo"], name: "index_clientes_on_tipo"
   end
 

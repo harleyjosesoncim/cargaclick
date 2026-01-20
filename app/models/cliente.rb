@@ -11,17 +11,28 @@ class Cliente < ApplicationRecord
   has_many :messages, as: :sender, dependent: :destroy
   has_many :pagamentos, through: :fretes
 
-  # === STATUS DE CADASTRO (NOVO) ====================
+  # === ATRIBUTOS TIPADOS =============================
+  # Necessário para evitar erro "Undeclared attribute type for enum"
+  attribute :status_cadastro, :integer
+
+  # === STATUS DE CADASTRO ============================
   enum status_cadastro: {
     incompleto: 0,
     basico: 1,
     completo: 2
   }
 
-  # === VALIDAÇÕES ===================================
-  validates :nome, presence: true, length: { minimum: 2, maximum: 100 }
+  # === TIPO DE CLIENTE ===============================
+  enum tipo: {
+    pf: "pf",
+    pj: "pj"
+  }, _default: "pf"
 
-  # Devise exige email → mantemos
+  # === VALIDAÇÕES ===================================
+  validates :nome,
+            presence: true,
+            length: { minimum: 2, maximum: 100 }
+
   validates :email,
             presence: true,
             uniqueness: { case_sensitive: false },
@@ -31,31 +42,25 @@ class Cliente < ApplicationRecord
             length: { maximum: 200 },
             allow_blank: true
 
-  # CPF/CNPJ SÓ quando cadastro estiver COMPLETO
+  # CPF / CNPJ exigidos somente quando cadastro estiver COMPLETO
   validates :cpf,
+            presence: true,
             length: { is: 11 },
             numericality: { only_integer: true },
-            presence: true,
             if: :cadastro_completo?
 
   validates :cnpj,
+            presence: true,
             length: { is: 14 },
             numericality: { only_integer: true },
-            presence: true,
             if: :cadastro_completo?
 
-  # === CALLBACKS =====================================
+  # === CALLBACKS ====================================
   before_save :normalize_email
 
-  # === ENUMS / TIPOS ================================
-  enum tipo: {
-    pf: "pf",
-    pj: "pj"
-  }, _default: "pf"
-
-  # === FIDELIZAÇÃO ==================================
+  # === REGRAS DE NEGÓCIO =============================
   def assinante?
-    tipo == "pj" && fidelidade_ativa?
+    pj? && fidelidade_ativa?
   end
 
   def fidelidade?
@@ -63,10 +68,10 @@ class Cliente < ApplicationRecord
   end
 
   def avulso?
-    tipo == "pf" && !fidelidade_ativa?
+    pf? && !fidelidade_ativa?
   end
 
-  # === AJUDARES =====================================
+  # === APRESENTAÇÃO ================================
   def display_name
     "#{nome} (#{tipo.upcase})"
   end
