@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   add_flash_types :success, :warning, :info
 
   before_action :configure_permitted_parameters, if: :devise_controller?
-  before_action :authenticate_scope!, unless: :public_page?
+  before_action :authenticate_scope!, unless: :public_or_devise_page?
 
   # =========================================================
   # ROTAS PÚBLICAS (NÃO EXIGEM LOGIN)
@@ -46,16 +46,21 @@ class ApplicationController < ActionController::Base
   end
 
   # =========================================================
-  # Autenticação centralizada (SEM autenticar duas vezes)
+  # Autenticação centralizada (1 único ponto)
   # =========================================================
   def authenticate_scope!
-    return if devise_controller?
-
-    return if respond_to?(:admin_signed_in?)        && admin_signed_in?
+    return if respond_to?(:admin_signed_in?)         && admin_signed_in?
     return if respond_to?(:transportador_signed_in?) && transportador_signed_in?
-    return if respond_to?(:cliente_signed_in?)      && cliente_signed_in?
+    return if respond_to?(:cliente_signed_in?)       && cliente_signed_in?
 
     redirect_to root_path, alert: "Acesso não autorizado."
+  end
+
+  # =========================================================
+  # Libera Devise + rotas públicas
+  # =========================================================
+  def public_or_devise_page?
+    devise_controller? || public_page?
   end
 
   # =========================================================
