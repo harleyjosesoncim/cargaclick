@@ -8,21 +8,20 @@ class Cliente < ApplicationRecord
   # === ASSOCIAÇÕES ==================================
   has_many :fretes, dependent: :destroy
   has_many :cotacoes, through: :fretes
-  has_many :messages, as: :sender, dependent: :destroy
   has_many :pagamentos, through: :fretes
+  has_many :messages, as: :sender, dependent: :destroy
 
   # === ATRIBUTOS TIPADOS =============================
-  # Necessário para evitar erro "Undeclared attribute type for enum"
+  # Evita erro: "Undeclared attribute type for enum"
   attribute :status_cadastro, :integer
 
-  # === STATUS DE CADASTRO ============================
+  # === ENUMS ========================================
   enum status_cadastro: {
     incompleto: 0,
     basico: 1,
     completo: 2
-  }
+  }, _default: :incompleto
 
-  # === TIPO DE CLIENTE ===============================
   enum tipo: {
     pf: "pf",
     pj: "pj"
@@ -42,20 +41,21 @@ class Cliente < ApplicationRecord
             length: { maximum: 200 },
             allow_blank: true
 
-  # CPF / CNPJ exigidos somente quando cadastro estiver COMPLETO
+  # Documento obrigatório SOMENTE quando cadastro estiver completo
   validates :cpf,
             presence: true,
             length: { is: 11 },
             numericality: { only_integer: true },
-            if: :cadastro_completo?
+            if: :cpf_obrigatorio?
 
   validates :cnpj,
             presence: true,
             length: { is: 14 },
             numericality: { only_integer: true },
-            if: :cadastro_completo?
+            if: :cnpj_obrigatorio?
 
   # === CALLBACKS ====================================
+  before_validation :normalizar_documentos
   before_save :normalize_email
 
   # === REGRAS DE NEGÓCIO =============================
@@ -78,8 +78,23 @@ class Cliente < ApplicationRecord
 
   private
 
+  # === CONDIÇÕES DE VALIDAÇÃO =======================
   def cadastro_completo?
     status_cadastro == "completo"
+  end
+
+  def cpf_obrigatorio?
+    cadastro_completo? && pf?
+  end
+
+  def cnpj_obrigatorio?
+    cadastro_completo? && pj?
+  end
+
+  # === NORMALIZAÇÃO ================================
+  def normalizar_documentos
+    self.cpf  = nil if pj?
+    self.cnpj = nil if pf?
   end
 
   def normalize_email

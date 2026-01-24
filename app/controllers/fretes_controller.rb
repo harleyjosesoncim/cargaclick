@@ -1,36 +1,16 @@
 # app/controllers/fretes_controller.rb
 class FretesController < ApplicationController
-  before_action :set_frete, only: %i[show edit update destroy chat rastreamento]
+  before_action :set_frete, only: %i[show edit update destroy chat rastreamento contratar]
 
   # ==================================================
-  # FORMULÁRIO PÚBLICO (CRIAÇÃO)
+  # FORMULÁRIO PÚBLICO (SIMULAÇÃO)
   # ==================================================
   def new
     @frete = Frete.new
   end
 
-  def create
-    @frete = Frete.new(frete_params)
-
-    # Cálculo local defensivo (NUNCA quebra fluxo)
-    if @frete.respond_to?(:calcular_valor) && @frete.valor.blank?
-      begin
-        @frete.valor = @frete.calcular_valor
-      rescue StandardError => e
-        Rails.logger.warn("[FretesController#create] Cálculo local falhou: #{e.message}")
-      end
-    end
-
-    if @frete.save
-      redirect_to @frete, notice: "Frete criado com sucesso."
-    else
-      flash.now[:alert] = "Não foi possível criar o frete."
-      render :new, status: :unprocessable_entity
-    end
-  end
-
   # ==================================================
-  # SIMULAÇÃO DE FRETE (PÚBLICO)
+  # SIMULAÇÃO DE FRETE (PÚBLICO - NÃO CRIA REGISTRO)
   # ==================================================
   def simular
     parametros_simulacao = {
@@ -54,9 +34,26 @@ class FretesController < ApplicationController
     end
   rescue StandardError => e
     Rails.logger.error(
-      "[FretesController#simular][FATAL] #{e.class}: #{e.message}\n#{e.backtrace&.first(5)&.join("\n")}"
+      "[FretesController#simular][FATAL] #{e.class}: #{e.message}"
     )
     render "errors/500", status: :internal_server_error
+  end
+
+  # ==================================================
+  # CRIAÇÃO REAL DO FRETE (CONTRATAÇÃO)
+  # ==================================================
+  def create
+    authenticate_cliente!
+
+    @frete = Frete.new(frete_params)
+    @frete.cliente = current_cliente
+
+    if @frete.save
+      redirect_to @frete, notice: "Frete contratado com sucesso."
+    else
+      flash.now[:alert] = "Não foi possível contratar o frete."
+      render :new, status: :unprocessable_entity
+    end
   end
 
   # ==================================================
@@ -98,7 +95,7 @@ class FretesController < ApplicationController
   end
 
   # ==================================================
-  # STRONG PARAMS
+  # STRONG PARAMS (SEM CLIENTE AQUI)
   # ==================================================
   def frete_params
     params.fetch(:frete, {}).permit(
@@ -109,8 +106,7 @@ class FretesController < ApplicationController
       :tipo_carga,
       :tipo_veiculo,
       :descricao,
-      :valor,
-      :status
+      :valor
     )
   end
 end
