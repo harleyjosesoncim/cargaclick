@@ -1,0 +1,13 @@
+<div class="max-w-xl mx-auto mt-12 p-8 bg-white rounded-3xl shadow-xl">
+  <h1 class="text-2xl font-bold mb-4">Escolha a forma de pagamento</h1>
+
+  <%= button_to "PIX (EFI) — à vista",
+      checkout_pix_path(@frete),
+      method: :post,
+      class: "w-full bg-green-600 text-white py-3 rounded-xl mb-3" %>
+
+  <%= button_to "Cartão (Mercado Pago) — parcelado",
+      checkout_cartao_path(@frete),
+      method: :post,
+      class: "w-full bg-blue-600 text-white py-3 rounded-xl" %>
+</div>

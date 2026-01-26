@@ -1,0 +1,7 @@
+# --- PIX / CHECKOUT (INCREMENTAL) ---
+get  "/checkout/:id",      to: "checkout#show", as: :checkout
+post "/checkout/:id/pix",  to: "checkout#pix",  as: :checkout_pix
+
+namespace :webhooks do
+  post "/pix/mercado_pago", to: "pix#mercado_pago"
+end

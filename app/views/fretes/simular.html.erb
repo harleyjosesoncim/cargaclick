@@ -1,64 +1,136 @@
 <%# app/views/fretes/simular.html.erb %>
 
-<div class="max-w-3xl mx-auto mt-10 p-6 bg-white rounded-xl shadow">
+<div class="max-w-4xl mx-auto mt-10">
 
-  <h1 class="text-2xl font-bold text-gray-800 mb-6">
-    Resultado da Simulação de Frete
-  </h1>
+  <!-- ==================================================
+       BREADCRUMB
+  ================================================== -->
+  <nav class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+    <ol class="flex flex-wrap items-center gap-2">
+      <li>
+        <%= link_to "Início", root_path, class: "hover:text-blue-600 transition" %>
+      </li>
+      <li>/</li>
+      <li>
+        <%= link_to "Simular Frete", new_frete_path, class: "hover:text-blue-600 transition" %>
+      </li>
+      <li>/</li>
+      <li class="font-semibold text-gray-700 dark:text-gray-200">
+        Resultado
+      </li>
+    </ol>
+  </nav>
 
-  <% if @resultado.present? && @resultado[:sucesso] %>
+  <!-- ==================================================
+       CARD PRINCIPAL
+  ================================================== -->
+  <div class="p-8 bg-white dark:bg-gray-800 rounded-3xl shadow-xl">
 
-    <div class="space-y-4 text-gray-700">
+    <h1 class="text-3xl font-extrabold text-gray-900 dark:text-gray-100 mb-6">
+      📊 Resultado da Simulação
+    </h1>
 
-      <div class="flex justify-between">
-        <span class="font-semibold">Origem:</span>
-        <span><%= @resultado[:origem] %></span>
+    <% if @resultado.present? && @resultado[:sucesso] %>
+
+      <!-- =========================
+           DADOS DA SIMULAÇÃO
+      ========================== -->
+      <div class="space-y-4 text-gray-700 dark:text-gray-200">
+
+        <div class="flex justify-between">
+          <span class="font-semibold">Origem</span>
+          <span><%= @resultado[:origem] %></span>
+        </div>
+
+        <div class="flex justify-between">
+          <span class="font-semibold">Destino</span>
+          <span><%= @resultado[:destino] %></span>
+        </div>
+
+        <div class="flex justify-between">
+          <span class="font-semibold">Distância estimada</span>
+          <span><%= @resultado[:distancia_km] %> km</span>
+        </div>
+
       </div>
 
-      <div class="flex justify-between">
-        <span class="font-semibold">Destino:</span>
-        <span><%= @resultado[:destino] %></span>
+      <!-- =========================
+           VALOR FINAL (COMPETITIVO)
+      ========================== -->
+      <div class="mt-6 p-6 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700">
+
+        <div class="flex justify-between items-center mb-3">
+          <span class="font-semibold text-gray-700 dark:text-gray-200">
+            Valor final do frete
+          </span>
+          <span class="text-3xl font-extrabold text-green-600">
+            R$ <%= number_to_currency(@resultado[:valor], unit: "", separator: ",", delimiter: ".") %>
+          </span>
+        </div>
+
+        <!-- DIFERENCIAL COMPETITIVO -->
+        <div class="text-sm text-green-600 font-semibold mt-2">
+          💸 Até 22% mais barato que apps tradicionais — ganho certo para todos
+        </div>
+
+        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          Preço final fechado, sem taxas surpresa.
+        </div>
+
       </div>
 
-      <div class="flex justify-between">
-        <span class="font-semibold">Distância estimada:</span>
-        <span><%= @resultado[:distancia_km] %> km</span>
+      <!-- =========================
+           CTA
+      ========================== -->
+      <div class="mt-8 flex flex-col md:flex-row gap-4">
+
+        <%= link_to "Nova simulação",
+          new_frete_path,
+          class: "flex-1 text-center px-6 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold transition" %>
+
+        <% if cliente_signed_in? %>
+          <%= button_to "Contratar Frete",
+            fretes_path,
+            method: :post,
+            params: {
+              frete: {
+                origem: @resultado[:origem],
+                destino: @resultado[:destino],
+                peso: @resultado[:peso],
+                volume: @resultado[:volume],
+                valor: @resultado[:valor]
+              }
+            },
+            class: "flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition shadow" %>
+        <% else %>
+          <%= link_to "Entrar para contratar",
+            new_cliente_session_path,
+            class: "flex-1 text-center bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition shadow" %>
+        <% end %>
+
       </div>
 
-      <div class="flex justify-between">
-        <span class="font-semibold">Valor estimado:</span>
-        <span class="text-green-600 font-bold">
-          R$ <%= number_to_currency(@resultado[:valor], unit: "", separator: ",", delimiter: ".") %>
-        </span>
+    <% else %>
+
+      <!-- =========================
+           ERRO
+      ========================== -->
+      <div class="bg-red-50 border border-red-200 text-red-700 p-6 rounded-xl">
+        <p class="font-semibold mb-2">Não foi possível calcular o frete.</p>
+        <p>
+          <%= @resultado[:mensagem] rescue "Erro inesperado ao processar a simulação." %>
+        </p>
       </div>
 
-    </div>
+      <div class="mt-6">
+        <%= link_to "Voltar",
+          new_frete_path,
+          class: "px-6 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold" %>
+      </div>
 
-    <div class="mt-8 flex justify-between">
-      <%= link_to "Nova simulação",
-            simular_frete_path,
-            class: "px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700" %>
+    <% end %>
 
-      <%= link_to "Solicitar frete",
-            new_frete_path,
-            class: "px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-semibold" %>
-    </div>
-
-  <% else %>
-
-    <div class="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg">
-      <p class="font-semibold mb-1">Não foi possível calcular o frete.</p>
-      <p>
-        <%= @resultado[:mensagem] rescue "Erro inesperado ao processar a simulação." %>
-      </p>
-    </div>
-
-    <div class="mt-6">
-      <%= link_to "Voltar",
-            simular_frete_path,
-            class: "px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700" %>
-    </div>
-
-  <% end %>
-
+  </div>
 </div>
+
+

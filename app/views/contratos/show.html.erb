@@ -1,0 +1,11 @@
+
+<h2>Contrato Digital</h2>
+
+<div class="contrato">
+  <%= simple_format @contrato.conteudo %>
+</div>
+
+<%= button_to "Aceito os termos",
+  aceitar_contrato_path(@contrato),
+  method: :post,
+  data: { confirm: "Confirmo o aceite do contrato" } %>

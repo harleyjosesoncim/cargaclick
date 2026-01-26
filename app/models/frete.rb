@@ -4,14 +4,14 @@ class Frete < ApplicationRecord
   # ==========================================================
   # 📎 ASSOCIAÇÕES
   # ==========================================================
-  belongs_to :cliente
+  belongs_to :cliente,       optional: true
   belongs_to :transportador, optional: true
 
   has_many :avaliacoes, dependent: :destroy
-  has_one  :cotacao, dependent: :destroy
+  has_one  :cotacao,    dependent: :destroy
 
   # ==========================================================
-  # 🎛️ ENUMS (ALINHADOS AO BANCO)
+  # 🎛️ ENUMS (SEM COLISÃO DE NOMES)
   # ==========================================================
 
   # Coluna: status (string)
@@ -42,22 +42,33 @@ class Frete < ApplicationRecord
   # ✅ VALIDAÇÕES
   # ==========================================================
   validates :status, :status_pagamento, :pin_status, presence: true
-  validates :tentativas_pin, numericality: { greater_than_or_equal_to: 0 }
+  validates :tentativas_pin,
+            numericality: { greater_than_or_equal_to: 0 },
+            allow_nil: true
+
+  validates :valor_estimado, :valor_final,
+            numericality: { greater_than_or_equal_to: 0 },
+            allow_nil: true
 
   # ==========================================================
-  # 🔄 CALLBACKS
+  # 🔄 CALLBACKS (CONTROLADOS)
   # ==========================================================
   before_validation :definir_defaults, on: :create
-  before_save       :calcular_split!, if: :base_para_split_presente?
+  before_save :calcular_split!,
+              if: :deve_calcular_split?
 
   # ==========================================================
   # 🔐 PIN DE ENTREGA
   # ==========================================================
   def confirmar_entrega!(pin_informado)
-    return false if pin_expirado? || tentativas_pin >= 3
+    return false if pin_expirado?
+    return false if tentativas_pin.to_i >= 3
     return false if pin_informado.blank?
 
-    if pin_entrega == pin_informado.to_s
+    if ActiveSupport::SecurityUtils.secure_compare(
+         pin_entrega.to_s,
+         pin_informado.to_s
+       )
       update!(
         pin_status:       :confirmado,
         status:           :concluido,
@@ -66,7 +77,7 @@ class Frete < ApplicationRecord
       )
       true
     else
-      incrementar_tentativa!
+      registrar_tentativa_pin!
       false
     end
   end
@@ -76,7 +87,7 @@ class Frete < ApplicationRecord
   end
 
   # ==========================================================
-  # 💰 MONETIZAÇÃO / SPLIT
+  # 💰 MONETIZAÇÃO
   # ==========================================================
   def valor_total
     base_para_split
@@ -94,7 +105,7 @@ class Frete < ApplicationRecord
     self.status              ||= "pendente"
     self.status_pagamento    ||= 0
     self.tentativas_pin      ||= 0
-    self.comissao_percentual ||= ComissaoCalculator.percentual_para(transportador)
+    self.comissao_percentual ||= percentual_comissao
   end
 
   # ---------- PIN ----------
@@ -102,29 +113,36 @@ class Frete < ApplicationRecord
     SecureRandom.random_number(10_000).to_s.rjust(4, "0")
   end
 
-  def incrementar_tentativa!
+  def registrar_tentativa_pin!
     increment!(:tentativas_pin)
     expirar_pin! if tentativas_pin >= 3
   end
 
-  # ---------- Split / Comissão ----------
+  # ---------- Comissão / Split ----------
   def calcular_split!
     base = base_para_split
-    return if base.zero?
+    return if base <= 0
 
-    percentual = comissao_percentual.presence ||
-                 ComissaoCalculator.percentual_para(transportador)
+    percentual = percentual_comissao
 
     self.comissao_percentual = percentual
     self.valor_comissao      = (base * percentual / 100.0).round(2)
     self.valor_transportador = (base - valor_comissao).round(2)
   end
 
+  def percentual_comissao
+    comissao_percentual.presence ||
+      ComissaoCalculator.percentual_para(transportador)
+  end
+
   def base_para_split
     valor_final.presence || valor_estimado.presence || 0
   end
 
-  def base_para_split_presente?
-    valor_final.present? || valor_estimado.present?
+  def deve_calcular_split?
+    (valor_final.present? || valor_estimado.present?) &&
+      (comissao_percentual.blank? ||
+       valor_comissao.blank? ||
+       valor_transportador.blank?)
   end
 end

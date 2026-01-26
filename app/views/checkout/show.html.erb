@@ -1,0 +1,25 @@
+<div class="max-w-xl mx-auto mt-16 p-8 bg-white rounded-3xl shadow-xl">
+  <h1 class="text-2xl font-extrabold text-gray-900 mb-4">💳 Pagamento via PIX</h1>
+
+  <p class="text-gray-600 mb-4">
+    Valor do frete:
+    <strong class="text-green-600">
+      R$ <%= number_to_currency(@frete.valor_total, unit: "", separator: ",", delimiter: ".") %>
+    </strong>
+  </p>
+
+  <% if @qr_code.present? %>
+    <div class="p-4 bg-gray-100 rounded-xl break-all text-sm">
+      <%= @qr_code %>
+    </div>
+
+    <p class="text-xs text-gray-500 mt-2">
+      Expira em <%= l(@expires_at, format: :short) %>
+    </p>
+  <% else %>
+    <%= form_with url: checkout_pix_path(@frete), method: :post do %>
+      <%= submit_tag "Gerar PIX",
+        class: "w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition" %>
+    <% end %>
+  <% end %>
+</div>

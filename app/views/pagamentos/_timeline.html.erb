@@ -1,0 +1,17 @@
+<div class="cc-timeline">
+  <div class="step <%= 'done' if pagamento.pendente? || pagamento.escrow? %>">
+    💳 Pagamento aprovado
+  </div>
+
+  <div class="step <%= 'done' if contrato&.aceito? %>">
+    📄 Contrato aceito
+  </div>
+
+  <div class="step <%= 'done' if frete.entrega_confirmada? %>">
+    🚚 Entrega confirmada
+  </div>
+
+  <div class="step <%= 'done' if pagamento.liberado? %>">
+    💸 Repasse liberado
+  </div>
+</div>

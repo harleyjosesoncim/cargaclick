@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_24_001406) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_26_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -124,6 +124,24 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_24_001406) do
     t.text "mensagem"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "contratos_digitais", force: :cascade do |t|
+    t.bigint "frete_id", null: false
+    t.bigint "cliente_id", null: false
+    t.bigint "transportador_id", null: false
+    t.text "conteudo"
+    t.string "hash_documento", null: false
+    t.string "status", default: "pendente"
+    t.datetime "aceito_em"
+    t.string "aceito_ip"
+    t.string "aceito_user_agent"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cliente_id"], name: "index_contratos_digitais_on_cliente_id"
+    t.index ["frete_id"], name: "index_contratos_digitais_on_frete_id"
+    t.index ["hash_documento"], name: "index_contratos_digitais_on_hash_documento", unique: true
+    t.index ["transportador_id"], name: "index_contratos_digitais_on_transportador_id"
   end
 
   create_table "cotacoes", force: :cascade do |t|
@@ -319,6 +337,9 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_24_001406) do
   add_foreign_key "chats", "clientes"
   add_foreign_key "chats", "fretes"
   add_foreign_key "chats", "transportadores"
+  add_foreign_key "contratos_digitais", "clientes"
+  add_foreign_key "contratos_digitais", "fretes"
+  add_foreign_key "contratos_digitais", "transportadores"
   add_foreign_key "cotacoes", "clientes"
   add_foreign_key "cotacoes", "fretes"
   add_foreign_key "cotacoes", "transportadores"

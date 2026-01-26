@@ -28,13 +28,13 @@ Rails.application.routes.draw do
   }
 
   # =====================================================
-  # LANDING / HOME
+  # LANDING / HOME (INSTITUCIONAL + CONVERSÃO)
   # =====================================================
-  root "landing#index"
-  get "/inicio", to: "landing#index", as: :inicio
+  root "pages#home"
+  get "/inicio", to: "pages#home", as: :inicio
 
   # =====================================================
-  # PÁGINAS PÚBLICAS
+  # PÁGINAS INSTITUCIONAIS
   # =====================================================
   get "/sobre",   to: "pages#about",  as: :sobre
   get "/contato", to: "contatos#new", as: :contato
@@ -42,7 +42,8 @@ Rails.application.routes.draw do
   # =====================================================
   # SIMULAÇÃO DE FRETE (PÚBLICA)
   # =====================================================
-  get "/simular-frete", to: "fretes#new", as: :simular_frete
+  get  "/simular-frete", to: "fretes#new",     as: :simular_frete
+  post "/simular-frete", to: "fretes#simular", as: :simular_frete_post
 
   # =====================================================
   # CLIENTES — DASHBOARD E CADASTRO PROGRESSIVO
@@ -51,8 +52,8 @@ Rails.application.routes.draw do
     # Dashboard
     get "dashboard", to: "dashboards#index", as: :dashboard
 
-    # Completar cadastro (STEP 4)
-    get  "completar_cadastro", to: "cadastro#edit",   as: :completar_cadastro
+    # Completar cadastro
+    get  "completar_cadastro",  to: "cadastro#edit",   as: :completar_cadastro
     patch "finalizar_cadastro", to: "cadastro#update", as: :finalizar_cadastro
   end
 
@@ -63,7 +64,7 @@ Rails.application.routes.draw do
     # Dashboard
     get "dashboard", to: "dashboards#index", as: :dashboard
 
-    # Completar perfil (fluxo futuro)
+    # Completar perfil
     get  "completar_perfil",  to: "cadastro#edit",   as: :completar_perfil
     patch "atualizar_perfil", to: "cadastro#update", as: :atualizar_perfil
   end
