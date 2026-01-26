@@ -64,6 +64,12 @@ group :development do
   gem "bindex", "~> 0.8"
   gem "rb-fsevent", "~> 0.11", require: false
   gem "rb-inotify", "~> 0.11", require: false
+  # PDF
+  gem "prawn", "~> 2.5"
+
+  gem "prawn", "~> 2.5"
+  gem "prawn-table"
+
 end
 
 # =====================================================
