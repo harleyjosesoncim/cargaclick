@@ -1,25 +1,5 @@
 # frozen_string_literal: true
 
-# ==========================================================
-# Pagamentos::EscrowService
-#
-# Orquestra o fluxo financeiro de escrow do CargaClick.
-#
-# PRINCÍPIOS DE PRODUÇÃO:
-# - Estado é soberano (não força transições inválidas)
-# - Idempotência defensiva
-# - Auditoria completa (logs + timestamps)
-# - Falha segura (nunca libera sem confirmação)
-# - Nenhuma regra de negócio em controller
-#
-# FLUXO:
-# pendente -> escrow -> liberado
-#
-# O pagamento SÓ é liberado após:
-# - ContratoDigital aceito
-# - Confirmação explícita (cliente/admin)
-# ==========================================================
-
 module Pagamentos
   class EscrowService
     Result = Struct.new(
@@ -30,14 +10,6 @@ module Pagamentos
       keyword_init: true
     )
 
-    PagamentoAuditoria.create!(
-  pagamento: pagamento,
-  acao: "liberacao",
-  ator: actor_label(actor),
-  motivo: motivo
-)
-
-
     def initialize(
       payout_service: PixPayoutService.new,
       logger: Rails.logger
@@ -46,9 +18,9 @@ module Pagamentos
       @logger = logger
     end
 
-    # ------------------------------------------------------
+    # ======================================================
     # COLOCAR EM ESCROW
-    # ------------------------------------------------------
+    # ======================================================
     def colocar_em_escrow!(pagamento, txid: nil)
       validar_pagamento!(pagamento)
 
@@ -67,43 +39,40 @@ module Pagamentos
       end
 
       log_info("Pagamento colocado em escrow", pagamento)
-
       sucesso(pagamento)
     rescue StandardError => e
       log_error("Erro ao colocar em escrow", pagamento, e)
       falha(pagamento, e.message)
     end
 
-    # ------------------------------------------------------
-    # LIBERAR ESCROW (PIX)
-    # ------------------------------------------------------
+    # ======================================================
+    # LIBERAR ESCROW
+    # ======================================================
     def liberar!(pagamento, actor:, motivo: "entrega_confirmada")
       validar_pagamento!(pagamento)
 
       return sucesso(pagamento, info: "já_liberado") if pagamento.status == "liberado"
-
-      unless pagamento.status == "escrow"
-        return falha(pagamento, "Pagamento não está em escrow")
-      end
-
-      unless contrato_aceito?(pagamento)
-        return falha(pagamento, "Contrato digital não aceito")
-      end
+      return falha(pagamento, "Pagamento não está em escrow") unless pagamento.status == "escrow"
+      return falha(pagamento, "Contrato digital não aceito") unless contrato_aceito?(pagamento)
 
       pagamento.with_lock do
         payout = @payout_service.transferir!(pagamento)
 
         if payout.success?
-          attrs = {
-            status:         "liberado",
-            payout_status:  "sucesso",
-            payout_txid:    payout.payout_txid
-          }
+          pagamento.update!(
+            status: "liberado",
+            payout_status: "sucesso",
+            payout_txid: payout.payout_txid,
+            liberado_at: timestamp_if(pagamento, :liberado_at),
+            payout_error: nil
+          )
 
-          attrs[:liberado_at]  = Time.current if pagamento.has_attribute?(:liberado_at)
-          attrs[:payout_error] = nil if pagamento.has_attribute?(:payout_error)
-
-          pagamento.update!(attrs)
+          registrar_auditoria!(
+            pagamento: pagamento,
+            acao: "liberacao",
+            ator: actor,
+            motivo: motivo
+          )
 
           log_info(
             "Pagamento liberado com sucesso",
@@ -133,7 +102,7 @@ module Pagamentos
     end
 
     def contrato_aceito?(pagamento)
-      return false unless pagamento.respond_to?(:frete)
+      return false unless pagamento.respond_to?(:frete_id)
 
       ContratoDigital
         .where(frete_id: pagamento.frete_id)
@@ -142,18 +111,31 @@ module Pagamentos
     end
 
     # ======================================================
-    # REGISTRO DE FALHAS
+    # AUDITORIA
+    # ======================================================
+    def registrar_auditoria!(pagamento:, acao:, ator:, motivo:)
+      PagamentoAuditoria.create!(
+        pagamento: pagamento,
+        acao: acao,
+        ator: actor_label(ator),
+        motivo: motivo
+      )
+    end
+
+    # ======================================================
+    # FALHAS PIX
     # ======================================================
     def registrar_falha_pix!(pagamento, erro)
-      attrs = { payout_status: "falha" }
-      attrs[:payout_error] = erro if pagamento.has_attribute?(:payout_error)
-      pagamento.update!(attrs)
+      pagamento.update!(
+        payout_status: "falha",
+        payout_error: erro
+      )
 
       log_warn("Falha no PIX", pagamento, erro: erro)
     end
 
     # ======================================================
-    # HELPERS DE RESULTADO
+    # HELPERS
     # ======================================================
     def sucesso(pagamento, metadata = {})
       Result.new(success?: true, pagamento: pagamento, metadata: metadata)
@@ -163,8 +145,12 @@ module Pagamentos
       Result.new(success?: false, pagamento: pagamento, error: mensagem)
     end
 
+    def timestamp_if(model, field)
+      Time.current if model.has_attribute?(field)
+    end
+
     # ======================================================
-    # LOGS (AUDITORIA)
+    # LOGGING
     # ======================================================
     def log_info(msg, pagamento, extra = {})
       @logger.info(log_payload(msg, pagamento, extra))
@@ -176,13 +162,18 @@ module Pagamentos
 
     def log_error(msg, pagamento, exception)
       @logger.error(
-        log_payload(msg, pagamento, error: exception.message, backtrace: exception.backtrace&.first)
+        log_payload(
+          msg,
+          pagamento,
+          error: exception.message,
+          backtrace: exception.backtrace&.first
+        )
       )
     end
 
     def log_payload(msg, pagamento, extra = {})
       {
-        service: "EscrowService",
+        service: "Pagamentos::EscrowService",
         message: msg,
         pagamento_id: pagamento&.id,
         status: pagamento&.status,
