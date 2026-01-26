@@ -10,7 +10,7 @@ gem "rails", "~> 7.1.5", ">= 7.1.5.2"
 gem "pg", "~> 1.5"
 gem "puma", "~> 6.6"
 gem "bootsnap", ">= 1.17", require: false
-gem "redis", "~> 5.0" # cache / jobs futuros
+gem "redis", "~> 5.0"
 
 # =====================================================
 # Frontend & Assets
@@ -33,14 +33,14 @@ gem "secure_headers", "~> 6.5"
 gem "rails-i18n", "~> 7.0"
 
 # =====================================================
-# Pagamentos (OFICIAL)
+# PDF (USADO EM PRODUÇÃO)
 # =====================================================
+gem "prawn", "~> 2.5"
+gem "prawn-table"
 
-# Mercado Pago
-# ✔ PIX
-# ✔ Cartão
-# ✔ CPF
-# ✔ Produção
+# =====================================================
+# Pagamentos
+# =====================================================
 gem "mercadopago-sdk", "~> 2.3", require: "mercadopago"
 
 # =====================================================
@@ -64,12 +64,6 @@ group :development do
   gem "bindex", "~> 0.8"
   gem "rb-fsevent", "~> 0.11", require: false
   gem "rb-inotify", "~> 0.11", require: false
-  # PDF
-  gem "prawn", "~> 2.5"
-
-  gem "prawn", "~> 2.5"
-  gem "prawn-table"
-
 end
 
 # =====================================================
@@ -84,6 +78,6 @@ group :test do
 end
 
 # =====================================================
-# Windows (fora do WSL)
+# Windows
 # =====================================================
 gem "tzinfo-data", platforms: %i[windows jruby]
