@@ -11,7 +11,7 @@ class Frete < ApplicationRecord
   has_one  :cotacao,    dependent: :destroy
 
   # ==========================================================
-  # 🎛️ ENUMS (SEM COLISÃO DE NOMES)
+  # 🎛️ ENUMS (PREFIXADOS – SEM COLISÃO)
   # ==========================================================
 
   # Coluna: status (string)
@@ -42,27 +42,30 @@ class Frete < ApplicationRecord
   # ✅ VALIDAÇÕES
   # ==========================================================
   validates :status, :status_pagamento, :pin_status, presence: true
-  validates :tentativas_pin,
-            numericality: { greater_than_or_equal_to: 0 },
-            allow_nil: true
 
-  validates :valor_estimado, :valor_final,
+  validates :tentativas_pin,
+            numericality: { greater_than_or_equal_to: 0 }
+
+  validates :valor,
+            :valor_estimado,
+            :valor_negociado,
+            :valor_final,
             numericality: { greater_than_or_equal_to: 0 },
             allow_nil: true
 
   # ==========================================================
-  # 🔄 CALLBACKS (CONTROLADOS)
+  # 🔄 CALLBACKS (ORDEM IMPORTANTE)
   # ==========================================================
   before_validation :definir_defaults, on: :create
-  before_save :calcular_split!,
-              if: :deve_calcular_split?
+  before_validation :definir_valor_final, on: :create
+  before_save       :calcular_split!, if: :deve_calcular_split?
 
   # ==========================================================
   # 🔐 PIN DE ENTREGA
   # ==========================================================
   def confirmar_entrega!(pin_informado)
     return false if pin_expirado?
-    return false if tentativas_pin.to_i >= 3
+    return false if tentativas_pin >= 3
     return false if pin_informado.blank?
 
     if ActiveSupport::SecurityUtils.secure_compare(
@@ -103,9 +106,17 @@ class Frete < ApplicationRecord
     self.pin_entrega         ||= gerar_pin
     self.pin_status          ||= "pendente"
     self.status              ||= "pendente"
-    self.status_pagamento    ||= 0
+    self.status_pagamento    ||= "pendente"
     self.tentativas_pin      ||= 0
     self.comissao_percentual ||= percentual_comissao
+  end
+
+  # ---------- Valor Final (REGRA-CHAVE) ----------
+  def definir_valor_final
+    self.valor_final ||= 
+      valor_negociado.presence ||
+      valor.presence ||
+      valor_estimado.presence
   end
 
   # ---------- PIN ----------
@@ -136,13 +147,15 @@ class Frete < ApplicationRecord
   end
 
   def base_para_split
-    valor_final.presence || valor_estimado.presence || 0
+    valor_final.presence ||
+      valor_negociado.presence ||
+      valor.presence ||
+      valor_estimado.presence ||
+      0
   end
 
   def deve_calcular_split?
-    (valor_final.present? || valor_estimado.present?) &&
-      (comissao_percentual.blank? ||
-       valor_comissao.blank? ||
-       valor_transportador.blank?)
+    base_para_split.positive? &&
+      (valor_comissao.blank? || valor_transportador.blank?)
   end
 end
