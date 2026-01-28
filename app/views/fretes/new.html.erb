@@ -4,13 +4,13 @@
 <!-- ==================================================
      BREADCRUMB
 ================================================== -->
-<nav class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+<nav class="text-sm text-gray-500 mb-4">
   <ol class="flex flex-wrap items-center gap-2">
     <li>
       <%= link_to "Início", root_path, class: "hover:text-blue-600 transition" %>
     </li>
     <li>/</li>
-    <li class="font-semibold text-gray-700 dark:text-gray-200">
+    <li class="font-semibold text-gray-700">
       Simular Frete
     </li>
   </ol>
@@ -20,42 +20,21 @@
      CABEÇALHO
 ================================================== -->
 <div class="mb-6">
-  <h1 class="text-3xl font-extrabold text-gray-900 dark:text-gray-100">
+  <h1 class="text-3xl font-extrabold text-gray-900">
     🚛 Simule seu frete em segundos
   </h1>
-  <p class="mt-2 text-gray-600 dark:text-gray-400 max-w-2xl">
+  <p class="mt-2 text-gray-600 max-w-2xl">
     Compare valores, distância e condições.
     Simulação gratuita. Login apenas para contratar.
   </p>
 </div>
 
 <!-- ==================================================
-     NAVEGAÇÃO AUXILIAR
+     CARD — SIMULAÇÃO
 ================================================== -->
-<div class="flex flex-wrap gap-3 mb-8">
-  <%= link_to fretes_path,
-    class: "inline-flex items-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-4 py-2 rounded-lg transition" do %>
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-    </svg>
-    Fretes
-  <% end %>
+<div class="bg-white shadow-xl rounded-3xl p-8 mb-8">
 
-  <%= link_to root_path,
-    class: "inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition" do %>
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18" />
-    </svg>
-    Início
-  <% end %>
-</div>
-
-<!-- ==================================================
-     CARD — SIMULAÇÃO (PREMIUM)
-================================================== -->
-<div class="bg-white dark:bg-gray-800 shadow-xl rounded-3xl p-8 mb-8">
-
-  <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-6">
+  <h2 class="text-xl font-semibold text-gray-800 mb-6">
     🔍 Dados para simulação
   </h2>
 
@@ -64,55 +43,85 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <%= text_field_tag :origem, nil,
         placeholder: "Origem (CEP ou endereço)",
-        class: "w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 px-4 py-3 focus:ring-2 focus:ring-blue-500" %>
+        class: "w-full rounded-xl border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500" %>
 
       <%= text_field_tag :destino, nil,
         placeholder: "Destino (CEP ou endereço)",
-        class: "w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 px-4 py-3 focus:ring-2 focus:ring-blue-500" %>
+        class: "w-full rounded-xl border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500" %>
 
       <%= number_field_tag :peso, nil,
         placeholder: "Peso (kg)",
-        class: "w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 px-4 py-3 focus:ring-2 focus:ring-blue-500" %>
+        class: "w-full rounded-xl border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500" %>
 
       <%= number_field_tag :volume, nil,
         placeholder: "Volume (m³)",
-        class: "w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 px-4 py-3 focus:ring-2 focus:ring-blue-500" %>
+        class: "w-full rounded-xl border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500" %>
     </div>
 
     <div class="mt-8">
       <%= submit_tag "Calcular Frete",
-        class: "w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:opacity-90 text-white font-bold py-4 rounded-xl transition shadow-lg" %>
+        class: "w-full bg-gradient-to-r from-blue-600 to-indigo-600
+                hover:opacity-90 text-white font-bold py-4
+                rounded-xl transition shadow-lg" %>
     </div>
 
   <% end %>
 </div>
 
 <!-- ==================================================
-     CARD — CONTRATAÇÃO / COMISSÃO (PREPARADO)
+     CARD — CONTRATAÇÃO / PERFIS
 ================================================== -->
-<div class="bg-gray-50 dark:bg-gray-900 border border-dashed border-gray-300 dark:border-gray-700 rounded-2xl p-6">
+<div class="bg-gray-50 border border-dashed border-gray-300 rounded-2xl p-6">
 
-  <h2 class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-2">
-    🧾 Contratação e pagamento
+  <h2 class="text-lg font-semibold text-gray-700 mb-2">
+    🧾 Contratação e acesso
   </h2>
 
-  <p class="text-sm text-gray-600 dark:text-gray-400 max-w-2xl">
-    Após a simulação, você verá o valor final do frete,
-    a taxa da plataforma e poderá contratar com pagamento seguro.
+  <p class="text-sm text-gray-600 max-w-2xl">
+    Após a simulação, o acesso muda conforme seu perfil.
   </p>
 
-  <ul class="mt-3 text-sm text-gray-600 dark:text-gray-400 space-y-1">
-    <li>• Valor do frete exibido com transparência</li>
-    <li>• Comissão da plataforma destacada</li>
-    <li>• Pagamento protegido (PIX / gateway)</li>
+  <ul class="mt-3 text-sm text-gray-600 space-y-1">
+    <li>• Clientes contratam com pagamento seguro</li>
+    <li>• Transportadores recebem oportunidades no painel</li>
+    <li>• Comissão da plataforma sempre transparente</li>
   </ul>
 
-  <% unless cliente_signed_in? %>
-    <div class="mt-5">
+  <!-- ==================================================
+       CTA DINÂMICO POR PERFIL
+  ================================================== -->
+  <div class="mt-6 flex flex-wrap gap-4">
+
+    <% if defined?(cliente_signed_in?) && cliente_signed_in? %>
+      <!-- CLIENTE LOGADO -->
+      <span class="inline-block bg-green-600 text-white
+                   font-bold px-6 py-3 rounded-xl shadow">
+        ✅ Você pode contratar este frete
+      </span>
+
+    <% elsif defined?(transportador_signed_in?) && transportador_signed_in? %>
+      <!-- TRANSPORTADOR LOGADO -->
+      <%= link_to "Acessar painel de oportunidades",
+        transportadores_dashboard_path,
+        class: "inline-block bg-indigo-600 hover:bg-indigo-700
+                text-white font-bold px-6 py-3 rounded-xl
+                transition shadow" %>
+
+    <% else %>
+      <!-- NÃO LOGADO -->
       <%= link_to "Entrar ou Criar Conta para Contratar",
         new_cliente_session_path,
-        class: "inline-block bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-xl transition shadow" %>
-    </div>
-  <% end %>
+        class: "inline-block bg-green-600 hover:bg-green-700
+                text-white font-semibold px-6 py-3 rounded-xl
+                transition shadow" %>
 
+      <%= link_to "Sou transportador",
+        new_transportador_session_path,
+        class: "inline-block border border-indigo-600 text-indigo-600
+                hover:bg-indigo-600 hover:text-white
+                font-semibold px-6 py-3 rounded-xl
+                transition shadow" %>
+    <% end %>
+
+  </div>
 </div>
