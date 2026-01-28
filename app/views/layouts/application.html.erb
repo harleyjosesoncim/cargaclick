@@ -1,88 +1,130 @@
-<p style="color:red">DEBUG LAYOUT OK</p>
-<%= yield %>
-
 <!DOCTYPE html>
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Tema do navegador (mobile) -->
+    <!-- =====================================================
+         THEME / UX BÁSICO (não quebra se dark/light falhar)
+         ===================================================== -->
     <meta name="theme-color" content="#0b132b" media="(prefers-color-scheme: dark)">
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 
-    <!-- SEO básico e social -->
-    <%# Protegido contra ausência de meta_tags %>
+    <!-- =====================================================
+         SEO BÁSICO (com fallback total)
+         ===================================================== -->
     <% if respond_to?(:render_meta_tags) %>
       <%= render_meta_tags(
             title:       content_for?(:title)       ? yield(:title)       : "CargaClick",
-            description: content_for?(:description) ? yield(:description) : "Conectando clientes e transportadores de forma simples e eficiente.",
+            description: content_for?(:description) ? yield(:description) : "Fretes simples, rápidos e sem atrito.",
             image:       asset_path("cargaclick_og.png"),
             url:         request.original_url
           ) %>
     <% else %>
       <title>CargaClick</title>
-      <meta name="description" content="Conectando clientes e transportadores de forma simples e eficiente.">
+      <meta name="description" content="Fretes simples, rápidos e sem atrito.">
     <% end %>
 
     <link rel="canonical" href="<%= request.original_url %>">
 
-    <!-- Segurança -->
+    <!-- =====================================================
+         SEGURANÇA
+         ===================================================== -->
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <!-- Leaflet (somente se assets existirem) -->
+    <!-- =====================================================
+         ASSETS OPCIONAIS (Leaflet não pode quebrar layout)
+         ===================================================== -->
     <% begin %>
-      <% leaflet_icon = asset_path("marker-icon.png") %>
-      <meta name="leaflet-icon"    content="<%= leaflet_icon %>">
+      <meta name="leaflet-icon"    content="<%= asset_path('marker-icon.png') %>">
       <meta name="leaflet-icon-2x" content="<%= asset_path('marker-icon-2x.png') %>">
       <meta name="leaflet-shadow"  content="<%= asset_path('marker-shadow.png') %>">
     <% rescue %>
-      <%# Assets do Leaflet não disponíveis – ignorado com segurança %>
+      <%# Assets ausentes → ignorado com segurança %>
     <% end %>
 
-    <!-- Estilos -->
-    <%= stylesheet_link_tag "leaflet", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <!-- =====================================================
+         CSS (ordem segura)
+         ===================================================== -->
+    <%= stylesheet_link_tag "leaflet",     "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "tailwind",    "inter-font", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application","data-turbo-track": "reload" %>
 
-    <!-- JavaScript principal -->
-    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+    <!-- =====================================================
+         JS (defer obrigatório – UI não depende dele)
+         ===================================================== -->
+    <%= javascript_include_tag "application",
+          "data-turbo-track": "reload",
+          defer: true %>
 
-    <!-- Head extra por página -->
+    <!-- HEAD EXTRA POR PÁGINA -->
     <%= yield :head %>
   </head>
 
-  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen font-sans antialiased flex flex-col">
+  <body class="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900 font-sans antialiased">
 
-    <!-- HEADER / NAVBAR -->
+    <!-- =====================================================
+         DEBUG VISUAL (REMOVER EM PRODUÇÃO)
+         ===================================================== -->
+    <%# <p style="color:red">DEBUG LAYOUT OK</p> %>
+
+    <!-- =====================================================
+         NAVBAR (SE EXISTIR, SEM DEPENDÊNCIA)
+         ===================================================== -->
     <% if lookup_context.exists?("layouts/navbar") %>
       <header role="banner">
         <%= render "layouts/navbar" %>
       </header>
     <% end %>
 
-    <!-- FLASH MESSAGES -->
+    <!-- =====================================================
+         FLASH MESSAGES (NÃO BLOQUEIAM UI)
+         ===================================================== -->
     <% if lookup_context.exists?("shared/flash") %>
       <section class="w-full px-4 mt-4 md:container md:mx-auto">
         <%= render "shared/flash" %>
       </section>
     <% end %>
 
-    <!-- CONTEÚDO PRINCIPAL -->
-    <!-- pt-24 evita que o conteúdo fique escondido atrás do navbar fixo -->
-    <main class="flex-1 w-full px-4 pt-24 pb-8 md:container md:mx-auto">
-      <%= yield %>
+    <!-- =====================================================
+         CONTEÚDO PRINCIPAL
+         - nunca fica vazio
+         - nunca fica escondido
+         ===================================================== -->
+    <main role="main"
+          class="flex-1 w-full px-4 pt-24 pb-8 md:container md:mx-auto">
+
+      <% if content_for?(:content) %>
+        <%= yield :content %>
+      <% else %>
+        <%= yield %>
+      <% end %>
+
+      <!-- =====================================================
+           FALLBACK SMOKE (se alguém renderizar vazio)
+           ===================================================== -->
+      <% if !content_for?(:content) && view_flow.get(:layout).blank? %>
+        <div class="text-center text-sm text-gray-400 mt-12">
+          Página carregada sem conteúdo específico.
+        </div>
+      <% end %>
+
     </main>
 
-    <!-- FOOTER -->
+    <!-- =====================================================
+         FOOTER (SE EXISTIR)
+         ===================================================== -->
     <% if lookup_context.exists?("layouts/footer") %>
-      <footer>
+      <footer role="contentinfo">
         <%= render "layouts/footer" %>
       </footer>
     <% end %>
 
-    <!-- JS extra por página -->
+    <!-- =====================================================
+         JS EXTRA POR PÁGINA (NÃO OBRIGATÓRIO)
+         ===================================================== -->
     <%= yield :body_end %>
+
   </body>
 </html>
