@@ -11,7 +11,7 @@ class Frete < ApplicationRecord
   has_one  :cotacao,    dependent: :destroy
 
   # ==========================================================
-  # 🎛️ ENUMS (PREFIXADOS – SEM COLISÃO)
+  # 🎛️ ENUMS (PREFIXADOS – EVITA COLISÃO)
   # ==========================================================
 
   # Coluna: status (string)
@@ -54,7 +54,7 @@ class Frete < ApplicationRecord
             allow_nil: true
 
   # ==========================================================
-  # 🔄 CALLBACKS (ORDEM IMPORTANTE)
+  # 🔄 CALLBACKS (ORDEM CONTROLADA)
   # ==========================================================
   before_validation :definir_defaults, on: :create
   before_validation :definir_valor_final, on: :create
@@ -97,6 +97,21 @@ class Frete < ApplicationRecord
   end
 
   # ==========================================================
+  # 🔎 SCOPES (CONSULTAS)
+  # ==========================================================
+  scope :disponiveis, -> {
+    where(status: "pendente")
+  }
+
+  scope :por_cep, ->(cep) {
+    where(origem_cep: cep) if cep.present?
+  }
+
+  scope :recentes, -> {
+    order(created_at: :desc)
+  }
+
+  # ==========================================================
   # 🔒 MÉTODOS PRIVADOS
   # ==========================================================
   private
@@ -113,7 +128,7 @@ class Frete < ApplicationRecord
 
   # ---------- Valor Final (REGRA-CHAVE) ----------
   def definir_valor_final
-    self.valor_final ||= 
+    self.valor_final ||=
       valor_negociado.presence ||
       valor.presence ||
       valor_estimado.presence
