@@ -1,53 +1,120 @@
 <%= render "shared/cadastro_progress", usuario: current_transportador %>
+
 <div class="min-h-screen bg-gray-50 pt-24 pb-12">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    
-<div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
-  💡 <strong>Como funciona:</strong><br>
-  A CargaClick aplica uma taxa transparente (entre <strong>4% e 7%</strong>)
-  apenas após o pagamento confirmado.
-</div>
 
+    <!-- INFO MODELO DE NEGÓCIO -->
+    <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800 mb-8">
+      💡 <strong>Como funciona:</strong><br>
+      A CargaClick conecta você diretamente aos clientes.
+      A taxa é transparente (<strong>4% a 7%</strong>) e só é aplicada
+      após o pagamento confirmado.
+      Não há vínculo empregatício.
+    </div>
 
-    <header class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <!-- HEADER -->
+    <header class="mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       <div>
-        <h1 class="text-3xl font-extrabold text-purple-900">Área do Transportador</h1>
-        <p class="text-gray-600">Bem-vindo, <%= current_transportador.nome %>! Veja as oportunidades de hoje.</p>
+        <h1 class="text-3xl font-extrabold text-purple-900">
+          Área do Transportador
+        </h1>
+        <p class="text-gray-600">
+          Bem-vindo, <%= current_transportador.nome %>.
+          Veja suas oportunidades e acompanhe seus ganhos.
+        </p>
       </div>
-      <div class="flex gap-2">
-        <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-800">
-          ● Online e Disponível
-        </span>
-      </div>
+
+      <span class="inline-flex items-center px-4 py-2 rounded-full
+                   text-sm font-medium bg-green-100 text-green-800">
+        ● Online e disponível
+      </span>
     </header>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+    <!-- KPIs -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
       <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-        <p class="text-sm font-medium text-gray-500 uppercase">Ganhos do Mês</p>
-        <p class="text-2xl font-bold text-purple-700">R$ 0,00</p>
+        <p class="text-sm font-medium text-gray-500 uppercase">
+          Ganhos do mês
+        </p>
+        <p class="text-2xl font-bold text-purple-700">
+          R$ 0,00
+        </p>
       </div>
-      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-        <p class="text-sm font-medium text-gray-500 uppercase">Viagens Realizadas</p>
-        <p class="text-2xl font-bold text-gray-900">0</p>
-      </div>
-      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-        <p class="text-sm font-medium text-gray-500 uppercase">Avaliação</p>
-        <p class="text-2xl font-bold text-yellow-500">5.0 ⭐</p>
-      </div>
-    </div>
 
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <p class="text-sm font-medium text-gray-500 uppercase">
+          Viagens realizadas
+        </p>
+        <p class="text-2xl font-bold text-gray-900">
+          0
+        </p>
+      </div>
+
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <p class="text-sm font-medium text-gray-500 uppercase">
+          Avaliação
+        </p>
+        <p class="text-2xl font-bold text-yellow-500">
+          5.0 ⭐
+        </p>
+      </div>
+    </section>
+
+    <!-- STATUS DO PERFIL -->
+    <% unless current_transportador.cep.present? &&
+             current_transportador.pix_key.present? &&
+             current_transportador.tipo_veiculo.present? %>
+      <div class="bg-yellow-50 border border-yellow-300 rounded-xl p-6 mb-10">
+        <h2 class="font-bold text-yellow-800 mb-2">
+          ⚠️ Complete seu perfil
+        </h2>
+        <p class="text-yellow-700 mb-4">
+          Para receber fretes automaticamente, finalize seu cadastro
+          com CEP, tipo de veículo e chave PIX.
+        </p>
+
+        <%= link_to "Completar perfil agora",
+          transportadores_completar_perfil_path,
+          class: "inline-block bg-yellow-500 hover:bg-yellow-600
+                  text-white font-bold px-6 py-3 rounded-lg transition" %>
+      </div>
+    <% end %>
+
+    <!-- FRETES -->
+    <section class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
       <div class="p-6 border-b border-gray-100 flex items-center justify-between">
-        <h2 class="text-xl font-bold text-gray-800">🚚 Fretes Próximos a Você</h2>
-        <button class="text-purple-600 hover:text-purple-800 text-sm font-semibold">Ver todos</button>
+        <h2 class="text-xl font-bold text-gray-800">
+          🚚 Fretes próximos a você
+        </h2>
+        <span class="text-sm text-gray-400">
+          Atualização automática
+        </span>
       </div>
-      
-      <div class="p-6 text-center py-20">
-        <div class="text-5?xl mb-4 text-gray-300">📍</div>
-        <p class="text-gray-500 font-medium">Buscando as melhores cargas na sua região...</p>
-        <p class="text-sm text-gray-400">Novas cargas aparecerão aqui em tempo real.</p>
+
+      <!-- EMPTY STATE -->
+      <div class="p-10 text-center">
+        <div class="text-5xl mb-4 text-gray-300">📍</div>
+        <p class="text-gray-500 font-medium">
+          Nenhum frete disponível no momento.
+        </p>
+        <p class="text-sm text-gray-400 mb-6">
+          Assim que surgir uma oportunidade compatível,
+          ela aparecerá aqui automaticamente.
+        </p>
+
+        <%= link_to "Como aumentar minhas chances",
+          "#",
+          class: "inline-block border border-purple-600
+                  text-purple-600 hover:bg-purple-600 hover:text-white
+                  px-6 py-3 rounded-lg font-bold transition" %>
       </div>
-    </div>
+    </section>
+
+    <!-- AVISO LEGAL -->
+    <p class="text-xs text-gray-400 mt-10 text-center">
+      O transportador atua como prestador de serviços independente.
+      A CargaClick é uma plataforma de intermediação.
+    </p>
 
   </div>
 </div>

@@ -5,26 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- =====================================================
-         THEME / UX BÁSICO (não quebra se dark/light falhar)
+         THEME / UX BÁSICO
+         Não quebra se dark/light falhar
          ===================================================== -->
     <meta name="theme-color" content="#0b132b" media="(prefers-color-scheme: dark)">
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 
     <!-- =====================================================
-         SEO BÁSICO (com fallback total)
+         SEO GLOBAL + DINÂMICO (COM FALLBACK TOTAL)
          ===================================================== -->
-    <% if respond_to?(:render_meta_tags) %>
-      <%= render_meta_tags(
-            title:       content_for?(:title)       ? yield(:title)       : "CargaClick",
-            description: content_for?(:description) ? yield(:description) : "Fretes simples, rápidos e sem atrito.",
-            image:       asset_path("cargaclick_og.png"),
-            url:         request.original_url
-          ) %>
-    <% else %>
-      <title>CargaClick</title>
-      <meta name="description" content="Fretes simples, rápidos e sem atrito.">
-    <% end %>
+    <% page_title = @page_title.presence ||
+                    content_for?(:title) && yield(:title) ||
+                    "CargaClick – Fretes simples, rápidos e sem atrito" %>
 
+    <% meta_description = @meta_description.presence ||
+                          content_for?(:description) && yield(:description) ||
+                          "Conectamos clientes e transportadores para fretes sob demanda, com transparência e sem burocracia." %>
+
+    <title><%= page_title %></title>
+    <meta name="description" content="<%= meta_description %>">
+
+    <!-- Open Graph / Social -->
+    <meta property="og:title"       content="<%= page_title %>">
+    <meta property="og:description" content="<%= meta_description %>">
+    <meta property="og:type"        content="website">
+    <meta property="og:url"         content="<%= request.original_url %>">
+    <meta property="og:image"       content="<%= asset_path('cargaclick_og.png') %>">
+
+    <!-- Canonical -->
     <link rel="canonical" href="<%= request.original_url %>">
 
     <!-- =====================================================
@@ -34,7 +42,7 @@
     <%= csp_meta_tag %>
 
     <!-- =====================================================
-         ASSETS OPCIONAIS (Leaflet não pode quebrar layout)
+         ASSETS OPCIONAIS (Leaflet nunca pode quebrar)
          ===================================================== -->
     <% begin %>
       <meta name="leaflet-icon"    content="<%= asset_path('marker-icon.png') %>">
@@ -47,9 +55,9 @@
     <!-- =====================================================
          CSS (ordem segura)
          ===================================================== -->
-    <%= stylesheet_link_tag "leaflet",     "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "tailwind",    "inter-font", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "application","data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "leaflet",      "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
 
     <!-- =====================================================
          JS (defer obrigatório – UI não depende dele)
@@ -58,19 +66,14 @@
           "data-turbo-track": "reload",
           defer: true %>
 
-    <!-- HEAD EXTRA POR PÁGINA -->
+    <!-- HEAD EXTRA POR VIEW -->
     <%= yield :head %>
   </head>
 
   <body class="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900 font-sans antialiased">
 
     <!-- =====================================================
-         DEBUG VISUAL (REMOVER EM PRODUÇÃO)
-         ===================================================== -->
-    <%# <p style="color:red">DEBUG LAYOUT OK</p> %>
-
-    <!-- =====================================================
-         NAVBAR (SE EXISTIR, SEM DEPENDÊNCIA)
+         NAVBAR (OPCIONAL / NÃO BLOQUEANTE)
          ===================================================== -->
     <% if lookup_context.exists?("layouts/navbar") %>
       <header role="banner">
@@ -89,8 +92,6 @@
 
     <!-- =====================================================
          CONTEÚDO PRINCIPAL
-         - nunca fica vazio
-         - nunca fica escondido
          ===================================================== -->
     <main role="main"
           class="flex-1 w-full px-4 pt-24 pb-8 md:container md:mx-auto">
@@ -101,9 +102,7 @@
         <%= yield %>
       <% end %>
 
-      <!-- =====================================================
-           FALLBACK SMOKE (se alguém renderizar vazio)
-           ===================================================== -->
+      <!-- FALLBACK SMOKE -->
       <% if !content_for?(:content) && view_flow.get(:layout).blank? %>
         <div class="text-center text-sm text-gray-400 mt-12">
           Página carregada sem conteúdo específico.
@@ -113,7 +112,7 @@
     </main>
 
     <!-- =====================================================
-         FOOTER (SE EXISTIR)
+         FOOTER (OPCIONAL)
          ===================================================== -->
     <% if lookup_context.exists?("layouts/footer") %>
       <footer role="contentinfo">
@@ -122,7 +121,7 @@
     <% end %>
 
     <!-- =====================================================
-         JS EXTRA POR PÁGINA (NÃO OBRIGATÓRIO)
+         JS EXTRA POR VIEW
          ===================================================== -->
     <%= yield :body_end %>
 

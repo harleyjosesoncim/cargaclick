@@ -4,7 +4,9 @@
 
   <div class="max-w-7xl mx-auto flex items-center justify-between">
 
-    <!-- LOGO -->
+    <!-- =====================================================
+         LOGO
+         ===================================================== -->
     <%= link_to root_path,
       class: "flex items-center gap-3 text-white text-2xl font-extrabold
               tracking-wide hover:opacity-90 transition" do %>
@@ -17,7 +19,9 @@
       </span>
     <% end %>
 
-    <!-- DESKTOP -->
+    <!-- =====================================================
+         DESKTOP NAV
+         ===================================================== -->
     <div class="hidden md:flex items-center gap-6 text-white font-medium">
 
       <% if Rails.application.routes.url_helpers.respond_to?(:simular_frete_path) %>
@@ -27,10 +31,10 @@
         <% end %>
       <% end %>
 
-      <% if Rails.application.routes.url_helpers.respond_to?(:fidelidade_path) %>
-        <%= link_to fidelidade_path,
+      <% if Rails.application.routes.url_helpers.respond_to?(:transportadores_landing_path) %>
+        <%= link_to transportadores_landing_path,
           class: "px-3 py-2 rounded-lg hover:bg-white/10 hover:text-yellow-300 transition" do %>
-          ⭐ Fidelidade
+          🚛 Para Transportadores
         <% end %>
       <% end %>
 
@@ -41,36 +45,38 @@
         <% end %>
       <% end %>
 
-      <!-- NÃO LOGADO -->
+      <%# SEO PROGRAMÁTICO
+          Ex.: /transportadores/sorocaba
+          Ex.: /transportadores/motoboy
+      %>
+
+      <!-- =====================================================
+           CTAs – NÃO LOGADO
+           ===================================================== -->
       <% unless (defined?(cliente_signed_in?) && cliente_signed_in?) ||
                (defined?(transportador_signed_in?) && transportador_signed_in?) %>
 
-        <% if Rails.application.routes.url_helpers.respond_to?(:new_transportador_registration_path) %>
+        <% if Rails.application.routes.url_helpers.respond_to?(:transportadores_landing_path) %>
           <%= link_to "Sou transportador",
-            new_transportador_registration_path,
+            transportadores_landing_path,
             class: "border border-yellow-300 text-yellow-300
                     px-4 py-2 rounded-full font-bold
                     hover:bg-yellow-300 hover:text-purple-900
                     transition shadow" %>
         <% end %>
 
-        <% if Rails.application.routes.url_helpers.respond_to?(:new_cliente_registration_path) %>
-          <%= link_to "Criar conta",
-            new_cliente_registration_path,
+        <% if Rails.application.routes.url_helpers.respond_to?(:simular_frete_path) %>
+          <%= link_to "Simular frete",
+            simular_frete_path,
             class: "bg-white text-purple-800 px-5 py-2 rounded-full font-bold
                     hover:bg-purple-100 shadow transition" %>
         <% end %>
 
-        <% if Rails.application.routes.url_helpers.respond_to?(:new_cliente_session_path) %>
-          <%= link_to "Entrar",
-            new_cliente_session_path,
-            class: "border border-white/40 px-5 py-2 rounded-full font-semibold
-                    hover:bg-white hover:text-purple-800 shadow transition" %>
-        <% end %>
-
       <% end %>
 
-      <!-- CLIENTE -->
+      <!-- =====================================================
+           CLIENTE LOGADO
+           ===================================================== -->
       <% if defined?(cliente_signed_in?) && cliente_signed_in? &&
             Rails.application.routes.url_helpers.respond_to?(:clientes_root_path) %>
         <%= link_to "Meu painel",
@@ -79,7 +85,9 @@
                   hover:bg-blue-500 shadow transition" %>
       <% end %>
 
-      <!-- TRANSPORTADOR -->
+      <!-- =====================================================
+           TRANSPORTADOR LOGADO
+           ===================================================== -->
       <% if defined?(transportador_signed_in?) && transportador_signed_in? &&
             Rails.application.routes.url_helpers.respond_to?(:transportadores_root_path) %>
         <%= link_to "Painel transportador",
@@ -90,7 +98,9 @@
 
     </div>
 
-    <!-- MOBILE (HTML NATIVO) -->
+    <!-- =====================================================
+         MOBILE NAV (HTML NATIVO)
+         ===================================================== -->
     <details class="md:hidden text-white">
       <summary class="text-3xl cursor-pointer select-none">☰</summary>
 
@@ -98,40 +108,33 @@
                   rounded-xl p-4 shadow-xl">
 
         <% if Rails.application.routes.url_helpers.respond_to?(:simular_frete_path) %>
-          <%= link_to "🧮 Simular Frete", simular_frete_path,
+          <%= link_to "🧮 Simular Frete",
+            simular_frete_path,
             class: "px-3 py-2 rounded hover:bg-white/10" %>
         <% end %>
 
-        <% if Rails.application.routes.url_helpers.respond_to?(:fidelidade_path) %>
-          <%= link_to "⭐ Fidelidade", fidelidade_path,
+        <% if Rails.application.routes.url_helpers.respond_to?(:transportadores_landing_path) %>
+          <%= link_to "🚛 Para Transportadores",
+            transportadores_landing_path,
             class: "px-3 py-2 rounded hover:bg-white/10" %>
         <% end %>
 
         <% if Rails.application.routes.url_helpers.respond_to?(:contato_path) %>
-          <%= link_to "📞 Contato", contato_path,
+          <%= link_to "📞 Contato",
+            contato_path,
             class: "px-3 py-2 rounded hover:bg-white/10" %>
         <% end %>
 
         <% unless (defined?(cliente_signed_in?) && cliente_signed_in?) ||
                  (defined?(transportador_signed_in?) && transportador_signed_in?) %>
 
-          <% if Rails.application.routes.url_helpers.respond_to?(:new_transportador_registration_path) %>
-            <%= link_to "🚛 Sou transportador",
-              new_transportador_registration_path,
-              class: "px-3 py-2 rounded bg-yellow-300 text-purple-900 font-bold" %>
-          <% end %>
+          <%= link_to "🚛 Sou transportador",
+            transportadores_landing_path,
+            class: "px-3 py-2 rounded bg-yellow-300 text-purple-900 font-bold" %>
 
-          <% if Rails.application.routes.url_helpers.respond_to?(:new_cliente_registration_path) %>
-            <%= link_to "📝 Criar conta",
-              new_cliente_registration_path,
-              class: "px-3 py-2 rounded bg-white text-purple-800 font-bold" %>
-          <% end %>
-
-          <% if Rails.application.routes.url_helpers.respond_to?(:new_cliente_session_path) %>
-            <%= link_to "🔐 Entrar",
-              new_cliente_session_path,
-              class: "px-3 py-2 rounded border border-white/40" %>
-          <% end %>
+          <%= link_to "🧮 Simular frete",
+            simular_frete_path,
+            class: "px-3 py-2 rounded bg-white text-purple-800 font-bold" %>
 
         <% end %>
 

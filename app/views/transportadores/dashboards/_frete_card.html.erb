@@ -1,0 +1,40 @@
+<div class="border border-gray-200 rounded-xl p-5 flex flex-col md:flex-row
+            md:items-center md:justify-between gap-4 hover:shadow transition">
+
+  <!-- INFO PRINCIPAL -->
+  <div>
+    <h3 class="font-bold text-gray-800 text-lg">
+      📦 Frete #<%= frete.id %>
+    </h3>
+
+    <p class="text-sm text-gray-600 mt-1">
+      Origem: <strong><%= frete.origem_cep %></strong>
+    </p>
+
+    <% if frete.respond_to?(:destino_cep) && frete.destino_cep.present? %>
+      <p class="text-sm text-gray-600">
+        Destino: <strong><%= frete.destino_cep %></strong>
+      </p>
+    <% end %>
+
+    <% if frete.respond_to?(:descricao) && frete.descricao.present? %>
+      <p class="text-sm text-gray-500 mt-1">
+        <%= truncate(frete.descricao, length: 80) %>
+      </p>
+    <% end %>
+  </div>
+
+  <!-- AÇÕES -->
+  <div class="flex gap-3">
+    <%= link_to "Ver detalhes",
+      frete_path(frete),
+      class: "px-4 py-2 rounded-lg border border-purple-600
+              text-purple-600 font-semibold hover:bg-purple-600
+              hover:text-white transition" %>
+
+    <%= link_to "Aceitar frete",
+      "#",
+      class: "px-4 py-2 rounded-lg bg-green-600
+              text-white font-bold hover:bg-green-700 transition" %>
+  </div>
+</div>

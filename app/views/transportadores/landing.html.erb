@@ -1,0 +1,114 @@
+<div class="bg-white">
+
+  <!-- HERO / APRESENTAÇÃO -->
+  <section class="max-w-6xl mx-auto px-6 py-20 text-center">
+    <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+      Seja um Transportador no CargaClick
+    </h1>
+
+    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+      Transforme seu veículo em uma fonte de renda recorrente.
+      Escolha seus fretes, receba direto do cliente e construa sua reputação profissional.
+    </p>
+
+    <div class="mt-10 flex justify-center gap-4 flex-wrap">
+      <%= link_to "Cadastrar como Transportador",
+          new_transportador_registration_path,
+          class: "bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-lg font-semibold text-lg" %>
+
+      <%= link_to "Já sou Transportador",
+          new_transportador_session_path,
+          class: "border border-gray-300 hover:bg-gray-100 px-8 py-4 rounded-lg font-semibold text-lg" %>
+    </div>
+  </section>
+
+  <!-- COMO FUNCIONA -->
+  <section class="bg-gray-50 py-20">
+    <div class="max-w-6xl mx-auto px-6">
+      <h2 class="text-3xl font-bold text-center mb-12">
+        Como funciona
+      </h2>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white p-8 rounded-xl shadow">
+          <h3 class="text-xl font-bold mb-4">1️⃣ Cadastro simples</h3>
+          <p class="text-gray-600">
+            Cadastre seus dados, tipo de veículo, cidade de atuação e valores.
+            Você não paga nada para começar.
+          </p>
+        </div>
+
+        <div class="bg-white p-8 rounded-xl shadow">
+          <h3 class="text-xl font-bold mb-4">2️⃣ Receba fretes</h3>
+          <p class="text-gray-600">
+            Clientes publicam solicitações de transporte.
+            Você escolhe apenas os fretes que fazem sentido para você.
+          </p>
+        </div>
+
+        <div class="bg-white p-8 rounded-xl shadow">
+          <h3 class="text-xl font-bold mb-4">3️⃣ Ganhe dinheiro</h3>
+          <p class="text-gray-600">
+            Pagamento direto, sem intermediários desnecessários.
+            Total transparência nos valores.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GANHOS -->
+  <section class="py-20">
+    <div class="max-w-6xl mx-auto px-6">
+      <h2 class="text-3xl font-bold mb-8">
+        💰 Quanto posso ganhar?
+      </h2>
+
+      <div class="bg-white p-8 rounded-xl shadow max-w-4xl">
+        <ul class="list-disc ml-6 space-y-3 text-gray-700 text-lg">
+          <li>Ganhos por km rodado ou valor fechado por frete</li>
+          <li>Liberdade total para aceitar ou recusar serviços</li>
+          <li>Taxa da plataforma: <strong>8%</strong></li>
+          <li>Transportadores fidelizados pagam apenas <strong>5%</strong></li>
+          <li>Sem mensalidade obrigatória</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CARREIRA -->
+  <section class="bg-gray-50 py-20">
+    <div class="max-w-6xl mx-auto px-6">
+      <h2 class="text-3xl font-bold mb-8">
+        🚀 Alavanque sua carreira
+      </h2>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="bg-white p-8 rounded-xl shadow">
+          <h3 class="text-xl font-bold mb-4">Reputação profissional</h3>
+          <p class="text-gray-600">
+            Construa histórico, avaliações e recorrência com clientes reais.
+          </p>
+        </div>
+
+        <div class="bg-white p-8 rounded-xl shadow">
+          <h3 class="text-xl font-bold mb-4">Crescimento real</h3>
+          <p class="text-gray-600">
+            Comece como autônomo e evolua para uma operação profissional (PF ou PJ).
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AVISO LEGAL -->
+  <section class="py-12">
+    <div class="max-w-4xl mx-auto px-6 text-sm text-gray-500">
+      <p>
+        O CargaClick atua como plataforma de conexão entre clientes e transportadores.
+        Não existe vínculo empregatício. O transportador é um prestador de serviços independente.
+      </p>
+    </div>
+  </section>
+
+</div>

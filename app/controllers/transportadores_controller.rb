@@ -2,39 +2,51 @@
 
 class TransportadoresController < ApplicationController
   # =====================================================
-  # SEGURANÇA / AUTENTICAÇÃO
+  # 🔐 SEGURANÇA / AUTENTICAÇÃO
   # =====================================================
 
-  # Opt-in via API não usa CSRF (Discord / bots / integrações)
+  # Opt-in via API (bots, Discord, integrações externas)
+  # Não utiliza CSRF pois não há sessão de navegador
   protect_from_forgery except: :optin
 
-  # Devise – transportador precisa estar logado
+  # Autenticação padrão Devise
+  # Ações públicas ficam explicitamente fora
   before_action :authenticate_transportador!,
-                except: %i[cadastro optin]
+                except: %i[landing cadastro optin]
 
-  # Apenas admin pode listar e excluir
+  # Somente administrador pode listar ou excluir registros
   before_action :require_admin!,
                 only: %i[index destroy]
 
-  # Carrega registro quando necessário
+  # Carrega transportador quando a ação depende de ID
   before_action :set_transportador,
                 only: %i[show edit update destroy]
 
-  # Transportador comum só pode acessar o próprio registro
+  # Garante que o transportador comum só acesse o próprio registro
   before_action :authorize_transportador!,
                 only: %i[show edit update]
 
   # =====================================================
-  # AÇÕES PÚBLICAS
+  # 🌐 AÇÕES PÚBLICAS (SEM LOGIN)
   # =====================================================
 
+  # GET /transportadores
+  # Landing institucional do transportador
+  # Objetivo: SEO + conversão + clareza jurídica
+  def landing
+    @page_title = "Seja Transportador no CargaClick | Ganhe com seu veículo"
+    @meta_description = "Cadastre-se como transportador no CargaClick. Receba fretes, aumente sua renda e atue como prestador independente, sem mensalidade."
+  end
+
   # GET /transportadores/cadastro
+  # Cadastro manual (fluxo web alternativo ao Devise)
   def cadastro
     @transportador = Transportador.new
   end
 
   # POST /api/transportadores/optin
-  # Cadastro simplificado via API / Discord (LGPD)
+  # Cadastro simplificado via API / robôs / Discord
+  # Exige consentimento explícito (LGPD)
   def optin
     return render_consentimento_invalido unless consentimento_valido?
 
@@ -47,24 +59,37 @@ class TransportadoresController < ApplicationController
              status: :unprocessable_entity
     end
   rescue StandardError => e
-    Rails.logger.error("[TransportadoresController#optin] #{e.class}: #{e.message}")
-    render json: resposta_erro_interno, status: :internal_server_error
+    Rails.logger.error(
+      "[TransportadoresController#optin] #{e.class}: #{e.message}"
+    )
+    render json: resposta_erro_interno,
+           status: :internal_server_error
   end
 
   # =====================================================
-  # AÇÕES PRIVADAS (LOGADO)
+  # 🔒 AÇÕES PRIVADAS (AUTENTICADO)
   # =====================================================
 
+  # -----------------------------------------------------
   # ADMIN
+  # -----------------------------------------------------
+
+  # Lista geral de transportadores (uso administrativo)
   def index
     @transportadores = Transportador.order(created_at: :desc)
   end
 
-  # PAINEL
+  # -----------------------------------------------------
+  # PAINEL / PERFIL
+  # -----------------------------------------------------
+
+  # Visualização do perfil
   def show; end
 
+  # Edição de dados principais
   def edit; end
 
+  # Atualização de dados principais
   def update
     if @transportador.update(transportador_params)
       redirect_to @transportador,
@@ -76,7 +101,9 @@ class TransportadoresController < ApplicationController
   end
 
   # =====================================================
-  # COMPLETAR PERFIL (PIX + CEP)
+  # 🧾 COMPLETAR PERFIL (ONBOARDING)
+  # =====================================================
+  # Dados sensíveis / financeiros (PIX + localização)
   # =====================================================
 
   # GET /transportadores/completar_perfil
@@ -98,22 +125,24 @@ class TransportadoresController < ApplicationController
   end
 
   # =====================================================
-  # ADMIN
+  # 🗑️ ADMIN — EXCLUSÃO
   # =====================================================
 
   def destroy
     @transportador.destroy
-    redirect_to root_path, notice: "Transportador removido com sucesso."
+    redirect_to root_path,
+                notice: "Transportador removido com sucesso."
   end
 
   # =====================================================
-  # MÉTODOS PRIVADOS
+  # 🔧 MÉTODOS PRIVADOS
   # =====================================================
   private
 
   # -----------------------------------------------------
   # LGPD
   # -----------------------------------------------------
+
   def consentimento_valido?
     params[:consentimento].to_s == "on"
   end
@@ -126,8 +155,9 @@ class TransportadoresController < ApplicationController
   end
 
   # -----------------------------------------------------
-  # BUILD (OPT-IN)
+  # BUILD — OPT-IN API
   # -----------------------------------------------------
+
   def build_transportador
     Transportador.new(
       nome:         params[:nome],
@@ -144,6 +174,7 @@ class TransportadoresController < ApplicationController
   # -----------------------------------------------------
   # STRONG PARAMS
   # -----------------------------------------------------
+
   def transportador_params
     params.require(:transportador).permit(
       :nome,
@@ -175,35 +206,45 @@ class TransportadoresController < ApplicationController
   # -----------------------------------------------------
   # LOAD
   # -----------------------------------------------------
+
   def set_transportador
     @transportador = Transportador.find_by(id: params[:id])
     return if @transportador.present?
 
-    redirect_to root_path, alert: "Transportador não encontrado."
+    redirect_to root_path,
+                alert: "Transportador não encontrado."
   end
 
   # -----------------------------------------------------
   # AUTORIZAÇÃO
   # -----------------------------------------------------
+
   def authorize_transportador!
     return if current_transportador == @transportador
     return if current_transportador&.admin?
 
-    redirect_to root_path, alert: "Acesso não autorizado."
+    redirect_to root_path,
+                alert: "Acesso não autorizado."
   end
 
   def require_admin!
     return if current_transportador&.admin?
 
-    admin_email = ENV.fetch("ADMIN_EMAIL", "sac.cargaclick@gmail.com")
+    admin_email = ENV.fetch(
+      "ADMIN_EMAIL",
+      "sac.cargaclick@gmail.com"
+    )
+
     return if current_transportador&.email&.casecmp?(admin_email)
 
-    redirect_to root_path, alert: "Acesso restrito ao administrador."
+    redirect_to root_path,
+                alert: "Acesso restrito ao administrador."
   end
 
   # -----------------------------------------------------
-  # RESPONSES (API)
+  # RESPONSES — API
   # -----------------------------------------------------
+
   def resposta_sucesso(transportador)
     {
       success: true,
