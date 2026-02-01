@@ -1,155 +1,81 @@
-<nav
-  class="bg-gradient-to-r from-purple-950 via-purple-800 to-purple-700
-         p-4 shadow-2xl fixed top-0 left-0 w-full z-50 backdrop-blur">
+<nav class="bg-gradient-to-r from-purple-950 via-purple-800 to-purple-700
+            p-4 shadow-2xl fixed top-0 left-0 w-full z-50 backdrop-blur">
 
   <div class="max-w-7xl mx-auto flex items-center justify-between">
 
-    <!-- =====================================================
-         LOGO
-         ===================================================== -->
-    <%= link_to root_path,
-      class: "flex items-center gap-3 text-white text-2xl font-extrabold
-              tracking-wide hover:opacity-90 transition" do %>
-      <span class="text-3xl drop-shadow">🚚</span>
+    <!-- LOGO -->
+    <%= link_to nav_path(:root_path, fallback: "/"),
+          class: "flex items-center gap-3 text-white text-2xl font-extrabold tracking-wide hover:opacity-90 transition" do %>
+      <span class="text-3xl">🚚</span>
       <span class="flex flex-col leading-tight">
         <span>CargaClick</span>
-        <span class="text-xs font-normal text-purple-200 tracking-wide">
+        <span class="text-xs font-normal text-purple-200">
           transporte inteligente
         </span>
       </span>
     <% end %>
 
-    <!-- =====================================================
-         DESKTOP NAV
-         ===================================================== -->
+    <!-- DESKTOP -->
     <div class="hidden md:flex items-center gap-6 text-white font-medium">
 
-      <% if Rails.application.routes.url_helpers.respond_to?(:simular_frete_path) %>
-        <%= link_to simular_frete_path,
-          class: "px-3 py-2 rounded-lg hover:bg-white/10 hover:text-yellow-300 transition" do %>
-          🧮 Simular Frete
-        <% end %>
+      <%= link_to "🧮 Simular frete",
+            nav_path(:new_frete_path, fallback: "/"),
+            class: "px-3 py-2 rounded-lg hover:bg-white/10 hover:text-yellow-300 transition" %>
+
+      <%= link_to "🚛 Para transportadores",
+            nav_path(:transportadores_path, fallback: "/transportadores"),
+            class: "px-3 py-2 rounded-lg hover:bg-white/10 hover:text-yellow-300 transition" %>
+
+      <%= link_to "📞 Contato",
+            nav_path(:contato_path, fallback: "/"),
+            class: "px-3 py-2 rounded-lg hover:bg-white/10 hover:text-yellow-300 transition" %>
+
+      <!-- NÃO LOGADO -->
+      <% unless cliente_signed_in? || transportador_signed_in? %>
+        <%= link_to "Sou transportador",
+              nav_path(:transportadores_path, fallback: "/transportadores"),
+              class: "border border-yellow-300 text-yellow-300 px-4 py-2 rounded-full font-bold
+                      hover:bg-yellow-300 hover:text-purple-900 transition" %>
+
+        <%= link_to "Simular frete",
+              nav_path(:new_frete_path, fallback: "/"),
+              class: "bg-white text-purple-800 px-5 py-2 rounded-full font-bold hover:bg-purple-100 transition" %>
       <% end %>
 
-      <% if Rails.application.routes.url_helpers.respond_to?(:transportadores_landing_path) %>
-        <%= link_to transportadores_landing_path,
-          class: "px-3 py-2 rounded-lg hover:bg-white/10 hover:text-yellow-300 transition" do %>
-          🚛 Para Transportadores
-        <% end %>
-      <% end %>
-
-      <% if Rails.application.routes.url_helpers.respond_to?(:contato_path) %>
-        <%= link_to contato_path,
-          class: "px-3 py-2 rounded-lg hover:bg-white/10 hover:text-yellow-300 transition" do %>
-          📞 Contato
-        <% end %>
-      <% end %>
-
-      <%# SEO PROGRAMÁTICO
-          Ex.: /transportadores/sorocaba
-          Ex.: /transportadores/motoboy
-      %>
-
-      <!-- =====================================================
-           CTAs – NÃO LOGADO
-           ===================================================== -->
-      <% unless (defined?(cliente_signed_in?) && cliente_signed_in?) ||
-               (defined?(transportador_signed_in?) && transportador_signed_in?) %>
-
-        <% if Rails.application.routes.url_helpers.respond_to?(:transportadores_landing_path) %>
-          <%= link_to "Sou transportador",
-            transportadores_landing_path,
-            class: "border border-yellow-300 text-yellow-300
-                    px-4 py-2 rounded-full font-bold
-                    hover:bg-yellow-300 hover:text-purple-900
-                    transition shadow" %>
-        <% end %>
-
-        <% if Rails.application.routes.url_helpers.respond_to?(:simular_frete_path) %>
-          <%= link_to "Simular frete",
-            simular_frete_path,
-            class: "bg-white text-purple-800 px-5 py-2 rounded-full font-bold
-                    hover:bg-purple-100 shadow transition" %>
-        <% end %>
-
-      <% end %>
-
-      <!-- =====================================================
-           CLIENTE LOGADO
-           ===================================================== -->
-      <% if defined?(cliente_signed_in?) && cliente_signed_in? &&
-            Rails.application.routes.url_helpers.respond_to?(:clientes_root_path) %>
+      <!-- CLIENTE -->
+      <% if cliente_signed_in? %>
         <%= link_to "Meu painel",
-          clientes_root_path,
-          class: "bg-blue-600/90 px-5 py-2 rounded-full font-bold
-                  hover:bg-blue-500 shadow transition" %>
+              nav_path(:clientes_root_path, fallback: "/"),
+              class: "bg-blue-600 px-5 py-2 rounded-full font-bold hover:bg-blue-500 transition" %>
       <% end %>
 
-      <!-- =====================================================
-           TRANSPORTADOR LOGADO
-           ===================================================== -->
-      <% if defined?(transportador_signed_in?) && transportador_signed_in? &&
-            Rails.application.routes.url_helpers.respond_to?(:transportadores_root_path) %>
+      <!-- TRANSPORTADOR -->
+      <% if transportador_signed_in? %>
         <%= link_to "Painel transportador",
-          transportadores_root_path,
-          class: "bg-green-600/90 px-5 py-2 rounded-full font-bold
-                  hover:bg-green-500 shadow transition" %>
+              nav_path(:transportadores_root_path, fallback: "/"),
+              class: "bg-green-600 px-5 py-2 rounded-full font-bold hover:bg-green-500 transition" %>
       <% end %>
 
     </div>
 
-    <!-- =====================================================
-         MOBILE NAV (HTML NATIVO)
-         ===================================================== -->
+    <!-- MOBILE -->
     <details class="md:hidden text-white">
-      <summary class="text-3xl cursor-pointer select-none">☰</summary>
+      <summary class="text-3xl cursor-pointer">☰</summary>
 
-      <div class="mt-4 flex flex-col gap-3 bg-purple-900/95
-                  rounded-xl p-4 shadow-xl">
+      <div class="mt-4 flex flex-col gap-3 bg-purple-900/95 rounded-xl p-4">
 
-        <% if Rails.application.routes.url_helpers.respond_to?(:simular_frete_path) %>
-          <%= link_to "🧮 Simular Frete",
-            simular_frete_path,
-            class: "px-3 py-2 rounded hover:bg-white/10" %>
-        <% end %>
+        <%= link_to "🧮 Simular frete",
+              nav_path(:new_frete_path, fallback: "/"),
+              class: "px-3 py-2 rounded hover:bg-white/10" %>
 
-        <% if Rails.application.routes.url_helpers.respond_to?(:transportadores_landing_path) %>
-          <%= link_to "🚛 Para Transportadores",
-            transportadores_landing_path,
-            class: "px-3 py-2 rounded hover:bg-white/10" %>
-        <% end %>
+        <%= link_to "🚛 Para transportadores",
+              nav_path(:transportadores_path, fallback: "/transportadores"),
+              class: "px-3 py-2 rounded hover:bg-white/10" %>
 
-        <% if Rails.application.routes.url_helpers.respond_to?(:contato_path) %>
-          <%= link_to "📞 Contato",
-            contato_path,
-            class: "px-3 py-2 rounded hover:bg-white/10" %>
-        <% end %>
-
-        <% unless (defined?(cliente_signed_in?) && cliente_signed_in?) ||
-                 (defined?(transportador_signed_in?) && transportador_signed_in?) %>
-
-          <%= link_to "🚛 Sou transportador",
-            transportadores_landing_path,
-            class: "px-3 py-2 rounded bg-yellow-300 text-purple-900 font-bold" %>
-
-          <%= link_to "🧮 Simular frete",
-            simular_frete_path,
-            class: "px-3 py-2 rounded bg-white text-purple-800 font-bold" %>
-
-        <% end %>
-
-        <% if defined?(cliente_signed_in?) && cliente_signed_in? &&
-              Rails.application.routes.url_helpers.respond_to?(:clientes_root_path) %>
-          <%= link_to "👤 Meu painel",
-            clientes_root_path,
-            class: "px-3 py-2 rounded bg-blue-600/90 font-bold" %>
-        <% end %>
-
-        <% if defined?(transportador_signed_in?) && transportador_signed_in? &&
-              Rails.application.routes.url_helpers.respond_to?(:transportadores_root_path) %>
-          <%= link_to "🚛 Painel transportador",
-            transportadores_root_path,
-            class: "px-3 py-2 rounded bg-green-600/90 font-bold" %>
+        <% unless cliente_signed_in? || transportador_signed_in? %>
+          <%= link_to "Sou transportador",
+                nav_path(:transportadores_path, fallback: "/transportadores"),
+                class: "px-3 py-2 rounded bg-yellow-300 text-purple-900 font-bold" %>
         <% end %>
 
       </div>
@@ -157,3 +83,4 @@
 
   </div>
 </nav>
+

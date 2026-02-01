@@ -1,1 +1,38 @@
-<h1>CargaClick</h1><a href='/cliente'>Cliente</a> | <a href='/transportador'>Transportador</a> | <a href='/fretes'>Fretes</a> | <a href='/admin'>Admin</a>
+<% content_for :title, "CargaClick — Frete mais justo" %>
+
+<section class="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900
+                flex items-center justify-center px-6">
+
+  <!-- CAMADA DE CONTRASTE -->
+  <div class="absolute inset-0 bg-black/30"></div>
+
+  <div class="relative z-10 max-w-3xl text-center">
+
+    <h1 class="text-5xl md:text-6xl font-extrabold text-white drop-shadow-lg">
+      Frete mais justo começa aqui
+    </h1>
+
+    <p class="mt-6 text-lg md:text-xl text-gray-200 leading-relaxed">
+      Simule, compare e contrate com transparência.
+      <br class="hidden md:block">
+      Sem taxas abusivas. Sem surpresas no final.
+    </p>
+
+    <div class="mt-8 flex flex-wrap justify-center gap-4">
+
+      <%= link_to "Simular frete agora",
+        new_frete_path,
+        class: "bg-blue-600 hover:bg-blue-700
+                text-white font-bold px-8 py-4 rounded-xl
+                transition shadow-xl" %>
+
+      <%= link_to "Sou transportador",
+        transportadores_path,
+        class: "bg-green-600 hover:bg-green-700
+                text-white font-bold px-8 py-4 rounded-xl
+                transition shadow-xl" %>
+
+    </div>
+
+  </div>
+</section>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_27_212017) do
+ActiveRecord::Schema[7.1].define(version: 2026_02_01_031545) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -324,6 +324,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_27_212017) do
     t.datetime "activated_at"
     t.datetime "last_alert_at"
     t.integer "status_cadastro", default: 1, null: false
+    t.integer "tipo_pessoa", default: 0, null: false
     t.index ["activated_at"], name: "index_transportadores_on_activated_at"
     t.index ["confirmation_token"], name: "index_transportadores_on_confirmation_token", unique: true
     t.index ["documento"], name: "index_transportadores_on_documento", unique: true
