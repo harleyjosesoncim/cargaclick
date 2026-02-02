@@ -15,8 +15,7 @@ Rails.application.routes.draw do
 
   # =====================================================
   # 🚛 LANDING PÚBLICA — TRANSPORTADORES
-  # =====================================================
-  # Página explicativa + qualificação
+  # Página institucional + CTA
   # NÃO exige autenticação
   # =====================================================
   get "/transportadores", to: "transportadores/landing#index", as: :landing_transportadores
@@ -55,28 +54,35 @@ Rails.application.routes.draw do
 
   # =====================================================
   # 👤 CLIENTES — ÁREA AUTENTICADA
+  # Proteção em nível de ROTA + Controller
   # =====================================================
-  namespace :clientes do
-    get "dashboard", to: "dashboards#index", as: :dashboard
+  authenticate :cliente do
+    namespace :clientes do
+      get "dashboard", to: "dashboards#index", as: :dashboard
 
-    get  "completar_cadastro",  to: "cadastro#edit",   as: :completar_cadastro
-    patch "finalizar_cadastro", to: "cadastro#update", as: :finalizar_cadastro
+      get  "completar_cadastro",  to: "cadastro#edit",   as: :completar_cadastro
+      patch "finalizar_cadastro", to: "cadastro#update", as: :finalizar_cadastro
+    end
   end
 
   # =====================================================
   # 🚛 TRANSPORTADORES — ÁREA AUTENTICADA
+  # Proteção FORTE (rota + Devise + controller)
   # =====================================================
-  namespace :transportadores do
-    get "dashboard", to: "dashboards#index", as: :dashboard
+  authenticate :transportador do
+    namespace :transportadores do
+      get "dashboard", to: "dashboards#index", as: :dashboard
 
-    get  "completar_perfil",  to: "cadastro#edit",   as: :completar_perfil
-    patch "atualizar_perfil", to: "cadastro#update", as: :atualizar_perfil
+      get  "completar_perfil",  to: "cadastro#edit",   as: :completar_perfil
+      patch "atualizar_perfil", to: "cadastro#update", as: :atualizar_perfil
+    end
   end
 
   # =====================================================
   # 📦 FRETES — CORE DO SISTEMA
+  # (Acesso controlado via lógica interna / policies)
   # =====================================================
-  resources :fretes do
+  resources :fretes, only: [:index, :show, :create] do
     member do
       get :chat
       get :rastreamento
