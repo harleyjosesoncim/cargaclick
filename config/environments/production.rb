@@ -4,40 +4,51 @@ require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
   # =========================================================
-  # CONFIGURAÇÕES BÁSICAS
+  # BOOT
   # =========================================================
-  config.cache_classes = true
-  config.eager_load = true
-  config.consider_all_requests_local = false
+  config.enable_reloading = false
+  config.eager_load       = true
+
+  # =========================================================
+  # ERROS / CACHE
+  # =========================================================
+  config.consider_all_requests_local       = false
   config.action_controller.perform_caching = true
-
-  config.require_master_key = false
+  config.cache_store = :memory_store
 
   # =========================================================
-  # LOGS
+  # LOGS (🔥 RENDER / PRODUÇÃO)
   # =========================================================
   config.log_level = :info
-  config.log_tags = [:request_id]
+  config.log_tags  = [:request_id]
+
+  if ENV["RAILS_LOG_TO_STDOUT"].present?
+    logger           = ActiveSupport::Logger.new(STDOUT)
+    logger.formatter = config.log_formatter
+    config.logger    = ActiveSupport::TaggedLogging.new(logger)
+  end
 
   # =========================================================
-  # I18N
+  # ASSETS / STATIC FILES
   # =========================================================
-  config.i18n.fallbacks = true
-  config.active_support.deprecation = :notify
+  serve_static = ENV["RAILS_SERVE_STATIC_FILES"].present? ||
+                 ENV["RENDER"].present?
 
-  # =========================================================
-  # ASSETS
-  # =========================================================
+  config.public_file_server.enabled = serve_static
+
+  if serve_static
+    max_age = 1.year.to_i
+    config.public_file_server.headers = {
+      "Cache-Control" => "public, max-age=#{max_age}"
+    }
+  end
+
   config.assets.compile = false
-  config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
 
   # =========================================================
-  # SSL / HTTPS  (🔥 CORREÇÃO DEFINITIVA)
+  # SSL
   # =========================================================
-  # ➜ LOCAL:   FORCE_SSL=false
-  # ➜ RENDER:  FORCE_SSL=true
   config.force_ssl = ENV["FORCE_SSL"] == "true"
-  config.assume_ssl = false
 
   # =========================================================
   # STORAGE
@@ -50,7 +61,18 @@ Rails.application.configure do
   config.action_mailer.perform_caching = false
 
   # =========================================================
-  # INTERNATIONALIZATION
+  # I18N
   # =========================================================
   config.i18n.default_locale = :"pt-BR"
+  config.i18n.fallbacks      = true
+
+  # =========================================================
+  # DEPRECATIONS
+  # =========================================================
+  config.active_support.deprecation = :notify
+
+  # =========================================================
+  # SEGURANÇA
+  # =========================================================
+  config.require_master_key = true
 end
