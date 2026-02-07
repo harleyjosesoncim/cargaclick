@@ -11,7 +11,7 @@ class Frete < ApplicationRecord
   has_one  :cotacao,    dependent: :destroy
 
   # ==========================================================
-  # 🎛️ ENUMS (PREFIXADOS – EVITA COLISÃO)
+  # 🎛️ ENUMS (PREFIXADOS – SEM AMBIGUIDADE)
   # ==========================================================
 
   # Coluna: status (string)
@@ -25,10 +25,10 @@ class Frete < ApplicationRecord
 
   # Coluna: status_pagamento (integer)
   enum status_pagamento: {
-    pendente:  0,
-    pago:      1,
-    liberado:  2,
-    cancelado: 3
+    aguardando: 0,
+    pago:       1,
+    liberado:   2,
+    cancelado:  3
   }, _prefix: :pagamento
 
   # Coluna: pin_status (string)
@@ -54,11 +54,11 @@ class Frete < ApplicationRecord
             allow_nil: true
 
   # ==========================================================
-  # 🔄 CALLBACKS (ORDEM CONTROLADA)
+  # 🔄 CALLBACKS (ORDEM SEGURA)
   # ==========================================================
-  before_validation :definir_defaults, on: :create
-  before_validation :definir_valor_final, on: :create
-  before_save       :calcular_split!, if: :deve_calcular_split?
+  before_validation :definir_defaults,      on: :create
+  before_validation :definir_valor_final,   on: :create
+  before_validation :calcular_split!,       on: :create
 
   # ==========================================================
   # 🔐 PIN DE ENTREGA
@@ -97,19 +97,11 @@ class Frete < ApplicationRecord
   end
 
   # ==========================================================
-  # 🔎 SCOPES (CONSULTAS)
+  # 🔎 SCOPES
   # ==========================================================
-  scope :disponiveis, -> {
-    where(status: "pendente")
-  }
-
-  scope :por_cep, ->(cep) {
-    where(origem_cep: cep) if cep.present?
-  }
-
-  scope :recentes, -> {
-    order(created_at: :desc)
-  }
+  scope :disponiveis, -> { where(status: "pendente") }
+  scope :recentes,   -> { order(created_at: :desc) }
+  scope :por_cep, ->(cep) { where(origem_cep: cep) if cep.present? }
 
   # ==========================================================
   # 🔒 MÉTODOS PRIVADOS
@@ -121,17 +113,14 @@ class Frete < ApplicationRecord
     self.pin_entrega         ||= gerar_pin
     self.pin_status          ||= "pendente"
     self.status              ||= "pendente"
-    self.status_pagamento    ||= "pendente"
+    self.status_pagamento    ||= "aguardando"
     self.tentativas_pin      ||= 0
-    self.comissao_percentual ||= percentual_comissao
+    self.comissao_percentual ||= percentual_comissao_calculado
   end
 
   # ---------- Valor Final (REGRA-CHAVE) ----------
   def definir_valor_final
-    self.valor_final ||=
-      valor_negociado.presence ||
-      valor.presence ||
-      valor_estimado.presence
+    self.valor_final ||= base_para_split
   end
 
   # ---------- PIN ----------
@@ -149,16 +138,15 @@ class Frete < ApplicationRecord
     base = base_para_split
     return if base <= 0
 
-    percentual = percentual_comissao
+    percentual = percentual_comissao_calculado
 
     self.comissao_percentual = percentual
     self.valor_comissao      = (base * percentual / 100.0).round(2)
     self.valor_transportador = (base - valor_comissao).round(2)
   end
 
-  def percentual_comissao
-    comissao_percentual.presence ||
-      ComissaoCalculator.percentual_para(transportador)
+  def percentual_comissao_calculado
+    ComissaoCalculator.percentual_para(transportador)
   end
 
   def base_para_split
@@ -167,10 +155,5 @@ class Frete < ApplicationRecord
       valor.presence ||
       valor_estimado.presence ||
       0
-  end
-
-  def deve_calcular_split?
-    base_para_split.positive? &&
-      (valor_comissao.blank? || valor_transportador.blank?)
   end
 end

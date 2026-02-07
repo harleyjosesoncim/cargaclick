@@ -17,12 +17,11 @@
     Sem taxas abusivas. Sem surpresas no final.
   </p>
 
-  <!-- SELO ANIMADO -->
+  <!-- SELO -->
   <div class="flex justify-center mb-10">
     <div class="inline-flex items-center gap-2
                 bg-gradient-to-r from-green-500 to-emerald-600
-                text-white px-6 py-3 rounded-full shadow-xl
-                animate-pulse">
+                text-white px-6 py-3 rounded-full shadow-xl animate-pulse">
       <span class="text-xl">💸</span>
       <span class="font-semibold">
         Até 22% mais barato que apps tradicionais
@@ -32,15 +31,18 @@
 
   <!-- CTA -->
   <div class="flex justify-center gap-4 flex-wrap">
-    <%= link_to "Simular frete agora",
-      new_frete_path,
-      class: "bg-blue-600 hover:bg-blue-700 text-white
-              font-bold px-8 py-4 rounded-xl transition shadow-lg" %>
+
+    <% if respond_to?(:simular_frete_path) %>
+      <%= link_to "Simular frete agora",
+                  simular_frete_path,
+                  class: "bg-blue-600 hover:bg-blue-700 text-white
+                          font-bold px-8 py-4 rounded-xl transition shadow-lg" %>
+    <% end %>
 
     <%= link_to "Como funciona",
-      "#como-funciona",
-      class: "bg-gray-100 hover:bg-gray-200 text-gray-700
-              font-semibold px-8 py-4 rounded-xl transition" %>
+                "#como-funciona",
+                class: "bg-gray-100 hover:bg-gray-200 text-gray-700
+                        font-semibold px-8 py-4 rounded-xl transition" %>
   </div>
 
 </section>
@@ -87,4 +89,3 @@
   </div>
 
 </section>
-

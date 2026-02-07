@@ -8,7 +8,7 @@ class FretesController < ApplicationController
   # FORMULÁRIO PÚBLICO (SIMULAÇÃO)
   # ==================================================
   def new
-    @frete = Frete.new
+    # form público → não depende de model
   end
 
   # ==================================================
@@ -16,25 +16,31 @@ class FretesController < ApplicationController
   # ==================================================
   def simular
     parametros_simulacao = {
-      origem:        params[:origem],
-      destino:       params[:destino],
-      peso:          params[:peso],
-      volume:        params[:volume],
-      tipo_veiculo:  params[:tipo_veiculo],
-      tipo_carga:    params[:tipo_carga]
+      origem:       params[:origem].to_s.strip,
+      destino:      params[:destino].to_s.strip,
+      peso:         params[:peso].presence,
+      volume:       params[:volume].presence,
+      tipo_veiculo: params[:tipo_veiculo],
+      tipo_carga:   params[:tipo_carga]
     }
+
+    if parametros_simulacao[:origem].blank? || parametros_simulacao[:destino].blank?
+      flash[:alert] = "Informe origem e destino para simular o frete."
+      redirect_to simular_frete_path
+      return
+    end
 
     resultado = CalcularFrete.call(parametros_simulacao)
 
     if resultado[:sucesso]
       @resultado = resultado
-      render :simular, status: :ok
+      render :resultado, status: :ok
     else
       Rails.logger.warn(
         "[FretesController#simular] #{resultado[:mensagem]} | #{resultado[:detalhes]}"
       )
-      flash.now[:alert] = resultado[:mensagem] || "Não foi possível simular o frete."
-      render :new, status: :unprocessable_entity
+      flash[:alert] = resultado[:mensagem] || "Não foi possível simular o frete."
+      redirect_to simular_frete_path
     end
 
   rescue StandardError => e
@@ -57,7 +63,7 @@ class FretesController < ApplicationController
       redirect_to @frete, notice: "Frete contratado com sucesso."
     else
       Rails.logger.warn(
-        "[FretesController#create] Falha ao salvar frete: #{@frete.errors.full_messages.join(', ')}"
+        "[FretesController#create] #{@frete.errors.full_messages.join(', ')}"
       )
       flash.now[:alert] = "Não foi possível contratar o frete."
       render :new, status: :unprocessable_entity
@@ -103,7 +109,7 @@ class FretesController < ApplicationController
   end
 
   # ==================================================
-  # STRONG PARAMS (CLIENTE NÃO ENTRA AQUI)
+  # STRONG PARAMS
   # ==================================================
   def frete_params
     params.require(:frete).permit(
@@ -118,4 +124,3 @@ class FretesController < ApplicationController
     )
   end
 end
-

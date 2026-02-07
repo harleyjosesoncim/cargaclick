@@ -19,7 +19,7 @@
 <!-- ==================================================
      CABEÇALHO
 ================================================== -->
-<div class="mb-6">
+<header class="mb-6">
   <h1 class="text-3xl font-extrabold text-gray-900">
     🚛 Simule seu frete em segundos
   </h1>
@@ -27,13 +27,12 @@
     Compare valores, distância e condições.
     Simulação gratuita. Login apenas para contratar.
   </p>
-</div>
+</header>
 
 <!-- ==================================================
      CARD — SIMULAÇÃO
 ================================================== -->
-<div class="bg-white shadow-xl rounded-3xl p-8 mb-8">
-
+<section class="bg-white shadow-xl rounded-3xl p-8 mb-8">
   <h2 class="text-xl font-semibold text-gray-800 mb-6">
     🔍 Dados para simulação
   </h2>
@@ -41,38 +40,50 @@
   <%= form_with url: simular_frete_post_path, method: :post, local: true do %>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <%= text_field_tag :origem, nil,
-        placeholder: "Origem (CEP ou endereço)",
-        class: "w-full rounded-xl border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500" %>
 
-      <%= text_field_tag :destino, nil,
-        placeholder: "Destino (CEP ou endereço)",
-        class: "w-full rounded-xl border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500" %>
+      <%= text_field_tag :origem, params[:origem],
+            placeholder: "Origem (CEP ou endereço)",
+            required: true,
+            class: "w-full rounded-xl border-gray-300 px-4 py-3
+                    focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
 
-      <%= number_field_tag :peso, nil,
-        placeholder: "Peso (kg)",
-        class: "w-full rounded-xl border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500" %>
+      <%= text_field_tag :destino, params[:destino],
+            placeholder: "Destino (CEP ou endereço)",
+            required: true,
+            class: "w-full rounded-xl border-gray-300 px-4 py-3
+                    focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
 
-      <%= number_field_tag :volume, nil,
-        placeholder: "Volume (m³)",
-        class: "w-full rounded-xl border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500" %>
+      <%= number_field_tag :peso, params[:peso],
+            placeholder: "Peso (kg)",
+            min: 0,
+            step: 0.1,
+            inputmode: "decimal",
+            class: "w-full rounded-xl border-gray-300 px-4 py-3
+                    focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
+
+      <%= number_field_tag :volume, params[:volume],
+            placeholder: "Volume (m³)",
+            min: 0,
+            step: 0.01,
+            inputmode: "decimal",
+            class: "w-full rounded-xl border-gray-300 px-4 py-3
+                    focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
     </div>
 
     <div class="mt-8">
       <%= submit_tag "Calcular Frete",
-        class: "w-full bg-gradient-to-r from-blue-600 to-indigo-600
-                hover:opacity-90 text-white font-bold py-4
-                rounded-xl transition shadow-lg" %>
+            class: "w-full bg-gradient-to-r from-blue-600 to-indigo-600
+                    hover:opacity-90 text-white font-bold py-4
+                    rounded-xl transition shadow-lg" %>
     </div>
 
   <% end %>
-</div>
+</section>
 
 <!-- ==================================================
      CARD — CONTRATAÇÃO / PERFIS
 ================================================== -->
-<div class="bg-gray-50 border border-dashed border-gray-300 rounded-2xl p-6">
-
+<section class="bg-gray-50 border border-dashed border-gray-300 rounded-2xl p-6">
   <h2 class="text-lg font-semibold text-gray-700 mb-2">
     🧾 Contratação e acesso
   </h2>
@@ -87,41 +98,41 @@
     <li>• Comissão da plataforma sempre transparente</li>
   </ul>
 
-  <!-- ==================================================
-       CTA DINÂMICO (BOTÕES CORRETOS)
-  ================================================== -->
+  <!-- CTA DINÂMICO (DEFENSIVO) -->
   <div class="mt-6 flex flex-wrap gap-4">
 
     <% if defined?(cliente_signed_in?) && cliente_signed_in? %>
-      <!-- CLIENTE LOGADO -->
       <span class="inline-block bg-green-600 text-white
                    font-bold px-6 py-3 rounded-xl shadow">
         ✅ Você pode contratar este frete
       </span>
 
-    <% elsif defined?(transportador_signed_in?) && transportador_signed_in? %>
-      <!-- TRANSPORTADOR LOGADO -->
+    <% elsif defined?(transportador_signed_in?) && transportador_signed_in? &&
+            respond_to?(:transportadores_dashboard_path) %>
       <%= link_to "Acessar painel de oportunidades",
-        transportadores_dashboard_path,
-        class: "inline-block bg-indigo-600 hover:bg-indigo-700
-                text-white font-bold px-6 py-3 rounded-xl
-                transition shadow" %>
+                  transportadores_dashboard_path,
+                  class: "inline-block bg-indigo-600 hover:bg-indigo-700
+                          text-white font-bold px-6 py-3 rounded-xl
+                          transition shadow" %>
 
     <% else %>
-      <!-- NÃO LOGADO (BOTÃO VERDE CORRIGIDO) -->
-      <%= link_to "Entrar ou Criar Conta para Contratar",
-        new_cliente_session_path,
-        class: "inline-block bg-green-600 hover:bg-green-700
-                text-white font-semibold px-6 py-3 rounded-xl
-                transition shadow" %>
+      <% if respond_to?(:new_cliente_session_path) %>
+        <%= link_to "Entrar ou Criar Conta para Contratar",
+                    new_cliente_session_path,
+                    class: "inline-block bg-green-600 hover:bg-green-700
+                            text-white font-semibold px-6 py-3 rounded-xl
+                            transition shadow" %>
+      <% end %>
 
-      <%= link_to "Sou transportador",
-        new_transportador_session_path,
-        class: "inline-block border border-indigo-600 text-indigo-600
-                hover:bg-indigo-600 hover:text-white
-                font-semibold px-6 py-3 rounded-xl
-                transition shadow" %>
+      <% if respond_to?(:new_transportador_session_path) %>
+        <%= link_to "Sou transportador",
+                    new_transportador_session_path,
+                    class: "inline-block border border-indigo-600 text-indigo-600
+                            hover:bg-indigo-600 hover:text-white
+                            font-semibold px-6 py-3 rounded-xl
+                            transition shadow" %>
+      <% end %>
     <% end %>
 
   </div>
-</div>
+</section>
