@@ -2,23 +2,29 @@
 
 Rails.application.routes.draw do
   # =====================================================
-  # 🔐 ADMINISTRAÇÃO DO SISTEMA
+  # 🔐 ADMINISTRAÇÃO
   # =====================================================
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
 
   # =====================================================
-  # 🏠 HOME / LANDING INSTITUCIONAL
+  # 🏠 HOME / LANDING
   # =====================================================
   root "pages#home"
   get "/inicio", to: "pages#home", as: :inicio
 
   # =====================================================
-  # 🚛 LANDING PÚBLICA — TRANSPORTADORES
-  # Página institucional + CTA
-  # NÃO exige autenticação
+  # 🏢 PÁGINAS INSTITUCIONAIS
   # =====================================================
-  get "/transportadores", to: "transportadores/landing#index", as: :landing_transportadores
+  get "/sobre",   to: "pages#about",  as: :sobre
+  get "/contato", to: "contatos#new", as: :contato
+
+  # =====================================================
+  # 🚛 LANDING PÚBLICA — TRANSPORTADORES (CTA)
+  # =====================================================
+  get "/transportadores",
+      to: "transportadores/landing#index",
+      as: :landing_transportadores
 
   # =====================================================
   # 🔐 AUTENTICAÇÃO — CLIENTES
@@ -41,48 +47,53 @@ Rails.application.routes.draw do
   }
 
   # =====================================================
-  # 🏢 PÁGINAS INSTITUCIONAIS
+  # 🚚 SIMULAÇÃO DE FRETE (PÚBLICA — CANÔNICA)
   # =====================================================
-  get "/sobre",   to: "pages#about",  as: :sobre
-  get "/contato", to: "contatos#new", as: :contato
-
-  # =====================================================
-  # 🚚 SIMULAÇÃO DE FRETE (PÚBLICA)
-  # =====================================================
+  # GET  → formulário de simulação
+  # POST → processamento da simulação
   get  "/simular-frete", to: "fretes#new",     as: :simular_frete
   post "/simular-frete", to: "fretes#simular", as: :simular_frete_post
 
   # =====================================================
   # 👤 CLIENTES — ÁREA AUTENTICADA
-  # Proteção em nível de ROTA + Controller
   # =====================================================
   authenticate :cliente do
     namespace :clientes do
       get "dashboard", to: "dashboards#index", as: :dashboard
 
-      get  "completar_cadastro",  to: "cadastro#edit",   as: :completar_cadastro
-      patch "finalizar_cadastro", to: "cadastro#update", as: :finalizar_cadastro
+      get  "completar_cadastro",
+           to: "cadastro#edit",
+           as: :completar_cadastro
+
+      patch "finalizar_cadastro",
+            to: "cadastro#update",
+            as: :finalizar_cadastro
     end
   end
 
   # =====================================================
   # 🚛 TRANSPORTADORES — ÁREA AUTENTICADA
-  # Proteção FORTE (rota + Devise + controller)
   # =====================================================
   authenticate :transportador do
     namespace :transportadores do
       get "dashboard", to: "dashboards#index", as: :dashboard
 
-      get  "completar_perfil",  to: "cadastro#edit",   as: :completar_perfil
-      patch "atualizar_perfil", to: "cadastro#update", as: :atualizar_perfil
+      get  "completar_perfil",
+           to: "cadastro#edit",
+           as: :completar_perfil
+
+      patch "atualizar_perfil",
+            to: "cadastro#update",
+            as: :atualizar_perfil
     end
   end
 
   # =====================================================
   # 📦 FRETES — CORE DO SISTEMA
-  # (Acesso controlado via lógica interna / policies)
   # =====================================================
-  resources :fretes, only: [:index, :show, :create] do
+  # ⚠️ NÃO existe /fretes/new
+  # ⚠️ Criação ocorre via simulação → POST /fretes
+  resources :fretes, only: [:show, :create] do
     member do
       get :chat
       get :rastreamento

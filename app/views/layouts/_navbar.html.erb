@@ -3,7 +3,9 @@
 
   <div class="max-w-7xl mx-auto flex items-center justify-between">
 
-    <!-- LOGO -->
+    <!-- =====================================================
+         LOGO (NUNCA QUEBRA)
+         ===================================================== -->
     <%= link_to nav_path(:root_path, fallback: "/"),
           class: "flex items-center gap-3 text-white text-2xl font-extrabold tracking-wide hover:opacity-90 transition" do %>
       <span class="text-3xl">🚚</span>
@@ -15,7 +17,9 @@
       </span>
     <% end %>
 
-    <!-- DESKTOP -->
+    <!-- =====================================================
+         MENU DESKTOP
+         ===================================================== -->
     <div class="hidden md:flex items-center gap-6 text-white font-medium">
 
       <%= link_to "🧮 Simular frete",
@@ -30,8 +34,11 @@
             nav_path(:contato_path, fallback: "/"),
             class: "px-3 py-2 rounded-lg hover:bg-white/10 hover:text-yellow-300 transition" %>
 
-      <!-- NÃO LOGADO -->
+      <!-- =====================================================
+           USUÁRIO NÃO LOGADO
+           ===================================================== -->
       <% unless cliente_signed_in? || transportador_signed_in? %>
+
         <%= link_to "Sou transportador",
               nav_path(:transportadores_path, fallback: "/transportadores"),
               class: "border border-yellow-300 text-yellow-300 px-4 py-2 rounded-full font-bold
@@ -39,30 +46,41 @@
 
         <%= link_to "Simular frete",
               nav_path(:new_frete_path, fallback: "/"),
-              class: "bg-white text-purple-800 px-5 py-2 rounded-full font-bold hover:bg-purple-100 transition" %>
+              class: "bg-white text-purple-800 px-5 py-2 rounded-full font-bold
+                      hover:bg-purple-100 transition" %>
+
       <% end %>
 
-      <!-- CLIENTE -->
+      <!-- =====================================================
+           CLIENTE LOGADO
+           ===================================================== -->
       <% if cliente_signed_in? %>
         <%= link_to "Meu painel",
               nav_path(:clientes_root_path, fallback: "/"),
-              class: "bg-blue-600 px-5 py-2 rounded-full font-bold hover:bg-blue-500 transition" %>
+              class: "bg-blue-600 px-5 py-2 rounded-full font-bold
+                      hover:bg-blue-500 transition" %>
       <% end %>
 
-      <!-- TRANSPORTADOR -->
+      <!-- =====================================================
+           TRANSPORTADOR LOGADO
+           ===================================================== -->
       <% if transportador_signed_in? %>
         <%= link_to "Painel transportador",
               nav_path(:transportadores_root_path, fallback: "/"),
-              class: "bg-green-600 px-5 py-2 rounded-full font-bold hover:bg-green-500 transition" %>
+              class: "bg-green-600 px-5 py-2 rounded-full font-bold
+                      hover:bg-green-500 transition" %>
       <% end %>
 
     </div>
 
-    <!-- MOBILE -->
-    <details class="md:hidden text-white">
-      <summary class="text-3xl cursor-pointer">☰</summary>
+    <!-- =====================================================
+         MENU MOBILE (SEM JS, SEM RISCO)
+         ===================================================== -->
+    <details class="md:hidden text-white relative">
+      <summary class="text-3xl cursor-pointer select-none">☰</summary>
 
-      <div class="mt-4 flex flex-col gap-3 bg-purple-900/95 rounded-xl p-4">
+      <div class="absolute right-0 mt-4 w-64 flex flex-col gap-3
+                  bg-purple-900/95 rounded-xl p-4 shadow-xl">
 
         <%= link_to "🧮 Simular frete",
               nav_path(:new_frete_path, fallback: "/"),
@@ -72,10 +90,14 @@
               nav_path(:transportadores_path, fallback: "/transportadores"),
               class: "px-3 py-2 rounded hover:bg-white/10" %>
 
+        <%= link_to "📞 Contato",
+              nav_path(:contato_path, fallback: "/"),
+              class: "px-3 py-2 rounded hover:bg-white/10" %>
+
         <% unless cliente_signed_in? || transportador_signed_in? %>
           <%= link_to "Sou transportador",
                 nav_path(:transportadores_path, fallback: "/transportadores"),
-                class: "px-3 py-2 rounded bg-yellow-300 text-purple-900 font-bold" %>
+                class: "px-3 py-2 rounded bg-yellow-300 text-purple-900 font-bold text-center" %>
         <% end %>
 
       </div>
@@ -83,4 +105,3 @@
 
   </div>
 </nav>
-

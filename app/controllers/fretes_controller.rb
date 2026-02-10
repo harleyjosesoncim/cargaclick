@@ -1,47 +1,66 @@
-# app/controllers/fretes_controller.rb
+# frozen_string_literal: true
+
 class FretesController < ApplicationController
+  # ==================================================
+  # CALLBACKS
+  # ==================================================
   before_action :set_frete, only: %i[
-    show edit update destroy chat rastreamento contratar
+    show edit update destroy chat rastreamento
   ]
 
   # ==================================================
-  # FORMULÁRIO PÚBLICO (SIMULAÇÃO)
+  # FORMULÁRIO PÚBLICO — SIMULAÇÃO
+  # Botão: "Simular frete"
+  # Rota: GET /simular-frete
   # ==================================================
   def new
-    # form público → não depende de model
+    # Apenas renderiza o formulário de simulação
+    # Não depende de model
   end
 
   # ==================================================
-  # SIMULAÇÃO DE FRETE (PÚBLICO - NÃO SALVA)
+  # SIMULAÇÃO DE FRETE — PROCESSAMENTO
+  # Botões envolvidos:
+  # - "Calcular frete"
+  # - "Nova simulação"
+  #
+  # Resultado:
+  # - render :resultado
   # ==================================================
   def simular
-    parametros_simulacao = {
-      origem:       params[:origem].to_s.strip,
-      destino:      params[:destino].to_s.strip,
-      peso:         params[:peso].presence,
-      volume:       params[:volume].presence,
-      tipo_veiculo: params[:tipo_veiculo],
-      tipo_carga:   params[:tipo_carga]
-    }
+    parametros = parametros_simulacao
 
-    if parametros_simulacao[:origem].blank? || parametros_simulacao[:destino].blank?
+    # ---------- validação mínima (ANTI-500) ----------
+    if parametros[:origem].blank? || parametros[:destino].blank?
       flash[:alert] = "Informe origem e destino para simular o frete."
-      redirect_to simular_frete_path
-      return
+      return redirect_to simular_frete_path
     end
 
-    resultado = CalcularFrete.call(parametros_simulacao)
+    # ---------- cálculo ----------
+    @resultado = CalcularFrete.call(parametros)
 
-    if resultado[:sucesso]
-      @resultado = resultado
-      render :resultado, status: :ok
-    else
+    unless @resultado[:sucesso]
       Rails.logger.warn(
-        "[FretesController#simular] #{resultado[:mensagem]} | #{resultado[:detalhes]}"
+        "[FretesController#simular][ERRO] #{@resultado[:mensagem]} | #{@resultado[:detalhes]}"
       )
-      flash[:alert] = resultado[:mensagem] || "Não foi possível simular o frete."
-      redirect_to simular_frete_path
+      flash[:alert] = @resultado[:mensagem] || "Não foi possível simular o frete."
+      return redirect_to simular_frete_path
     end
+
+    # ---------- transportadores disponíveis ----------
+    # (usado APENAS para exibição, sem compromisso)
+    @transportadores =
+      Transportador
+        .where(status: :ativo, status_cadastro: :completo)
+        .limit(5)
+
+    Rails.logger.info(
+      "[FretesController#simular][OK] " \
+      "valor=#{@resultado[:valor]} " \
+      "transportadores=#{@transportadores.pluck(:id)}"
+    )
+
+    render :resultado, status: :ok
 
   rescue StandardError => e
     Rails.logger.error(
@@ -51,7 +70,9 @@ class FretesController < ApplicationController
   end
 
   # ==================================================
-  # CONTRATAÇÃO REAL DO FRETE (CLIENTE OBRIGATÓRIO)
+  # CONTRATAÇÃO REAL DO FRETE
+  # Botão: "Contratar frete"
+  # Só aparece para cliente logado
   # ==================================================
   def create
     authenticate_cliente!
@@ -71,7 +92,7 @@ class FretesController < ApplicationController
   end
 
   # ==================================================
-  # CRUD
+  # CRUD — SÓ EXISTE SE TIVER BOTÃO
   # ==================================================
   def show; end
   def edit; end
@@ -91,12 +112,26 @@ class FretesController < ApplicationController
   end
 
   # ==================================================
-  # FUNCIONALIDADES EXTRAS
+  # FUNCIONALIDADES ATIVAS (SEM PROMESSA FALSA)
   # ==================================================
   def chat; end
   def rastreamento; end
 
   private
+
+  # ==================================================
+  # PARÂMETROS DE SIMULAÇÃO
+  # ==================================================
+  def parametros_simulacao
+    {
+      origem:       params[:origem].to_s.strip,
+      destino:      params[:destino].to_s.strip,
+      peso:         params[:peso].presence,
+      volume:       params[:volume].presence,
+      tipo_veiculo: params[:tipo_veiculo].presence,
+      tipo_carga:   params[:tipo_carga].presence
+    }
+  end
 
   # ==================================================
   # BUSCA SEGURA (ANTI-500)
@@ -109,7 +144,7 @@ class FretesController < ApplicationController
   end
 
   # ==================================================
-  # STRONG PARAMS
+  # STRONG PARAMS — CONTRATAÇÃO
   # ==================================================
   def frete_params
     params.require(:frete).permit(

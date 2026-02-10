@@ -1,156 +1,162 @@
-<%# app/views/fretes/resultado.html.erb %>
-<% content_for :title, "Resultado da Simulação" %>
+# frozen_string_literal: true
 
-<!-- ==================================================
-     BREADCRUMB
-================================================== -->
-<nav class="text-sm text-gray-500 mb-6">
-  <ol class="flex flex-wrap items-center gap-2">
-    <li>
-      <%= link_to "Início", root_path, class: "hover:text-blue-600 transition" %>
-    </li>
-    <li>/</li>
-    <li>
-      <%= link_to "Simular Frete", simular_frete_path, class: "hover:text-blue-600 transition" %>
-    </li>
-    <li>/</li>
-    <li class="font-semibold text-gray-700">
-      Resultado
-    </li>
-  </ol>
-</nav>
+class FretesController < ApplicationController
+  # ==================================================
+  # CALLBACKS
+  # ==================================================
+  before_action :set_frete, only: %i[
+    show edit update destroy chat rastreamento
+  ]
 
-<!-- ==================================================
-     CABEÇALHO
-================================================== -->
-<header class="mb-8">
-  <h1 class="text-3xl font-extrabold text-gray-900">
-    📦 Resultado da simulação
-  </h1>
-  <p class="mt-2 text-gray-600 max-w-2xl">
-    Valores estimados com base nas informações informadas.
-    A contratação só ocorre após confirmação.
-  </p>
-</header>
+  # ==================================================
+  # FORMULÁRIO PÚBLICO — SIMULAÇÃO
+  # Botão: "Simular frete"
+  # Rota: GET /simular-frete
+  # ==================================================
+  def new
+    # Renderiza apenas o formulário público
+    # NÃO cria frete
+    # NÃO exige autenticação
+  end
 
-<!-- ==================================================
-     CARD PRINCIPAL — RESULTADO
-================================================== -->
-<div class="bg-white shadow-xl rounded-3xl p-8 mb-8">
+  # ==================================================
+  # SIMULAÇÃO DE FRETE — PROCESSAMENTO
+  # Botões:
+  # - "Calcular frete"
+  # - "Nova simulação"
+  #
+  # Resultado:
+  # - render :resultado
+  # ==================================================
+  def simular
+    parametros = parametros_simulacao
 
-  <h2 class="text-xl font-semibold text-gray-800 mb-6">
-    💰 Detalhes do frete
-  </h2>
+    # ---------- validação mínima (ANTI-500) ----------
+    if parametros[:origem].blank? || parametros[:destino].blank?
+      flash[:alert] = "Informe origem e destino para simular o frete."
+      return redirect_to simular_frete_path
+    end
 
-  <dl class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+    # ---------- cálculo ----------
+    @resultado = CalcularFrete.call(parametros)
 
-    <div>
-      <dt class="text-gray-500">Origem</dt>
-      <dd class="font-semibold text-gray-800">
-        <%= @resultado[:origem] %>
-      </dd>
-    </div>
+    unless @resultado[:sucesso]
+      Rails.logger.warn(
+        "[FretesController#simular][ERRO] #{@resultado[:mensagem]} | #{@resultado[:detalhes]}"
+      )
+      flash[:alert] = @resultado[:mensagem] || "Não foi possível simular o frete."
+      return redirect_to simular_frete_path
+    end
 
-    <div>
-      <dt class="text-gray-500">Destino</dt>
-      <dd class="font-semibold text-gray-800">
-        <%= @resultado[:destino] %>
-      </dd>
-    </div>
+    # ---------- transportadores disponíveis (APENAS VISUAL) ----------
+    @transportadores =
+      Transportador
+        .where(status: :ativo, status_cadastro: :completo)
+        .limit(5)
 
-    <div>
-      <dt class="text-gray-500">Distância estimada</dt>
-      <dd class="font-semibold text-gray-800">
-        <%= @resultado[:distancia_km] %> km
-      </dd>
-    </div>
+    Rails.logger.info(
+      "[FretesController#simular][OK] " \
+      "valor=#{@resultado[:valor]} " \
+      "transportadores=#{@transportadores.pluck(:id)}"
+    )
 
-    <div>
-      <dt class="text-gray-500">Tempo estimado</dt>
-      <dd class="font-semibold text-gray-800">
-        <%= @resultado[:tempo_estimado] %>
-      </dd>
-    </div>
+    render :resultado, status: :ok
 
-    <div>
-      <dt class="text-gray-500">Tipo de veículo</dt>
-      <dd class="font-semibold text-gray-800">
-        <%= @resultado[:tipo_veiculo] %>
-      </dd>
-    </div>
+  rescue StandardError => e
+    Rails.logger.error(
+      "[FretesController#simular][FATAL] #{e.class}: #{e.message}"
+    )
+    render "errors/500", status: :internal_server_error
+  end
 
-    <div>
-      <dt class="text-gray-500">Tipo de carga</dt>
-      <dd class="font-semibold text-gray-800">
-        <%= @resultado[:tipo_carga] %>
-      </dd>
-    </div>
+  # ==================================================
+  # CONTRATAÇÃO REAL DO FRETE
+  # Botão: "Contratar frete"
+  # SOMENTE cliente autenticado
+  # ==================================================
+  def create
+    authenticate_cliente!
 
-  </dl>
+    @frete = Frete.new(frete_params)
+    @frete.cliente = current_cliente
 
-  <!-- ==================================================
-       VALOR DESTACADO
-  ================================================== -->
-  <div class="mt-8 p-6 rounded-2xl bg-green-50 border border-green-200 text-center">
-    <p class="text-sm text-green-700 mb-1">
-      Valor estimado do frete
-    </p>
-    <p class="text-3xl font-extrabold text-green-800">
-      R$ <%= number_to_currency(@resultado[:valor_total], unit: "", separator: ",", delimiter: ".") %>
-    </p>
-    <p class="text-xs text-green-700 mt-2">
-      Valor final pode variar conforme confirmação do transportador
-    </p>
-  </div>
+    if @frete.save
+      redirect_to @frete, notice: "Frete contratado com sucesso."
+    else
+      Rails.logger.warn(
+        "[FretesController#create] #{@frete.errors.full_messages.join(', ')}"
+      )
+      flash.now[:alert] = "Não foi possível contratar o frete."
+      render :new, status: :unprocessable_entity
+    end
+  end
 
-</div>
+  # ==================================================
+  # CRUD — SOMENTE SE EXISTIR BOTÃO NA UI
+  # ==================================================
+  def show; end
+  def edit; end
 
-<!-- ==================================================
-     CARD — AÇÕES / CONTRATAÇÃO
-================================================== -->
-<div class="bg-gray-50 border border-dashed border-gray-300 rounded-2xl p-6">
+  def update
+    if @frete.update(frete_params)
+      redirect_to @frete, notice: "Frete atualizado com sucesso."
+    else
+      flash.now[:alert] = "Erro ao atualizar o frete."
+      render :edit, status: :unprocessable_entity
+    end
+  end
 
-  <h2 class="text-lg font-semibold text-gray-700 mb-2">
-    🚚 Próximo passo
-  </h2>
+  def destroy
+    @frete.destroy
+    redirect_to inicio_path, notice: "Frete removido."
+  end
 
-  <p class="text-sm text-gray-600 max-w-2xl mb-4">
-    Para contratar este frete, é necessário estar logado como cliente.
-  </p>
+  # ==================================================
+  # FUNCIONALIDADES ATIVAS (SEM PROMESSA FALSA)
+  # ==================================================
+  def chat; end
+  def rastreamento; end
 
-  <div class="flex flex-wrap gap-4">
+  private
 
-    <% if defined?(cliente_signed_in?) && cliente_signed_in? %>
-      <!-- CLIENTE LOGADO -->
-      <%= button_to "Contratar este frete",
-        fretes_path,
-        method: :post,
-        params: {
-          frete: {
-            origem:        @resultado[:origem],
-            destino:       @resultado[:destino],
-            peso:          @resultado[:peso],
-            volume:        @resultado[:volume],
-            tipo_carga:    @resultado[:tipo_carga],
-            tipo_veiculo:  @resultado[:tipo_veiculo],
-            valor:         @resultado[:valor_total]
-          }
-        },
-        class: "bg-blue-600 hover:bg-blue-700 text-white
-                font-bold px-8 py-4 rounded-xl transition shadow-lg" %>
+  # ==================================================
+  # PARÂMETROS DE SIMULAÇÃO (FORM PÚBLICO)
+  # ==================================================
+  def parametros_simulacao
+    {
+      origem:       params[:origem].to_s.strip,
+      destino:      params[:destino].to_s.strip,
+      peso:         params[:peso].presence,
+      volume:       params[:volume].presence,
+      tipo_veiculo: params[:tipo_veiculo].presence,
+      tipo_carga:   params[:tipo_carga].presence
+    }
+  end
 
-    <% else %>
-      <!-- NÃO LOGADO -->
-      <%= link_to "Entrar para contratar",
-        new_cliente_session_path,
-        class: "bg-green-600 hover:bg-green-700 text-white
-                font-semibold px-8 py-4 rounded-xl transition shadow-lg" %>
+  # ==================================================
+  # BUSCA SEGURA (ANTI-500)
+  # ==================================================
+  def set_frete
+    @frete = Frete.find_by(id: params[:id])
+    return if @frete.present?
 
-      <%= link_to "Refazer simulação",
-        simular_frete_path,
-        class: "bg-gray-200 hover:bg-gray-300 text-gray-700
-                font-semibold px-8 py-4 rounded-xl transition" %>
-    <% end %>
+    redirect_to inicio_path, alert: "Frete não encontrado."
+  end
 
-  </div>
-</div>
+  # ==================================================
+  # STRONG PARAMS — CONTRATAÇÃO
+  # (somente após simulação)
+  # ==================================================
+  def frete_params
+    params.require(:frete).permit(
+      :origem,
+      :destino,
+      :peso,
+      :volume,
+      :tipo_carga,
+      :tipo_veiculo,
+      :descricao,
+      :valor
+    )
+  end
+end

@@ -37,7 +37,8 @@
     🔍 Dados para simulação
   </h2>
 
-  <%= form_with url: simular_frete_post_path, method: :post, local: true do %>
+  <%# ⚠️ IMPORTANTE: usa o MESMO helper do GET e POST %>
+  <%= form_with url: simular_frete_path, method: :post, local: true do %>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -98,17 +99,20 @@
     <li>• Comissão da plataforma sempre transparente</li>
   </ul>
 
-  <!-- CTA DINÂMICO (DEFENSIVO) -->
+  <!-- ==================================================
+       CTA DEFENSIVO (SEM ROTA QUEBRADA)
+  ================================================== -->
   <div class="mt-6 flex flex-wrap gap-4">
 
     <% if defined?(cliente_signed_in?) && cliente_signed_in? %>
       <span class="inline-block bg-green-600 text-white
                    font-bold px-6 py-3 rounded-xl shadow">
-        ✅ Você pode contratar este frete
+        ✅ Você pode contratar este frete após a simulação
       </span>
 
     <% elsif defined?(transportador_signed_in?) && transportador_signed_in? &&
             respond_to?(:transportadores_dashboard_path) %>
+
       <%= link_to "Acessar painel de oportunidades",
                   transportadores_dashboard_path,
                   class: "inline-block bg-indigo-600 hover:bg-indigo-700
@@ -116,6 +120,7 @@
                           transition shadow" %>
 
     <% else %>
+
       <% if respond_to?(:new_cliente_session_path) %>
         <%= link_to "Entrar ou Criar Conta para Contratar",
                     new_cliente_session_path,
@@ -132,7 +137,7 @@
                             font-semibold px-6 py-3 rounded-xl
                             transition shadow" %>
       <% end %>
-    <% end %>
 
+    <% end %>
   </div>
 </section>

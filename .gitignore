@@ -110,3 +110,6 @@ ghp_*
 /public/assets
 /node_modules
 /vendor/bundle
+# Dev only
+Procfile.dev
+bin/dev

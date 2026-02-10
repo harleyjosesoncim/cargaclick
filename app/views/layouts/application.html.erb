@@ -1,38 +1,46 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="h-full">
   <head>
+    <!-- =====================================================
+         META BÁSICO
+         ===================================================== -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- =====================================================
-         THEME / UX BÁSICO
-         Não quebra se dark/light falhar
+         THEME / UX (fallback seguro)
          ===================================================== -->
     <meta name="theme-color" content="#0b132b" media="(prefers-color-scheme: dark)">
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 
     <!-- =====================================================
-         SEO GLOBAL + DINÂMICO (COM FALLBACK TOTAL)
+         SEO DINÂMICO COM FALLBACK
          ===================================================== -->
-    <% page_title = @page_title.presence ||
-                    content_for?(:title) && yield(:title) ||
-                    "CargaClick – Fretes simples, rápidos e sem atrito" %>
+    <% page_title =
+        @page_title.presence ||
+        (content_for?(:title) ? yield(:title) : nil) ||
+        "CargaClick – Fretes rápidos, simples e sem burocracia" %>
 
-    <% meta_description = @meta_description.presence ||
-                          content_for?(:description) && yield(:description) ||
-                          "Conectamos clientes e transportadores para fretes sob demanda, com transparência e sem burocracia." %>
+    <% meta_description =
+        @meta_description.presence ||
+        (content_for?(:description) ? yield(:description) : nil) ||
+        "Conectamos clientes e transportadores para fretes sob demanda, com transparência, agilidade e zero atrito." %>
 
     <title><%= page_title %></title>
     <meta name="description" content="<%= meta_description %>">
 
-    <!-- Open Graph / Social -->
-    <meta property="og:title"       content="<%= page_title %>">
+    <!-- =====================================================
+         OPEN GRAPH / SOCIAL
+         ===================================================== -->
+    <meta property="og:title" content="<%= page_title %>">
     <meta property="og:description" content="<%= meta_description %>">
-    <meta property="og:type"        content="website">
-    <meta property="og:url"         content="<%= request.original_url %>">
-    <meta property="og:image"       content="<%= asset_path('cargaclick_og.png') %>">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<%= request.original_url %>">
+    <meta property="og:image" content="<%= asset_path('cargaclick_og.png') rescue '' %>">
 
-    <!-- Canonical -->
+    <!-- =====================================================
+         CANONICAL
+         ===================================================== -->
     <link rel="canonical" href="<%= request.original_url %>">
 
     <!-- =====================================================
@@ -42,50 +50,50 @@
     <%= csp_meta_tag %>
 
     <!-- =====================================================
-         ASSETS OPCIONAIS (Leaflet nunca pode quebrar)
+         LEAFLET (NUNCA QUEBRA A VIEW)
          ===================================================== -->
     <% begin %>
-      <meta name="leaflet-icon"    content="<%= asset_path('marker-icon.png') %>">
+      <meta name="leaflet-icon" content="<%= asset_path('marker-icon.png') %>">
       <meta name="leaflet-icon-2x" content="<%= asset_path('marker-icon-2x.png') %>">
-      <meta name="leaflet-shadow"  content="<%= asset_path('marker-shadow.png') %>">
+      <meta name="leaflet-shadow" content="<%= asset_path('marker-shadow.png') %>">
     <% rescue %>
-      <%# Assets ausentes → ignorado com segurança %>
+      <%# Assets ausentes → ignora silenciosamente %>
     <% end %>
 
     <!-- =====================================================
          CSS (ordem segura)
          ===================================================== -->
-    <%= stylesheet_link_tag "leaflet",      "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "leaflet", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
 
     <!-- =====================================================
-         JS (defer obrigatório – UI não depende dele)
+         JS (defer – UI não depende de JS)
          ===================================================== -->
     <%= javascript_include_tag "application",
-          "data-turbo-track": "reload",
-          defer: true %>
+          defer: true,
+          "data-turbo-track": "reload" %>
 
     <!-- HEAD EXTRA POR VIEW -->
     <%= yield :head %>
   </head>
 
-  <body class="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900 font-sans antialiased">
+  <body class="h-full min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 antialiased">
 
     <!-- =====================================================
-         NAVBAR (OPCIONAL / NÃO BLOQUEANTE)
+         NAVBAR (opcional e segura)
          ===================================================== -->
     <% if lookup_context.exists?("layouts/navbar") %>
-      <header role="banner">
+      <header class="fixed top-0 left-0 w-full z-50">
         <%= render "layouts/navbar" %>
       </header>
     <% end %>
 
     <!-- =====================================================
-         FLASH MESSAGES (NÃO BLOQUEIAM UI)
+         FLASH MESSAGES (não bloqueantes)
          ===================================================== -->
     <% if lookup_context.exists?("shared/flash") %>
-      <section class="w-full px-4 mt-4 md:container md:mx-auto">
+      <section class="pt-24 px-4 md:container md:mx-auto">
         <%= render "shared/flash" %>
       </section>
     <% end %>
@@ -94,7 +102,7 @@
          CONTEÚDO PRINCIPAL
          ===================================================== -->
     <main role="main"
-          class="flex-1 w-full px-4 pt-24 pb-8 md:container md:mx-auto">
+          class="flex-1 w-full pt-28 pb-12 px-4 md:container md:mx-auto">
 
       <% if content_for?(:content) %>
         <%= yield :content %>
@@ -102,20 +110,20 @@
         <%= yield %>
       <% end %>
 
-      <!-- FALLBACK SMOKE -->
+      <!-- Smoke / fallback seguro -->
       <% if !content_for?(:content) && view_flow.get(:layout).blank? %>
-        <div class="text-center text-sm text-gray-400 mt-12">
-          Página carregada sem conteúdo específico.
+        <div class="mt-16 text-center text-sm text-gray-400">
+          Página carregada com sucesso.
         </div>
       <% end %>
 
     </main>
 
     <!-- =====================================================
-         FOOTER (OPCIONAL)
+         FOOTER (opcional)
          ===================================================== -->
     <% if lookup_context.exists?("layouts/footer") %>
-      <footer role="contentinfo">
+      <footer class="bg-gray-100 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
         <%= render "layouts/footer" %>
       </footer>
     <% end %>

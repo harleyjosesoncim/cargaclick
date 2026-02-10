@@ -46,7 +46,7 @@ class Transportador < ApplicationRecord
 
   # =====================================================
   # VALIDAÇÕES CONDICIONAIS PF / PJ
-  # (SÓ QUANDO CADASTRO ESTIVER COMPLETO)
+  # (APENAS QUANDO CADASTRO ESTIVER COMPLETO)
   # =====================================================
   validates :cpf,
             presence: true,
@@ -64,6 +64,30 @@ class Transportador < ApplicationRecord
   before_save :normalize_email
 
   # =====================================================
+  # SCOPES DE PRODUÇÃO (PASSO 1)
+  # =====================================================
+
+  # Transportadores que podem aparecer para o cliente
+  scope :operacionais, -> {
+    where(status: :ativo, status_cadastro: :completo)
+  }
+
+  # Filtro por tipo de veículo (se existir coluna)
+  scope :por_tipo_veiculo, ->(tipo) {
+    return all if tipo.blank?
+    return all unless column_names.include?("tipo_veiculo")
+
+    where(tipo_veiculo: tipo)
+  }
+
+  # Scope principal usado após a simulação
+  scope :disponiveis_para, ->(resultado) {
+    query = operacionais
+    query = query.por_tipo_veiculo(resultado[:tipo_veiculo])
+    query
+  }
+
+  # =====================================================
   # REGRAS DE NEGÓCIO
   # =====================================================
   def pode_operar?
@@ -72,6 +96,9 @@ class Transportador < ApplicationRecord
 
   private
 
+  # =====================================================
+  # NORMALIZAÇÃO
+  # =====================================================
   def normalize_email
     self.email = email.downcase.strip if email.present?
   end

@@ -1,39 +1,40 @@
 # app/services/calcular_frete.rb
+# Serviço de simulação de frete – produção ready
 
-# ===== requires obrigatórios em produção =====
 require "net/http"
 require "json"
 require "uri"
 
 class CalcularFrete
-  # ============================
+  # ==================================================
   # CONSTANTES DE NEGÓCIO
-  # ============================
-  PRECO_BASE_KM = 2.50 # R$/km
-  TAXA_MINIMA   = 30.0 # R$
+  # ==================================================
+  PRECO_BASE_KM = 2.50   # R$/km
+  TAXA_MINIMA   = 30.00  # R$
 
-  # ============================
-  # INTERFACE PÚBLICA (ESTÁVEL)
-  # ============================
+  # ==================================================
+  # INTERFACE PÚBLICA (CONTRATO ESTÁVEL)
+  # ==================================================
   def self.call(params)
     new(params).call
   end
 
-  # ============================
+  # ==================================================
   # INICIALIZAÇÃO DEFENSIVA
-  # ============================
+  # ==================================================
   def initialize(params)
     params ||= {}
 
     @origem       = normalizar_texto(params[:origem])
     @destino      = normalizar_texto(params[:destino])
     @peso         = normalizar_numero(params[:peso])
-    @tipo_veiculo = normalizar_texto(params[:tipo_veiculo])
+    @tipo_veiculo = normalizar_texto(params[:tipo_veiculo]).presence || "carro"
+    @tipo_carga   = normalizar_texto(params[:tipo_carga]).presence   || "Não informado"
   end
 
-  # ============================
+  # ==================================================
   # EXECUÇÃO PRINCIPAL
-  # ============================
+  # ==================================================
   def call
     erros = validar_parametros
     return resposta_erro("Parâmetros inválidos", erros) if erros.any?
@@ -44,13 +45,16 @@ class CalcularFrete
     resposta_sucesso(
       origem: @origem,
       destino: @destino,
+      tipo_veiculo: @tipo_veiculo.capitalize,
+      tipo_carga: @tipo_carga,
       distancia_km: distancia_km.round(2),
-      valor: breakdown[:valor_final],
+      tempo_estimado: estimar_tempo(distancia_km),
+      valor_total: breakdown[:valor_final],
       breakdown: breakdown
     )
   rescue StandardError => e
     log_erro_fatal(e)
-    resposta_erro("Erro interno ao simular frete")
+    resposta_erro("Erro interno ao simular o frete")
   end
 
   private
@@ -80,7 +84,7 @@ class CalcularFrete
   end
 
   # ==================================================
-  # DISTÂNCIA (ORS + FALLBACK)
+  # DISTÂNCIA (OPENROUTESERVICE + FALLBACK)
   # ==================================================
   def calcular_distancia
     return distancia_placeholder if ENV["OPENROUTESERVICE_API_KEY"].blank?
@@ -130,27 +134,33 @@ class CalcularFrete
     metros.to_f / 1000.0
   end
 
+  # Fallback seguro (nunca quebra)
   def distancia_placeholder
     base_km = 20 + rand(30..90)
-    (base_km + (@peso / 10.0)).to_f
+    (base_km + (@peso / 10.0)).round(2)
   end
 
   # ==================================================
-  # BREAKDOWN (AUDITÁVEL)
+  # CÁLCULO / BREAKDOWN (AUDITÁVEL)
   # ==================================================
   def calcular_breakdown(distancia_km)
     valor_por_km = distancia_km * PRECO_BASE_KM
     valor_base   = [valor_por_km, TAXA_MINIMA].max
 
     {
-      preco_por_km: PRECO_BASE_KM,
+      preco_base_km: PRECO_BASE_KM,
       distancia_km: distancia_km.round(2),
-      valor_por_km: valor_por_km.round(2),
+      subtotal_km: valor_por_km.round(2),
       taxa_minima: TAXA_MINIMA,
       ajuste_fidelidade: 0.0,
       comissao_plataforma: 0.0,
       valor_final: valor_base.round(2)
     }
+  end
+
+  def estimar_tempo(distancia_km)
+    horas = (distancia_km / 60.0).round(1)
+    "#{horas}h"
   end
 
   # ==================================================
